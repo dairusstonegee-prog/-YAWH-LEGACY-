@@ -1,0 +1,16 @@
+{
+  "name": "yawh-legacy-fwer",
+  "version": "1.0.0",
+  "description": "LEGACY DATA HUB - Buy Data",
+  "private": true,
+  "scripts": {
+    "build": "echo 'Static HTML site - no build required'",
+    "dev": "npx http-server . -p 3000"
+  },
+  "dependencies": {
+    "@vercel/speed-insights": "^1.0.12"
+  },
+  "devDependencies": {
+    "http-server": "^14.1.1"
+  }
+}
