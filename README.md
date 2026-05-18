@@ -9,7 +9,7 @@
     <style>
         :root { --accent: #fbbf24; }
         body { 
-            background: radial-gradient(circle at 50% 0%, #002d5a 0%, #000000 100%);
+            background: linear-gradient(#0A2F1D, #04140D);
             color: #fff;
             font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
             min-height: 100vh;
