@@ -279,7 +279,36 @@
   <div id="scene-container"></div>
 
   <header>
-    <div class="logo">🛜 LEGACY DATA HUB</div>
+    <div class="logo-container" style="display: flex; align-items: center; gap: 12px;">
+  <svg width="45" height="45" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg" style="filter: drop-shadow(0px 0px 8px rgba(255, 215, 0, 0.4));">
+    <defs>
+      <linearGradient id="logo-grad" x1="0%" y1="100%" x2="100%" y2="0%">
+        <stop offset="0%" stop-color="#FFD700" />
+        <stop offset="100%" stop-color="#00E5FF" />
+      </linearGradient>
+      <linearGradient id="border-grad" x1="0%" y1="0%" x2="100%" y2="100%">
+        <stop offset="0%" stop-color="#FFD700" stop-opacity="0.8"/>
+        <stop offset="100%" stop-color="#101010" stop-opacity="0.2"/>
+      </linearGradient>
+    </defs>
+    
+    <polygon points="50,5 90,25 90,75 50,95 10,75 10,25" fill="#0A0A0A" stroke="url(#border-grad)" stroke-width="3"/>
+    
+    <rect x="28" y="68" width="44" height="8" rx="4" fill="url(#logo-grad)" />
+    
+    <rect x="28" y="24" width="8" height="38" rx="4" fill="url(#logo-grad)" />
+    <rect x="40" y="36" width="8" height="26" rx="4" fill="url(#logo-grad)" opacity="0.85" />
+    <rect x="52" y="46" width="8" height="16" rx="4" fill="url(#logo-grad)" opacity="0.7" />
+    <rect x="64" y="54" width="8" height="8" rx="4" fill="url(#logo-grad)" opacity="0.5" />
+    
+    <path d="M 32 14 A 22 22 0 0 1 68 14" stroke="#00E5FF" stroke-width="3" stroke-linecap="round" opacity="0.9" />
+  </svg>
+
+  <div style="display: flex; flex-direction: column;">
+    <span style="font-family: 'Orbitron', sans-serif; font-size: 1.4rem; font-weight: 700; color: #FFD700; letter-spacing: 1px; line-height: 1.1;">LEGACY</span>
+    <span style="font-family: 'Inter', sans-serif; font-size: 0.75rem; font-weight: 600; color: #00E5FF; letter-spacing: 3.5px; text-transform: uppercase;">Data Hub</span>
+  </div>
+</div>
     <div class="contact-info">
       <span>📞 0599821047</span>
       <span>✉️ legacydatahub@gmail.com</span>
