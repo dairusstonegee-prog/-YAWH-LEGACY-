@@ -1,251 +1,535 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>LEGACY DATA HUB | Buy Data</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script src="https://js.paystack.co/v1/inline.js"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;800&display=swap" rel="stylesheet">
-    <style>
-        body { 
-           background: linear-gradient(#0A2F1D, #04140D); 
-            min-height: 100vh; 
-            font-family: 'Plus Jakarta Sans', sans-serif; 
-        }
-        .glass { background: rgba(36, 9, 156, 0.05); backdrop-filter: blur(12px); border: 1px solid rgba(255, 255, 255, 0.1); }
-        .network-card { transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); cursor: pointer; position: relative; overflow: hidden; }
-        .network-card:hover { transform: translateY(-8px); background: rgba(255, 255, 255, 0.1); }
-        .active-network { border: 2px solid #ffcc00; background: rgba(255, 204, 0, 0.15) !important; box-shadow: 0 0 20px rgba(255, 204, 0, 0.2); }
-        .btn-glow { box-shadow: 0 0 15px rgba(255, 204, 0, 0.4); }
-    </style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>LEGACY DATA HUB</title>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+  <script src="https://js.paystack.co/v1/inline.js"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;700&family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --yellow: #FFD700;
+      --black: #000000;
+      --dark-bg: #0a0a0a;
+      --card-bg: rgba(20, 20, 20, 0.85);
+      --glow-yellow: rgba(255, 215, 0, 0.2);
+      --whatsapp-green: #25D366;
+    }
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    body {
+      font-family: 'Inter', sans-serif;
+      background-color: var(--dark-bg);
+      color: white;
+      overflow-x: hidden;
+    }
+    #scene-container {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: -1;
+      pointer-events: none;
+    }
+    header {
+      background: rgba(0, 0, 0, 0.85);
+      backdrop-filter: blur(10px);
+      padding: 1.2rem 2rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-bottom: 1px solid var(--yellow);
+      position: relative;
+      z-index: 10;
+    }
+    .logo {
+      font-family: 'Orbitron', sans-serif;
+      font-size: 1.6rem;
+      font-weight: 700;
+      color: var(--yellow);
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+      text-shadow: 0 0 10px var(--glow-yellow);
+    }
+    .contact-info {
+      font-size: 0.95rem;
+      display: flex;
+      gap: 1.5rem;
+    }
+    .container {
+      max-width: 1200px;
+      margin: 2.5rem auto;
+      padding: 0 1.5rem;
+      position: relative;
+      z-index: 5;
+    }
+    .hero {
+      text-align: center;
+      margin-bottom: 2.5rem;
+    }
+    .hero h1 {
+      font-family: 'Orbitron', sans-serif;
+      font-size: 2.6rem;
+      margin-bottom: 0.5rem;
+      background: linear-gradient(to right, var(--yellow), #fff);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      text-shadow: 0 0 15px var(--glow-yellow);
+    }
+    .network-selector {
+      display: flex;
+      gap: 1rem;
+      margin: 2rem 0;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+    .network-btn {
+      background: transparent;
+      color: white;
+      border: 2px solid var(--yellow);
+      padding: 0.7rem 1.4rem;
+      font-size: 1.1rem;
+      font-weight: 600;
+      cursor: pointer;
+      border-radius: 6px;
+      transition: all 0.3s ease;
+    }
+    .network-btn.active {
+      background: var(--yellow);
+      color: var(--black);
+      box-shadow: 0 0 15px var(--glow-yellow);
+    }
+    .packages-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+      gap: 1.2rem;
+      margin-bottom: 2.5rem;
+    }
+    .package-card {
+      background: var(--card-bg);
+      border: 1px solid rgba(255, 215, 0, 0.2);
+      border-radius: 12px;
+      padding: 1.4rem 1rem;
+      text-align: center;
+      cursor: pointer;
+      transition: transform 0.2s, box-shadow 0.2s;
+    }
+    .package-card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 6px 15px rgba(255, 215, 0, 0.3);
+      border-color: var(--yellow);
+    }
+    .package-size {
+      font-family: 'Orbitron', sans-serif;
+      font-size: 1.4rem;
+      font-weight: 600;
+      margin-bottom: 0.5rem;
+      color: var(--yellow);
+    }
+    .package-price {
+      font-size: 1.2rem;
+      font-weight: 700;
+      color: white;
+    }
+    .order-form {
+      background: var(--card-bg);
+      padding: 2rem;
+      border-radius: 16px;
+      margin-bottom: 2.5rem;
+      border: 1px solid rgba(255, 215, 0, 0.2);
+    }
+    .form-group {
+      margin-bottom: 1.2rem;
+    }
+    label {
+      display: block;
+      margin-bottom: 0.6rem;
+      font-weight: 600;
+      font-size: 1.05rem;
+    }
+    input {
+      width: 100%;
+      padding: 0.85rem;
+      border-radius: 8px;
+      border: 1px solid rgba(255, 215, 0, 0.4);
+      background: rgba(10, 10, 10, 0.9);
+      color: white;
+      font-size: 1rem;
+    }
+    input:focus {
+      outline: none;
+      border-color: var(--yellow);
+    }
+    .btn {
+      background: linear-gradient(to right, var(--yellow), #e6c200);
+      color: var(--black);
+      border: none;
+      padding: 1rem;
+      font-size: 1.1rem;
+      font-weight: 700;
+      border-radius: 8px;
+      cursor: pointer;
+      width: 100%;
+      transition: transform 0.2s, box-shadow 0.2s;
+      font-family: 'Orbitron', sans-serif;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      box-shadow: 0 4px 15px rgba(255, 215, 0, 0.3);
+    }
+    .btn:hover {
+      transform: scale(1.01);
+      box-shadow: 0 6px 20px rgba(255, 215, 0, 0.5);
+    }
+    .track-btn {
+      background: linear-gradient(to right, var(--whatsapp-green), #128C7E);
+      margin-top: 1rem;
+      color: white;
+      box-shadow: 0 4px 15px rgba(37, 211, 102, 0.2);
+    }
+    .track-btn:hover {
+      box-shadow: 0 6px 20px rgba(37, 211, 102, 0.4);
+    }
+    .divider {
+      height: 1px;
+      background: rgba(255, 215, 0, 0.2);
+      margin: 2.5rem 0 1.5rem;
+    }
+    .summary {
+      background: var(--card-bg);
+      padding: 1.8rem;
+      border-radius: 16px;
+      border: 1px solid rgba(255, 215, 0, 0.15);
+    }
+    .summary h3 {
+      font-family: 'Orbitron', sans-serif;
+      margin-bottom: 1.2rem;
+      color: var(--yellow);
+      text-align: center;
+    }
+    .summary-item {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 0.8rem;
+      font-size: 1.05rem;
+    }
+    .notice {
+      background: rgba(15, 15, 15, 0.9);
+      padding: 1.4rem;
+      border-radius: 12px;
+      margin-top: 2rem;
+      font-size: 0.95rem;
+      border-left: 3px solid var(--yellow);
+    }
+    footer {
+      text-align: center;
+      padding: 3rem 2rem 2rem;
+      background: rgba(5, 5, 5, 0.95);
+      margin-top: 4rem;
+      position: relative;
+      z-index: 5;
+      border-top: 1px solid rgba(255, 215, 0, 0.1);
+    }
+    .footer-links-container {
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+      align-items: center;
+      margin-bottom: 1.5rem;
+    }
+    .whatsapp-link {
+      color: var(--whatsapp-green);
+      text-decoration: none;
+      font-weight: 600;
+      font-size: 1.1rem;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.6rem;
+      padding: 0.4rem 0.8rem;
+      border-radius: 6px;
+      background: rgba(37, 211, 102, 0.05);
+      border: 1px solid rgba(37, 211, 102, 0.2);
+      transition: all 0.3s ease;
+    }
+    .whatsapp-link:hover {
+      background: rgba(37, 211, 102, 0.15);
+      border-color: var(--whatsapp-green);
+      box-shadow: 0 0 12px rgba(37, 211, 102, 0.3);
+      transform: translateY(-2px);
+    }
+    .whatsapp-icon {
+      width: 24px;
+      height: 24px;
+      fill: var(--whatsapp-green);
+    }
+    @media (max-width: 768px) {
+      .hero h1 { font-size: 2rem; }
+      .network-selector { flex-direction: column; align-items: center; }
+      .packages-grid { grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); }
+      .contact-info { flex-direction: column; gap: 0.4rem; align-items: flex-end; }
+    }
+  </style>
 </head>
-<body class="text-white p-4 md:p-10">
+<body>
+  <div id="scene-container"></div>
 
-    <header class="text-center mb-12">
-        <div class="inline-block p-3 bg-white/10 rounded-full mb-4">🛜</div>
-        <h1 class="text-5xl font-extrabold tracking-tighter bg-clip-text text-transparent bg-gradient-to-r from-yellow-400 to-green-200">
-            LEGACY DATA HUB
-        </h1>
-        <p class="text-sky-300 mt-2 font-medium">Fast And Affordable data bundles</p>
-    </header>
+  <header>
+    <div class="logo">🛜 LEGACY DATA HUB</div>
+    <div class="contact-info">
+      <span>📞 0599821047</span>
+      <span>✉️ legacydatahub@gmail.com</span>
+    </div>
+  </header>
 
-    <main class="max-w-5xl mx-auto grid grid-cols-1 lg:grid-cols-3 gap-8">
-        
-        <!-- Selection Area -->
-        <div class="lg:col-span-2 space-y-6">
-            <section class="glass p-8 rounded-[2rem]">
-                <h2 class="text-xl font-bold mb-6 flex items-center gap-2">
-                    <span class="bg-yellow-400 text-black w-6 h-6 rounded-full text-xs flex items-center justify-center">1</span>
-                    Select Network
-                </h2>
-                <div class="grid grid-cols-3 gap-4">
-                    <div onclick="selectNetwork('MTN')" id="btn-MTN" class="network-card glass p-5 rounded-2xl text-center border-b-4 border-yellow-500">
-                        <span class="block font-bold text-sm md:text-base">MTN</span>
-                    </div>
-                    <div onclick="selectNetwork('TELECEL')" id="btn-TELECEL" class="network-card glass p-5 rounded-2xl text-center border-b-4 border-red-600">
-                        <span class="block font-bold text-sm md:text-base">TELECEL</span>
-                    </div>
-                    <div onclick="selectNetwork('AIRTELTIGO')" id="btn-AIRTELTIGO" class="network-card glass p-5 rounded-2xl text-center border-b-4 border-blue-600">
-                        <span class="block font-bold text-sm md:text-base">AT</span>
-                    </div>
-                </div>
+  <div class="container">
+    <div class="hero">
+      <h1>Your NO.1 data shop</h1>
+      <p>Secure • Fast • Reliable</p>
+    </div>
 
-                <div class="mt-10">
-                    <h2 class="text-xl font-bold mb-6 flex items-center gap-2">
-                        <span class="bg-yellow-400 text-black w-6 h-6 rounded-full text-xs flex items-center justify-center">2</span>
-                        Choose Package
-                    </h2>
-                    <select id="package-select" onchange="updateSummary()" class="w-full bg-black/40 border border-white/20 p-5 rounded-2xl text-white outline-none focus:border-yellow-400 transition-all">
-                        <option value="">-- Waiting for network --</option>
-                    </select>
-                </div>
-            </section>
-        </div>
+    <div class="network-selector">
+      <button class="network-btn active" data-network="MTN">MTN</button>
+      <button class="network-btn" data-network="TELECEL">TELECEL</button>
+      <button class="network-btn" data-network="AIRTELTIGO">AIRTELTIGO</button>
+    </div>
 
-        <!-- Order Summary & Payment -->
-        <div class="space-y-6">
-            <section class="glass p-8 rounded-[2rem] sticky top-8">
-                <h2 class="text-xl font-bold mb-6 text-yellow-400">Order Summary</h2>
-                
-                <div id="summary-box" class="space-y-4 mb-8 text-sky-100">
-                    <div class="flex justify-between border-b border-white/10 pb-2">
-                        <span>Network:</span> <span id="sum-net" class="font-bold text-white">-</span>
-                    </div>
-                    <div class="flex justify-between border-b border-white/10 pb-2">
-                        <span>Package:</span> <span id="sum-pkg" class="font-bold text-white">-</span>
-                    </div>
-                    <div class="flex justify-between border-b border-white/10 pb-2">
-                        <span>Price:</span> <span id="sum-price" class="font-bold text-deep green-400">₵0.00</span>
-                    </div>
-                </div>
+    <div class="packages-grid" id="packagesContainer"></div>
 
-                <div class="space-y-4">
-                    <input type="tel" id="phone" oninput="updateSummary()" placeholder="Enter Recipient Number" class="w-full bg-white/5 border border-white/10 p-5 rounded-2xl text-center text-xl font-bold tracking-widest placeholder:tracking-normal placeholder:font-normal placeholder:text-sm">
-                    
-                    <p class="text-[10px] text-center text-white/50 px-4">
-                        By paying, you agree data sent to the wrong number is non-refundable. Delivery: 4-30 mins.
-                    </p>
+    <div class="order-form">
+      <h3 style="text-align:center; margin-bottom:1.5rem; color:var(--yellow); font-family:'Orbitron', sans-serif;">Complete Your Order</h3>
+      <div class="form-group">
+        <label for="phoneNumber">Phone Number (Enter valid network number)</label>
+        <input type="tel" id="phoneNumber" placeholder="e.g. 0241234567" max-length="10" required>
+      </div>
+      <div class="form-group">
+        <label for="selectedPackage">Selected Package</label>
+        <input type="text" id="selectedPackage" readonly placeholder="Select a card from above">
+      </div>
+      <div class="form-group">
+        <label for="totalAmount">Total Amount (GHC)</label>
+        <input type="text" id="totalAmount" readonly placeholder="₵0.00">
+      </div>
+      <button class="btn" id="payButton">Pay Now with Paystack</button>
 
-                    <button onclick="payWithPaystack()" class="w-full bg-gradient-to-r from-yellow-400 to-yellow-600 btn-glow text-black font-extrabold py-5 rounded-2xl text-lg hover:scale-[1.02] active:scale-95 transition-all">
-                        Complete Payment
-                    </button>
-                    
-                    <!-- Social Section -->
-                    <div class="flex flex-col items-center gap-3 mt-6">
-                        <p class="text-[11px] text-sky-300 font-bold uppercase tracking-wider">Stay Updated</p>
-                        <div class="flex justify-center gap-6">
-                            <a href="https://wa.me/message/DF4CE2EQV33QP1" title="Contact Support" class="glass p-4 rounded-full hover:bg-green-500/20 transition-all hover:scale-110">
-                                <img src="https://upload.wikimedia.org/wikipedia/commons/6/6b/WhatsApp.svg" class="w-6 h-6" alt="WhatsApp Support">
-                            </a>
-                            <a href="https://whatsapp.com/channel/0029VaCiikI23n3Wt1d5z402" title="Join our Channel" class="glass p-4 rounded-full hover:bg-sky-500/20 transition-all hover:scale-110 border-sky-400/30">
-                                <svg class="w-6 h-6 fill-current text-sky-400" viewBox="0 0 24 24">
-                                    <path d="M12 2C6.477 2 2 6.477 2 12c0 1.891.524 3.66 1.434 5.17L2.06 22.12l5.059-1.311A9.956 9.956 0 0 0 12 22c5.523 0 10-4.477 10-10S17.523 2 12 2zm0 18c-1.477 0-2.866-.363-4.086-1.005l-.293-.153-3.03.785.798-2.923-.17-.288A7.954 7.954 0 0 1 4 12c0-4.411 3.589-8 8-8s8 3.589 8 8-3.589 8-8 8zm4.5-9h-9a.5.5 0 0 0 0 1h9a.5.5 0 0 0 0-1zm0-3h-9a.5.5 0 0 0 0 1h9a.5.5 0 0 0 0-1zm-4 6h-5a.5.5 0 0 0 0 1h5a.5.5 0 0 0 0-1z"/>
-                                </svg>
-                            </a>
-                        </div>
-                    </div>
-                </div>
-            </section>
-        </div>
+      <div class="divider"></div>
 
-        <!-- Tracking Section -->
-        <div class="lg:col-span-3 mt-10">
-            <section class="glass p-8 rounded-[2rem] border-t-4 border-sky-500">
-                <h2 class="text-xl font-bold mb-4 flex items-center gap-2">
-                    🔍 Check Order Status
-                </h2>
-                <p class="text-sm text-sky-200 mb-6">Enter your Phone Number or Paystack Reference to check your delivery status.</p>
-                
-                <div class="flex flex-col md:flex-row gap-4">
-                    <input type="text" id="track-ref" placeholder="Order Number or Phone" class="flex-1 bg-black/40 border border-white/10 p-4 rounded-xl outline-none focus:border-sky-400">
-                    <button onclick="checkStatus()" id="track-btn" class="bg-sky-600 hover:bg-sky-500 text-white font-bold px-8 py-4 rounded-xl transition-all">
-                        Check Status
-                    </button>
-                </div>
-                
-                <!-- Results Area -->
-                <div id="status-result" class="hidden mt-6 p-6 rounded-xl bg-white/5 border border-white/10">
-                    <div id="status-loading" class="animate-pulse flex space-x-4">
-                        <div class="flex-1 space-y-4 py-1">
-                            <div class="h-4 bg-white/20 rounded w-3/4"></div>
-                            <div class="space-y-2">
-                                <div class="h-4 bg-white/20 rounded"></div>
-                            </div>
-                        </div>
-                    </div>
-                    <div id="status-content" class="hidden">
-                        <p class="text-yellow-400 font-bold mb-2">Order Found / Processing</p>
-                        <p class="text-sm text-white/70 mb-4">Manual verification is required for security. Click below to confirm delivery with our automated support agent.</p>
-                        <a id="whatsapp-verify-btn" href="#" target="_blank" class="inline-block bg-green-600 hover:bg-green-500 text-white text-sm font-bold py-2 px-6 rounded-lg transition-all">
-                            Verify via WhatsApp
-                        </a>
-                    </div>
-                </div>
-            </section>
-        </div>
-    </main>
+      <h3 style="text-align:center; margin-bottom:1.2rem; color:var(--yellow); font-family:'Orbitron', sans-serif;">Order Tracking</h3>
+      <div class="form-group">
+        <label for="trackPhoneNumber">Enter Phone Number to Track Order</label>
+        <input type="tel" id="trackPhoneNumber" placeholder="e.g. 0241234567">
+      </div>
+      <button class="btn track-btn" id="trackButton">Track My Order</button>
+    </div>
 
-    <script>
-        const dataPrices = {
-            MTN: {
-                "1GB": 4.80, "2GB": 9.80, "3GB": 14.30, "4GB": 22.00, "5GB": 26.00,
-                "6GB": 29.00, "8GB": 37.00, "10GB": 46.00, "15GB": 64.00, "20GB": 84.00,
-                "25GB": 104.00, "30GB": 126.00, "40GB": 163.00, "50GB": 205.00
-            },
-            TELECEL: {
-                "10GB": 41.00, "15GB": 57.85, "20GB": 76.80, "25GB": 93.75, 
-                "40GB": 146.60, "50GB": 181.50
-            },
-            AIRTELTIGO: {
-                "1GB": 4.75, "2GB": 9.25, "3GB": 14.25, "4GB": 17.50, "5GB": 20.50,
-                "6GB": 24.50, "8GB": 32.00, "10GB": 40.00, "12GB": 47.00, "15GB": 60.50
-            }
-        };
+    <div class="summary">
+      <h3>Order Summary</h3>
+      <div class="summary-item"><span>Network:</span><span id="summaryNetwork">MTN</span></div>
+      <div class="summary-item"><span>Package:</span><span id="summaryPackage">-</span></div>
+      <div class="summary-item"><span>Amount:</span><span id="summaryAmount">-</span></div>
+      <div class="summary-item"><span>Phone:</span><span id="summaryPhone">-</span></div>
+    </div>
 
-        let currentNetwork = "";
+    <div class="notice">
+      <strong>Delivery Time:</strong> 4 to 30 minutes<br>
+      <strong>Important:</strong> Enter a valid network number. Data sent to a wrong number cannot be refunded.
+    </div>
+  </div>
 
-        function selectNetwork(net) {
-            currentNetwork = net;
-            document.querySelectorAll('.network-card').forEach(el => el.classList.remove('active-network'));
-            document.getElementById('btn-' + net).classList.add('active-network');
-            
-            const select = document.getElementById('package-select');
-            select.innerHTML = '<option value="">-- Choose ' + net + ' Package --</option>';
-            
-            for (let pkg in dataPrices[net]) {
-                let opt = document.createElement('option');
-                opt.value = dataPrices[net][pkg];
-                opt.dataset.name = pkg;
-                opt.innerHTML = `${pkg} — ₵${dataPrices[net][pkg].toFixed(2)}`;
-                select.appendChild(opt);
-            }
-            updateSummary();
+  <footer>
+    <div class="footer-links-container">
+      <a href="https://wa.me/message/DF4CE2EQV33QP1" target="_blank" class="whatsapp-link">
+        <svg class="whatsapp-icon" viewBox="0 0 24 24"><path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946C.06 5.348 5.397.01 12.008.01c3.202.001 6.212 1.246 8.477 3.514 2.266 2.268 3.507 5.28 3.505 8.484-.004 6.657-5.34 11.997-11.953 11.997-2.005-.001-3.973-.502-5.713-1.455L0 24zm6.59-3.847c1.62.963 3.424 1.47 5.267 1.471h.005c5.445 0 9.876-4.43 9.88-9.878.002-2.64-1.019-5.123-2.877-6.983-1.857-1.86-4.339-2.883-6.98-2.884-5.448 0-9.88 4.43-9.884 9.88-.001 1.83.479 3.619 1.392 5.216l-.961 3.513 3.6-.945zm11.233-7.561c-.3-.149-1.772-.875-2.046-.975-.274-.1-.474-.149-.674.15-.2.299-.773.975-.947 1.174-.174.199-.349.224-.648.075-.3-.15-1.265-.466-2.41-1.485-.89-.794-1.49-1.775-1.665-2.074-.174-.299-.019-.461.13-.609.135-.133.3-.299.449-.449.149-.15.199-.249.299-.498.1-.2.05-.374-.025-.524-.075-.15-.674-1.62-.923-2.219-.242-.582-.487-.504-.674-.513-.174-.009-.374-.009-.573-.009-.2 0-.523.075-.797.374-.274.299-1.047 1.022-1.047 2.494 0 1.471 1.071 2.892 1.221 3.092.149.199 2.107 3.216 5.106 4.512.714.309 1.271.494 1.708.633.717.228 1.37.195 1.887.118.575-.085 1.772-.723 2.021-1.396.249-.673.249-1.246.174-1.396-.075-.149-.274-.249-.574-.398z"/></svg>
+        Chat on WhatsApp
+      </a>
+      
+      <a href="https://whatsapp.com/channel/0029VaCiikI23n3Wt1d5z402" target="_blank" class="whatsapp-link">
+        <svg class="whatsapp-icon" viewBox="0 0 24 24"><path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946C.06 5.348 5.397.01 12.008.01c3.202.001 6.212 1.246 8.477 3.514 2.266 2.268 3.507 5.28 3.505 8.484-.004 6.657-5.34 11.997-11.953 11.997-2.005-.001-3.973-.502-5.713-1.455L0 24zm6.59-3.847c1.62.963 3.424 1.47 5.267 1.471h.005c5.445 0 9.876-4.43 9.88-9.878.002-2.64-1.019-5.123-2.877-6.983-1.857-1.86-4.339-2.883-6.98-2.884-5.448 0-9.88 4.43-9.884 9.88-.001 1.83.479 3.619 1.392 5.216l-.961 3.513 3.6-.945zm11.233-7.561c-.3-.149-1.772-.875-2.046-.975-.274-.1-.474-.149-.674.15-.2.299-.773.975-.947 1.174-.174.199-.349.224-.648.075-.3-.15-1.265-.466-2.41-1.485-.89-.794-1.49-1.775-1.665-2.074-.174-.299-.019-.461.13-.609.135-.133.3-.299.449-.449.149-.15.199-.249.299-.498.1-.2.05-.374-.025-.524-.075-.15-.674-1.62-.923-2.219-.242-.582-.487-.504-.674-.513-.174-.009-.374-.009-.573-.009-.2 0-.523.075-.797.374-.274.299-1.047 1.022-1.047 2.494 0 1.471 1.071 2.892 1.221 3.092.149.199 2.107 3.216 5.106 4.512.714.309 1.271.494 1.708.633.717.228 1.37.195 1.887.118.575-.085 1.772-.723 2.021-1.396.249-.673.249-1.246.174-1.396-.075-.149-.274-.249-.574-.398z"/></svg>
+        Subscribe to Updates
+      </a>
+    </div>
+    <p style="opacity: 0.5; font-size: 0.85rem;">&copy; 2026 LEGACY DATA HUB. All rights reserved.</p>
+  </footer>
+
+  <script>
+    // Optimized Lightweight 3D Background Engine
+    const scene = new THREE.Scene();
+    const camera = new THREE.PerspectiveCamera(60, window.innerWidth / window.innerHeight, 0.1, 500);
+    
+    const renderer = new THREE.WebGLRenderer({ antialias: false, alpha: true });
+    renderer.setSize(window.innerWidth, window.innerHeight);
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2)); 
+    document.getElementById('scene-container').appendChild(renderer.domElement);
+
+    const particlesGeometry = new THREE.BufferGeometry();
+    const particlesCount = 600; 
+    const posArray = new Float32Array(particlesCount * 3);
+    for(let i = 0; i < particlesCount * 3; i++) {
+      posArray[i] = (Math.random() - 0.5) * 120;
+    }
+    particlesGeometry.setAttribute('position', new THREE.BufferAttribute(posArray, 3));
+
+    const particlesMaterial = new THREE.PointsMaterial({
+      size: 0.9,
+      color: 0xFFD700,
+      transparent: true,
+      opacity: 0.5
+    });
+
+    const particlesMesh = new THREE.Points(particlesGeometry, particlesMaterial);
+    scene.add(particlesMesh);
+
+    const torusGeometry = new THREE.TorusGeometry(7, 1.5, 12, 40);
+    const torusMaterial = new THREE.MeshBasicMaterial({ 
+      color: 0xFFD700,
+      wireframe: true,
+      transparent: true,
+      opacity: 0.35
+    });
+    const torus = new THREE.Mesh(torusGeometry, torusMaterial);
+    torus.position.y = 2;
+    scene.add(torus);
+
+    camera.position.z = 25;
+
+    window.addEventListener('resize', () => {
+      camera.aspect = window.innerWidth / window.innerHeight;
+      camera.updateProjectionMatrix();
+      renderer.setSize(window.innerWidth, window.innerHeight);
+    });
+
+    const animate = () => {
+      requestAnimationFrame(animate);
+      particlesMesh.rotation.x += 0.0003;
+      particlesMesh.rotation.y += 0.0003;
+      torus.rotation.x += 0.003;
+      torus.rotation.y += 0.006;
+      renderer.render(scene, camera);
+    };
+    animate();
+
+    // Data Engine Configurations
+    const PAYSTACK_PUBLIC_KEY = 'pk_live_8b9d5c666a57f0c2c1a5cb908083e50972b1e2aa';
+    
+    const packages = {
+      MTN: [
+        { size: '1GB', price: 4.80 }, { size: '2GB', price: 9.80 }, { size: '3GB', price: 14.30 },
+        { size: '4GB', price: 22 }, { size: '5GB', price: 26 }, { size: '6GB', price: 29 },
+        { size: '8GB', price: 37 }, { size: '10GB', price: 46 }, { size: '15GB', price: 64 },
+        { size: '20GB', price: 84 }, { size: '25GB', price: 104 }, { size: '30GB', price: 126 },
+        { size: '40GB', price: 163 }, { size: '50GB', price: 205 }
+      ],
+      TELECEL: [
+        { size: '10GB', price: 41 }, { size: '15GB', price: 57.85 }, { size: '20GB', price: 76.80 },
+        { size: '25GB', price: 93.75 }, { size: '40GB', price: 146.60 }, { size: '50GB', price: 181.50 }
+      ],
+      AIRTELTIGO: [
+        { size: '1GB', price: 4.75 }, { size: '2GB', price: 9.25 }, { size: '3GB', price: 14.25 },
+        { size: '4GB', price: 17.50 }, { size: '5GB', price: 20.50 }, { size: '6GB', price: 24.50 },
+        { size: '8GB', price: 32 }, { size: '10GB', price: 40 }, { size: '12GB', price: 47 },
+        { size: '15GB', price: 60.50 }
+      ]
+    };
+
+    let currentNetwork = 'MTN';
+    let selectedPackage = null;
+
+    const forceNumeric = (e) => { e.target.value = e.target.value.replace(/[^0-9]/g, ''); };
+    document.getElementById('phoneNumber').addEventListener('input', (e) => {
+      forceNumeric(e);
+      document.getElementById('summaryPhone').textContent = e.target.value || '-';
+    });
+    document.getElementById('trackPhoneNumber').addEventListener('input', forceNumeric);
+
+    function renderPackages(network) {
+      const container = document.getElementById('packagesContainer');
+      container.innerHTML = '';
+      
+      packages[network].forEach(pkg => {
+        const card = document.createElement('div');
+        card.className = 'package-card';
+        card.innerHTML = `
+          <div class="package-size">${pkg.size}</div>
+          <div class="package-price">₵${pkg.price.toFixed(2)}</div>
+        `;
+        card.addEventListener('click', () => {
+          selectedPackage = pkg;
+          document.getElementById('selectedPackage').value = `${pkg.size} (${network})`;
+          document.getElementById('totalAmount').value = `₵${pkg.price.toFixed(2)}`;
+          document.getElementById('summaryPackage').textContent = `${pkg.size} (${network})`;
+          document.getElementById('summaryAmount').textContent = `₵${pkg.price.toFixed(2)}`;
+          
+          document.querySelectorAll('.package-card').forEach(c => c.style.border = '1px solid rgba(255, 215, 0, 0.2)');
+          card.style.border = '2px solid var(--yellow)';
+        });
+        container.appendChild(card);
+      });
+    }
+
+    document.querySelectorAll('.network-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        document.querySelectorAll('.network-btn').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        currentNetwork = btn.dataset.network;
+        document.getElementById('summaryNetwork').textContent = currentNetwork;
+        renderPackages(currentNetwork);
+        selectedPackage = null;
+        document.getElementById('selectedPackage').value = '';
+        document.getElementById('totalAmount').value = '';
+        document.getElementById('summaryPackage').textContent = '-';
+        document.getElementById('summaryAmount').textContent = '-';
+      });
+    });
+
+    document.getElementById('payButton').addEventListener('click', () => {
+      const phone = document.getElementById('phoneNumber').value;
+      if (!selectedPackage) {
+        alert('Please choose a data bundle package card above first.');
+        return;
+      }
+      if (!phone || phone.length < 10) {
+        alert('Please enter a complete 10-digit valid phone number.');
+        return;
+      }
+      
+      const handler = PaystackPop.setup({
+        key: PAYSTACK_PUBLIC_KEY,
+        email: 'legacydatahub@gmail.com',
+        amount: Math.round(selectedPackage.price * 100),
+        currency: 'GHS',
+        ref: 'LDH-' + Date.now() + '-' + Math.floor((Math.random() * 100000) + 1),
+        metadata: {
+          custom_fields: [
+            { display_name: "Network", variable_name: "network", value: currentNetwork },
+            { display_name: "Package Size", variable_name: "package_size", value: selectedPackage.size },
+            { display_name: "Recipient Phone", variable_name: "recipient_phone", value: phone }
+          ]
+        },
+        callback: function(response) {
+          alert('Payment successful! Reference: ' + response.reference + '\nYour bundle will arrive within 4-30 minutes.');
+        },
+        onClose: function() {
+          alert('Transaction window closed.');
         }
+      });
+      handler.openIframe();
+    });
 
-        function updateSummary() {
-            const selectEl = document.getElementById('package-select');
-            const price = selectEl.value;
-            const packageName = selectEl.options[selectEl.selectedIndex]?.dataset.name || "-";
-            
-            document.getElementById('sum-net').innerText = currentNetwork || "-";
-            document.getElementById('sum-pkg').innerText = packageName;
-            document.getElementById('sum-price').innerText = price ? `₵${parseFloat(price).toFixed(2)}` : "₵0.00";
-        }
+    document.getElementById('trackButton').addEventListener('click', () => {
+      const trackPhone = document.getElementById('trackPhoneNumber').value;
+      if (!trackPhone || trackPhone.length < 10) {
+        alert('Please enter a complete 10-digit telephone order identity.');
+        return;
+      }
+      const message = encodeURIComponent(`order tracking ${trackPhone}`);
+      window.open(`https://wa.me/233599821047?text=${message}`, '_blank');
+    });
 
-        function payWithPaystack() {
-            const selectEl = document.getElementById('package-select');
-            const price = selectEl.value;
-            const phone = document.getElementById('phone').value;
-            const packageName = selectEl.options[selectEl.selectedIndex]?.dataset.name;
-
-            if (!currentNetwork || !price || phone.length < 10) {
-                alert("Please select a package and enter a valid phone number.");
-                return;
-            }
-
-            let handler = PaystackPop.setup({
-                key: 'pk_live_8b9d5c666a57f0c2c1a5cb908083e50972b1e2aa',
-                email: 'legacydatahub@gmail.com',
-                amount: Math.round(price * 100), 
-                currency: 'GHS',
-                metadata: {
-                    custom_fields: [
-                        { display_name: "Network", variable_name: "network", value: currentNetwork },
-                        { display_name: "Package", variable_name: "package", value: packageName },
-                        { display_name: "Number", variable_name: "number", value: phone }
-                    ]
-                },
-                callback: function(response) {
-                    alert('Success! Reference: ' + response.reference + '. We are processing your data for ' + phone);
-                }
-            });
-            handler.openIframe();
-        }
-
-        function checkStatus() {
-            const refInput = document.getElementById('track-ref').value;
-            const resultBox = document.getElementById('status-result');
-            const loading = document.getElementById('status-loading');
-            const content = document.getElementById('status-content');
-            const verifyBtn = document.getElementById('whatsapp-verify-btn');
-
-            if (!refInput || refInput.length < 5) {
-                alert("Please enter a valid Phone Number or Reference.");
-                return;
-            }
-
-            resultBox.classList.remove('hidden');
-            loading.classList.remove('hidden');
-            content.classList.add('hidden');
-
-            setTimeout(() => {
-                loading.classList.add('hidden');
-                content.classList.remove('hidden');
-                const message = encodeURIComponent(`Hello Legacy Data Hub, I want to check the status of my order: ${refInput}`);
-                verifyBtn.href = `https://wa.me/message/DF4CE2EQV33QP1?text=${message}`;
-            }, 1500);
-        }
-    </script>
+    renderPackages(currentNetwork);
+  </script>
 </body>
 </html>
