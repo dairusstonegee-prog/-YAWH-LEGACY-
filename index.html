@@ -15,6 +15,8 @@
       --card-bg: rgba(20, 20, 20, 0.85);
       --glow-yellow: rgba(255, 215, 0, 0.2);
       --whatsapp-green: #25D366;
+      --neon-green: #00FF66;
+      --glow-green: rgba(0, 255, 102, 0.2);
     }
     * {
       margin: 0;
@@ -85,7 +87,7 @@
     .network-selector {
       display: flex;
       gap: 1rem;
-      margin: 2rem 0;
+      margin: 2rem 0 1rem;
       justify-content: center;
       flex-wrap: wrap;
     }
@@ -99,31 +101,86 @@
       cursor: pointer;
       border-radius: 6px;
       transition: all 0.3s ease;
+      font-family: 'Orbitron', sans-serif;
     }
     .network-btn.active {
       background: var(--yellow);
       color: var(--black);
       box-shadow: 0 0 15px var(--glow-yellow);
     }
+    
+    /* Updated Toggle Packages Button Styling to Green */
+    .toggle-packages-btn {
+      background: rgba(0, 255, 102, 0.1);
+      color: var(--neon-green);
+      border: 1px solid var(--neon-green);
+      padding: 1rem 2rem;
+      font-size: 1.1rem;
+      font-weight: 700;
+      border-radius: 8px;
+      cursor: pointer;
+      width: 100%;
+      max-width: 400px;
+      margin: 1rem auto 2rem;
+      display: block;
+      font-family: 'Orbitron', sans-serif;
+      transition: all 0.3s ease;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      box-shadow: 0 0 10px var(--glow-green);
+    }
+    .toggle-packages-btn:hover {
+      background: var(--neon-green);
+      color: var(--black);
+      box-shadow: 0 0 20px rgba(0, 255, 102, 0.6);
+    }
+
+    /* Expandable Dropdown Drawer Wrapper */
+    .packages-drawer {
+      max-height: 0;
+      opacity: 0;
+      overflow: hidden;
+      transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+      margin-bottom: 0;
+    }
+    .packages-drawer.open {
+      max-height: 1000px;
+      opacity: 1;
+      margin-bottom: 2.5rem;
+    }
+
     .packages-grid {
       display: grid;
       grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
       gap: 1.2rem;
-      margin-bottom: 2.5rem;
+      padding: 0.5rem;
     }
-    .package-card {
+    .package-btn {
       background: var(--card-bg);
       border: 1px solid rgba(255, 215, 0, 0.2);
       border-radius: 12px;
       padding: 1.4rem 1rem;
       text-align: center;
       cursor: pointer;
-      transition: transform 0.2s, box-shadow 0.2s;
+      color: white;
+      font-family: 'Inter', sans-serif;
+      transition: transform 0.2s, box-shadow 0.2s, border-color 0.2s;
+      width: 100%;
     }
-    .package-card:hover {
+    .package-btn:hover {
       transform: translateY(-4px);
       box-shadow: 0 6px 15px rgba(255, 215, 0, 0.3);
       border-color: var(--yellow);
+    }
+    .package-btn:focus {
+      outline: none;
+      border-color: var(--yellow);
+      box-shadow: 0 0 10px rgba(255, 215, 0, 0.4);
+    }
+    .package-btn.selected {
+      border: 2px solid var(--yellow) !important;
+      box-shadow: 0 0 15px rgba(255, 215, 0, 0.4);
+      background: rgba(30, 30, 30, 0.9);
     }
     .package-size {
       font-family: 'Orbitron', sans-serif;
@@ -135,7 +192,6 @@
     .package-price {
       font-size: 1.2rem;
       font-weight: 700;
-      color: white;
     }
     .order-form {
       background: var(--card-bg);
@@ -382,7 +438,11 @@
       <button class="network-btn" data-network="AIRTELTIGO">AIRTELTIGO</button>
     </div>
 
-    <div class="packages-grid" id="packagesContainer"></div>
+    <button class="toggle-packages-btn" id="toggleDrawerBtn" onclick="togglePackagesDrawer()">View Available Packages</button>
+
+    <div class="packages-drawer" id="packagesDrawer">
+      <div class="packages-grid" id="packagesContainer"></div>
+    </div>
 
     <div class="order-form">
       <h3 style="text-align:center; margin-bottom:1.5rem; color:var(--yellow); font-family:'Orbitron', sans-serif;">Order Placement</h3>
@@ -392,7 +452,7 @@
       </div>
       <div class="form-group">
         <label for="selectedPackage">Selected Package</label>
-        <input type="text" id="selectedPackage" readonly placeholder="Select a card from above">
+        <input type="text" id="selectedPackage" readonly placeholder="Select a package button from above">
       </div>
       <div class="form-group">
         <label for="totalAmount">Total Amount (GHC)</label>
@@ -431,7 +491,7 @@
   </footer>
 
   <script>
-    // 3D Background Engine
+    // Particle Engine & Global Visual Environment
     const scene = new THREE.Scene();
     const camera = new THREE.PerspectiveCamera(60, window.innerWidth / window.innerHeight, 0.1, 500);
     
@@ -440,7 +500,6 @@
     renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2)); 
     document.getElementById('scene-container').appendChild(renderer.domElement);
 
-    // Dynamic Starfield Particles
     const particlesGeometry = new THREE.BufferGeometry();
     const particlesCount = 600; 
     const posArray = new Float32Array(particlesCount * 3);
@@ -459,7 +518,6 @@
     const particlesMesh = new THREE.Points(particlesGeometry, particlesMaterial);
     scene.add(particlesMesh);
 
-    // Torus Core Configuration
     const torusGeometry = new THREE.TorusGeometry(7, 1.5, 12, 40);
     const torusMaterial = new THREE.MeshBasicMaterial({ 
       color: 0xFFD700,
@@ -471,12 +529,10 @@
     torus.position.y = 2;
     scene.add(torus);
 
-    // Floating Data Text Engine Setup (Scaled up 3^3 to 216 Nodes)
     const baseSizes = ['1GB', '5GB', '10GB', '20GB', '30GB', '40GB'];
     const totalLabelsCount = 216; 
     const dataMeshes = [];
 
-    // Cached shared dynamic canvas textures for system efficiency
     const textureCache = {};
     baseSizes.forEach(sz => {
       const canvas = document.createElement('canvas');
@@ -495,7 +551,6 @@
       textureCache[sz] = new THREE.CanvasTexture(canvas);
     });
 
-    // Populate matrix arrays dynamically 
     for(let i = 0; i < totalLabelsCount; i++) {
       const selectedSize = baseSizes[i % baseSizes.length];
       const texture = textureCache[selectedSize];
@@ -507,18 +562,15 @@
       });
       const sprite = new THREE.Sprite(spriteMaterial);
       
-      // Dynamic scaling variance for organic structural depth
       const randomScaleFactor = Math.random() * 2 + 2.5; 
       sprite.scale.set(randomScaleFactor, randomScaleFactor * 0.5, 1);
       
-      // Expanded positioning volumes 
       sprite.position.set(
         (Math.random() - 0.5) * 60,
         (Math.random() - 0.5) * 40,
         (Math.random() - 0.5) * 35 - 10
       );
       
-      // Amped vectors for highly energetic roaming matrix behavior
       sprite.userData = {
         vx: (Math.random() - 0.5) * 0.045, 
         vy: (Math.random() - 0.5) * 0.045, 
@@ -539,7 +591,6 @@
 
     const animate = () => {
       requestAnimationFrame(animate);
-      
       particlesMesh.rotation.x += 0.0003;
       particlesMesh.rotation.y += 0.0003;
       torus.rotation.x += 0.003;
@@ -549,11 +600,8 @@
       dataMeshes.forEach(sprite => {
         sprite.position.x += sprite.userData.vx;
         sprite.position.y += sprite.userData.vy;
-        
-        // Dynamic sine wave offset loops
         sprite.position.y += Math.sin(time + sprite.userData.timeOffset) * 0.008;
 
-        // Bounding volume box check rules matching expanded spatial dimensions
         if (Math.abs(sprite.position.x) > 35) sprite.userData.vx *= -1;
         if (Math.abs(sprite.position.y) > 22) sprite.userData.vy *= -1;
       });
@@ -562,7 +610,7 @@
     };
     animate();
 
-    // Data Engine Configurations
+    // Core Architecture & Application Execution Logic
     const PAYSTACK_PUBLIC_KEY = 'pk_live_8b9d5c666a57f0c2c1a5cb908083e50972b1e2aa';
     
     const packages = {
@@ -595,28 +643,43 @@
     });
     document.getElementById('trackPhoneNumber').addEventListener('input', forceNumeric);
 
+    // Interactive Toggle Controller for Packages Drawer
+    function togglePackagesDrawer() {
+      const drawer = document.getElementById('packagesDrawer');
+      const btn = document.getElementById('toggleDrawerBtn');
+      
+      if (drawer.classList.contains('open')) {
+        drawer.classList.remove('open');
+        btn.textContent = 'View Available Packages';
+      } else {
+        drawer.classList.add('open');
+        btn.textContent = 'Hide Packages Grid';
+      }
+    }
+
     function renderPackages(network) {
       const container = document.getElementById('packagesContainer');
       container.innerHTML = '';
       
       packages[network].forEach(pkg => {
-        const card = document.createElement('div');
-        card.className = 'package-card';
-        card.innerHTML = `
+        const button = document.createElement('button');
+        button.type = 'button';
+        button.className = 'package-btn';
+        button.innerHTML = `
           <div class="package-size">${pkg.size}</div>
           <div class="package-price">₵${pkg.price.toFixed(2)}</div>
         `;
-        card.addEventListener('click', () => {
+        button.addEventListener('click', () => {
           selectedPackage = pkg;
           document.getElementById('selectedPackage').value = `${pkg.size} (${network})`;
           document.getElementById('totalAmount').value = `₵${pkg.price.toFixed(2)}`;
           document.getElementById('summaryPackage').textContent = `${pkg.size} (${network})`;
           document.getElementById('summaryAmount').textContent = `₵${pkg.price.toFixed(2)}`;
           
-          document.querySelectorAll('.package-card').forEach(c => c.style.border = '1px solid rgba(255, 215, 0, 0.2)');
-          card.style.border = '2px solid var(--yellow)';
+          document.querySelectorAll('.package-btn').forEach(b => b.classList.remove('selected'));
+          button.classList.add('selected');
         });
-        container.appendChild(card);
+        container.appendChild(button);
       });
     }
 
@@ -638,7 +701,7 @@
     document.getElementById('payButton').addEventListener('click', () => {
       const phone = document.getElementById('phoneNumber').value;
       if (!selectedPackage) {
-        alert('Please choose a data bundle package card above first.');
+        alert('Please open the package drawer above and pick a bundle first.');
         return;
       }
       if (!phone || phone.length < 10) {
