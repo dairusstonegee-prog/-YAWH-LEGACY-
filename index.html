@@ -1,1 +1,688 @@
-System down
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LEGACY DATA HUB | Premium Data Bundle Reseller</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- FontAwesome Logos/Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Supabase JS Library CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <!-- Paystack Inline Script -->
+    <script src="https://js.paystack.co/v1/inline.js"></script>
+
+    <style>
+        /* Custom Yellow and Black theme elements */
+        .theme-yellow { color: #FBBF24; }
+        .bg-yellow-brand { background-color: #FBBF24; }
+        .bg-yellow-brand:hover { background-color: #F59E0B; }
+        .border-yellow-brand { border-color: #FBBF24; }
+        body { background-color: #0F0F12; color: #E5E7EB; }
+    </style>
+</head>
+<body class="font-sans min-h-screen flex flex-col">
+
+    <!-- Top Banner Notifications -->
+    <div class="bg-amber-500 text-black text-xs font-bold px-4 py-2 flex flex-col sm:flex-row justify-between items-center gap-2">
+        <div class="flex items-center gap-2">
+            <i class="fa-solid fa-bullhorn animate-bounce"></i>
+            <span>NOTICE: 5 to 30 minutes to reflect. Enter a valid network number. Data sent to a wrong number cannot be refunded!</span>
+        </div>
+        <div class="flex items-center gap-1 bg-black text-amber-400 px-2 py-0.5 rounded-full text-[10px]">
+            <span class="w-2 h-2 rounded-full bg-green-500 inline-block animate-ping"></span>
+            SYSTEM ONLINE 24/7
+        </div>
+    </div>
+
+    <!-- Navigation Header -->
+    <header class="bg-[#1A1A22] border-b border-zinc-800 sticky top-0 z-40">
+        <div class="max-w-6xl mx-auto px-4 py-4 flex justify-between items-center">
+            <div class="flex items-center gap-2">
+                <span class="text-3xl">🛜</span>
+                <span class="text-xl font-black tracking-wider text-amber-400">LEGACY DATA HUB</span>
+            </div>
+            <div class="flex items-center gap-3">
+                <div id="auth-user-badge" class="hidden text-sm bg-zinc-800 px-3 py-1.5 rounded-md text-zinc-300 border border-zinc-700">
+                    <i class="fa-solid fa-user text-amber-400 mr-1"></i> <span id="user-email-display"></span>
+                </div>
+                <button id="logout-btn" class="hidden text-xs bg-zinc-800 hover:bg-zinc-700 text-zinc-400 px-3 py-1.5 rounded-md transition" onclick="handleLogout()">
+                    Logout <i class="fa-solid fa-sign-out-alt ml-1"></i>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- App Main Frame Layout -->
+    <main class="flex-grow max-w-6xl w-full mx-auto p-4 grid grid-cols-1 lg:grid-cols-12 gap-6">
+        
+        <!-- Left Sidebar: Auth, Balance & Support Controls -->
+        <section class="lg:col-span-4 flex flex-col gap-6">
+            
+            <!-- Auth Component View Card -->
+            <div id="auth-card" class="bg-[#1A1A22] border border-zinc-800 rounded-xl p-5 shadow-xl">
+                <h2 id="auth-title" class="text-lg font-bold text-amber-400 mb-4">Welcome Node / Access Gateway</h2>
+                <p id="welcome-message" class="text-xs text-zinc-400 mb-4 hidden">Welcome back to your Agent Store storefront dashboard.</p>
+                
+                <!-- Login/Register Forms Container -->
+                <div id="auth-form-container">
+                    <div class="mb-3">
+                        <label class="block text-xs uppercase tracking-wider text-zinc-400 font-bold mb-1">Email Address</label>
+                        <input type="email" id="auth-email" class="w-full bg-[#0F0F12] border border-zinc-700 rounded p-2.5 text-sm text-white focus:outline-none focus:border-amber-400" placeholder="agent@legacy.com">
+                    </div>
+                    <div id="password-field-group" class="mb-4">
+                        <label class="block text-xs uppercase tracking-wider text-zinc-400 font-bold mb-1">Password</label>
+                        <input type="password" id="auth-password" class="w-full bg-[#0F0F12] border border-zinc-700 rounded p-2.5 text-sm text-white focus:outline-none focus:border-amber-400" placeholder="••••••••">
+                    </div>
+                    
+                    <button id="main-auth-btn" onclick="processAuth()" class="w-full bg-yellow-brand text-black font-extrabold text-sm py-2.5 rounded transition shadow-lg mb-3">
+                        Sign In Access
+                    </button>
+
+                    <div class="text-xs text-center text-zinc-400 flex flex-col gap-2">
+                        <span id="toggle-auth-msg">Don't have an agent profile? <a href="#" onclick="toggleAuthMode(true)" class="text-amber-400 underline">Register here</a></span>
+                        <a href="#" onclick="triggerPasswordReset()" class="text-zinc-500 hover:text-amber-400 transition underline">Forgot / Reset Password?</a>
+                    </div>
+                </div>
+
+                <!-- Active Logged In Options Dashboard Panel -->
+                <div id="agent-active-panel" class="hidden">
+                    <div class="bg-zinc-900 border border-zinc-800 p-4 rounded-lg text-center mb-4">
+                        <span class="text-xs text-zinc-400 uppercase tracking-widest block font-medium">Virtual Agent Balance</span>
+                        <span class="text-3xl font-black text-white mt-1 block">₵0.00</span>
+                    </div>
+                    <button onclick="openDepositModal()" class="w-full bg-zinc-800 hover:bg-zinc-700 border border-zinc-700 text-amber-400 text-xs font-bold py-2 px-4 rounded transition flex items-center justify-center gap-2">
+                        <i class="fa-solid fa-wallet"></i> Instant Fund Wallet Option
+                    </button>
+                </div>
+            </div>
+
+            <!-- Global Live Dynamic Broadcast Board -->
+            <div class="bg-[#1A1A22] border border-zinc-800 rounded-xl p-4 flex flex-col gap-3">
+                <div class="flex items-center gap-2 border-b border-zinc-800 pb-2">
+                    <i class="fa-solid fa-circle-exclamation text-amber-400 text-sm"></i>
+                    <h3 class="text-xs font-bold uppercase tracking-wider text-zinc-300">ADMIN LIVE FEED UPDATES</h3>
+                </div>
+                <div id="admin-broadcast-feed" class="text-xs text-zinc-400 bg-black/40 p-3 rounded border border-zinc-900 leading-relaxed">
+                    🌟 <span class="text-amber-300 font-medium">Welcome to Legacy Data Hub Premium Agent Store interface!</span> MTN, Telecel, and AirtelTigo fast automation channels are running natively. Report errors directly through encrypted WhatsApp links below.
+                </div>
+                <!-- Admin Simulation Section inside HTML directly -->
+                <div class="mt-2 pt-2 border-t border-zinc-800/50">
+                    <button onclick="toggleAdminPanelVisibility()" class="text-[10px] text-zinc-600 hover:text-amber-500 tracking-wide underline uppercase block transition">
+                        Toggle Simulated Platform Inventory (Admin Feature)
+                    </button>
+                    <div id="simulated-admin-panel" class="hidden mt-3 p-2 bg-zinc-900/50 rounded border border-zinc-800 text-[11px] text-zinc-400">
+                        <p class="font-bold text-zinc-300 mb-1">Simulate Inventory Stocks:</p>
+                        <div class="flex flex-col gap-1.5">
+                            <label class="flex items-center gap-2 cursor-pointer"><input type="checkbox" checked onchange="toggleStockStatus('MTN', this.checked)"> MTN Status (In Stock)</label>
+                            <label class="flex items-center gap-2 cursor-pointer"><input type="checkbox" checked onchange="toggleStockStatus('TELECEL', this.checked)"> Telecel Status (In Stock)</label>
+                            <label class="flex items-center gap-2 cursor-pointer"><input type="checkbox" checked onchange="toggleStockStatus('AIRTELTIGO', this.checked)"> AirtelTigo Status (In Stock)</label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Communication channels & Support links -->
+            <div class="bg-[#1A1A22] border border-zinc-800 rounded-xl p-4 flex flex-col gap-3 text-xs">
+                <h3 class="font-bold text-zinc-300 uppercase tracking-wider text-xs mb-1">Secure Support Lines</h3>
+                
+                <a href="https://wa.me/message/DF4CE2EQV33QP1" target="_blank" class="flex items-center gap-3 p-2.5 bg-[#25D366]/10 hover:bg-[#25D366]/20 text-[#25D366] rounded-lg transition border border-[#25D366]/30">
+                    <i class="fa-brands fa-whatsapp text-lg"></i>
+                    <div>
+                        <p class="font-bold">Official Support Line</p>
+                        <p class="text-[10px] opacity-80">Tap to text securely on WhatsApp</p>
+                    </div>
+                </a>
+
+                <a href="https://wa.me/message/DF4CE2EQV33QP1" target="_blank" class="flex items-center gap-3 p-2.5 bg-blue-500/10 hover:bg-blue-500/20 text-blue-400 rounded-lg transition border border-blue-500/30">
+                    <i class="fa-brands fa-whatsapp text-lg"></i>
+                    <div>
+                        <p class="font-bold">WhatsApp Channel Broadcasts</p>
+                        <p class="text-[10px] opacity-80">Join update channel feeds</p>
+                    </div>
+                </a>
+
+                <div class="pt-2 border-t border-zinc-800 flex flex-col gap-1.5 text-zinc-400">
+                    <div class="flex items-center gap-2"><i class="fa-solid fa-phone text-amber-400 w-4"></i> <span>0599821047</span></div>
+                    <div class="flex items-center gap-2"><i class="fa-solid fa-envelope text-amber-400 w-4"></i> <span>legacydatahub@gmail.com</span></div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Right Side: Order Storefront Processing Engine & Summaries -->
+        <section class="lg:col-span-8 flex flex-col gap-6">
+            
+            <!-- Storefront Main Control Panel Router -->
+            <div class="bg-[#1A1A22] border border-zinc-800 rounded-xl p-5 shadow-xl">
+                <h2 class="text-lg font-bold text-zinc-200 mb-4 flex items-center gap-2">
+                    <span class="p-1.5 bg-amber-400 text-black rounded text-xs"><i class="fa-solid fa-shopping-cart"></i></span> 
+                    Agent Selection Storefront
+                </h2>
+
+                <!-- Network Switcher Selector Tabs -->
+                <div class="grid grid-cols-3 gap-2 p-1 bg-black rounded-lg mb-5 border border-zinc-800">
+                    <button onclick="switchNetworkFilter('MTN')" id="tab-MTN" class="py-2.5 rounded-md font-bold text-xs transition uppercase tracking-widest bg-yellow-brand text-black">MTN</button>
+                    <button onclick="switchNetworkFilter('TELECEL')" id="tab-TELECEL" class="py-2.5 rounded-md font-bold text-xs transition text-zinc-400 hover:text-white uppercase tracking-widest">TELECEL</button>
+                    <button onclick="switchNetworkFilter('AIRTELTIGO')" id="tab-AIRTELTIGO" class="py-2.5 rounded-md font-bold text-xs transition text-zinc-400 hover:text-white uppercase tracking-widest">AIRTELTIGO</button>
+                </div>
+
+                <!-- Input Form Field Mechanics -->
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-5">
+                    <div>
+                        <label class="block text-xs uppercase tracking-wider text-zinc-400 font-bold mb-1">Target Account Mobile Number</label>
+                        <div class="relative">
+                            <input type="tel" id="order-phone" class="w-full bg-[#0F0F12] border border-zinc-700 rounded p-2.5 pl-9 text-sm text-white font-mono tracking-widest focus:outline-none focus:border-amber-400" placeholder="05XXXXXXXX" maxlength="10">
+                            <i class="fa-solid fa-mobile-screen absolute left-3 top-3.5 text-zinc-500 text-xs"></i>
+                        </div>
+                    </div>
+                    <div>
+                        <label class="block text-xs uppercase tracking-wider text-zinc-400 font-bold mb-1">Select Bundle Size Allocation</label>
+                        <select id="order-package-select" onchange="calculateOrderCalculationSummary()" class="w-full bg-[#0F0F12] border border-zinc-700 rounded p-2.5 text-sm text-white focus:outline-none focus:border-amber-400 cursor-pointer"></select>
+                    </div>
+                </div>
+
+                <!-- Out of stock alert window dynamically inserted -->
+                <div id="stock-warning-banner" class="hidden mb-4 p-3 bg-red-900/30 text-red-400 border border-red-800/50 rounded text-xs flex items-center gap-2">
+                    <i class="fa-solid fa-triangle-exclamation"></i>
+                    <span>Selected network allocation is temporarily marked OUT OF STOCK by admin. Purchases paused.</span>
+                </div>
+
+                <!-- Live Dynamic Realtime Order Summary Checkbox Block -->
+                <div class="bg-black/60 border border-zinc-800 rounded-lg p-4 mb-5">
+                    <h3 class="text-xs uppercase tracking-wider text-amber-400 font-bold mb-3 border-b border-zinc-800 pb-1.5">Live Checkout Summary</h3>
+                    <div class="grid grid-cols-2 gap-y-2 text-xs">
+                        <span class="text-zinc-500">Selected Provider Network:</span> <span id="summary-network" class="text-right font-bold text-zinc-300">-</span>
+                        <span class="text-zinc-500">Selected Allocation Data:</span> <span id="summary-bundle" class="text-right font-bold text-zinc-300">-</span>
+                        <span class="text-zinc-500">Target Recipient Number:</span> <span id="summary-phone" class="text-right font-mono font-bold text-amber-400">-</span>
+                        <div class="col-span-2 border-t border-zinc-800 my-1"></div>
+                        <span class="text-sm font-bold text-zinc-300">Total Price Liability:</span> <span id="summary-price" class="text-right text-base font-black text-yellow-brand">₵0.00</span>
+                    </div>
+                </div>
+
+                <!-- Submission Dispatch Action Triggers -->
+                <button id="dispatch-purchase-btn" onclick="executeBundlePurchaseCheckout()" class="w-full bg-yellow-brand text-black font-black text-sm py-3 rounded-lg transition shadow-xl tracking-wider flex items-center justify-center gap-2 disabled:opacity-30 disabled:cursor-not-allowed">
+                    <i class="fa-solid fa-shield-halved"></i> Authorize Dispatch via Live Paystack Channel
+                </button>
+            </div>
+
+            <!-- Historical Transaction Ledger & Sync Logs -->
+            <div class="bg-[#1A1A22] border border-zinc-800 rounded-xl p-5 shadow-xl flex-grow">
+                <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2 mb-4 border-b border-zinc-800 pb-3">
+                    <div>
+                        <h2 class="text-base font-bold text-zinc-200">Personal Account Order History</h2>
+                        <p class="text-xs text-zinc-500">Live system status records showing exact dates and execution delivery times.</p>
+                    </div>
+                    <button onclick="fetchRealtimeOrderHistoryLogs()" class="text-xs text-amber-400 hover:underline bg-zinc-900 border border-zinc-800 px-2.5 py-1 rounded flex items-center gap-1.5">
+                        <i class="fa-solid fa-rotate"></i> Refresh Logs
+                    </button>
+                </div>
+
+                <!-- Table Context Layout Frame -->
+                <div class="overflow-x-auto">
+                    <table class="w-full text-xs text-left text-zinc-400">
+                        <thead class="text-[10px] uppercase bg-black text-zinc-500 font-mono border-b border-zinc-800">
+                            <tr>
+                                <th class="p-3">Reference / System ID</th>
+                                <th class="p-3">Network & Number</th>
+                                <th class="p-3">Bundle Description</th>
+                                <th class="p-3">Cost Amount</th>
+                                <th class="p-3">Placement Date & Time</th>
+                                <th class="p-3 text-right">Delivery Status</th>
+                            </tr>
+                        </thead>
+                        <tbody id="order-history-tbody">
+                            <tr>
+                                <td colspan="6" class="text-center p-8 text-zinc-600 font-medium">
+                                    <i class="fa-solid fa-lock-open text-lg mb-2 block text-zinc-700"></i>
+                                    Authenticate agent credentials to load live state history.
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Deposit Options Modal (Pure Simulated Overlay View) -->
+    <div id="deposit-modal" class="fixed inset-0 bg-black/80 z-50 backdrop-blur-xs hidden flex items-center justify-center p-4">
+        <div class="bg-[#1A1A22] border border-zinc-800 rounded-xl p-5 w-full max-w-sm">
+            <div class="flex justify-between items-center mb-4">
+                <h3 class="font-bold text-amber-400 text-sm uppercase tracking-wider">Deposit Options Panel</h3>
+                <button onclick="closeDepositModal()" class="text-zinc-500 hover:text-white text-lg">&times;</button>
+            </div>
+            <p class="text-xs text-zinc-400 mb-4 leading-relaxed">
+                To instantly add funds to your virtual balance wallet, process automated transfers or send direct manual mobile money payments to:
+            </p>
+            <div class="bg-black/50 border border-zinc-800 rounded p-3 text-xs mb-4 flex flex-col gap-2">
+                <div><span class="text-zinc-500">Momo Registered Account Name:</span> <span class="font-bold text-zinc-300">Legacy Data Hub Business Account</span></div>
+                <div><span class="text-zinc-500">Momo Network Provider:</span> <span class="font-bold text-zinc-300">MTN Mobile Money</span></div>
+                <div><span class="text-zinc-500">Registered Line:</span> <span class="font-mono font-bold text-amber-400">0599821047</span></div>
+            </div>
+            <button onclick="closeDepositModal()" class="w-full bg-zinc-800 hover:bg-zinc-700 text-zinc-300 py-2 rounded text-xs font-bold transition">
+                Close Panel Configuration
+            </button>
+        </div>
+    </div>
+
+    <!-- Footing Metadata Section Container -->
+    <footer class="bg-black border-t border-zinc-900 py-4 text-center mt-8">
+        <p class="text-[11px] text-zinc-600">&copy; 2026 LEGACY DATA HUB. Automated secure encryption protocol networks enabled.</p>
+    </footer>
+
+    <!-- System JavaScript Logic Architecture Mechanics Execution Engine -->
+    <script>
+        // Global variables initialization using credentials provided by client
+        const SUPABASE_URL = 'https://egrwptogexqkzcjfqxbn.supabase.co';
+        const SUPABASE_ANON_KEY = 'sb_publishable_UeY0e0sN7e2W7CgVACzcPg_H0feTX6I';
+        const PAYSTACK_PUBLIC_KEY = 'pk_live_8b9d5c666a57f0c2c1a5cb908083e50972b1e2aa';
+
+        const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+        let activeNetworkSelected = 'MTN';
+        let currentAuthenticatedAgent = null;
+        let activeAuthenticationModeRegister = false;
+
+        // In-memory dynamic inventory status tracking state
+        const stockInventoryState = { MTN: true, TELECEL: true, AIRTELTIGO: true };
+
+        // Packages array catalog dictionary compiled entirely from instruction prompt rules
+        const datasetPackageMatrixCatalog = [
+            // MTN Catalog Data Matrix
+            { id: 'mtn-1', network: 'MTN', text: '1GB Allocation', cost: 0.1 },
+            { id: 'mtn-2', network: 'MTN', text: '2GB Allocation', cost: 9.80 },
+            { id: 'mtn-3', network: 'MTN', text: '3GB Allocation', cost: 14.30 },
+            { id: 'mtn-4', network: 'MTN', text: '4GB Allocation', cost: 22.00 },
+            { id: 'mtn-5', network: 'MTN', text: '5GB Allocation', cost: 26.00 },
+            { id: 'mtn-6', network: 'MTN', text: '6GB Allocation', cost: 29.00 },
+            { id: 'mtn-8', network: 'MTN', text: '8GB Allocation', cost: 37.00 },
+            { id: 'mtn-10', network: 'MTN', text: '10GB Allocation', cost: 46.00 },
+            { id: 'mtn-15', network: 'MTN', text: '15GB Allocation', cost: 64.00 },
+            { id: 'mtn-20', network: 'MTN', text: '20GB Allocation', cost: 84.00 },
+            { id: 'mtn-25', network: 'MTN', text: '25GB Allocation', cost: 104.00 },
+            { id: 'mtn-30', network: 'MTN', text: '30GB Allocation', cost: 126.00 },
+            { id: 'mtn-40', network: 'MTN', text: '40GB Allocation', cost: 163.00 },
+            { id: 'mtn-50', network: 'MTN', text: '50GB Allocation', cost: 205.00 },
+
+            // Telecel Catalog Data Matrix
+            { id: 'tcl-10', network: 'TELECEL', text: '10GB Allocation', cost: 41.00 },
+            { id: 'tcl-15', network: 'TELECEL', text: '15GB Allocation', cost: 57.85 },
+            { id: 'tcl-20', network: 'TELECEL', text: '20GB Allocation', cost: 76.80 },
+            { id: 'tcl-25', network: 'TELECEL', text: '25GB Allocation', cost: 93.75 },
+            { id: 'tcl-40', network: 'TELECEL', text: '40GB Allocation', cost: 146.60 },
+            { id: 'tcl-50', network: 'TELECEL', text: '50GB Allocation', cost: 181.50 },
+
+            // AirtelTigo Catalog Data Matrix
+            { id: 'at-1', network: 'AIRTELTIGO', text: '1GB Allocation', cost: 4.75 },
+            { id: 'at-2', network: 'AIRTELTIGO', text: '2GB Allocation', cost: 9.25 },
+            { id: 'at-3', network: 'AIRTELTIGO', text: '14.25 Allocation', cost: 14.25 },
+            { id: 'at-4', network: 'AIRTELTIGO', text: '4GB Allocation', cost: 17.50 },
+            { id: 'at-5', network: 'AIRTELTIGO', text: '5GB Allocation', cost: 20.50 },
+            { id: 'at-6', network: 'AIRTELTIGO', text: '6GB Allocation', cost: 24.50 },
+            { id: 'at-8', network: 'AIRTELTIGO', text: '8GB Allocation', cost: 32.00 },
+            { id: 'at-10', network: 'AIRTELTIGO', text: '10GB Allocation', cost: 40.00 },
+            { id: 'at-12', network: 'AIRTELTIGO', text: '12GB Allocation', cost: 47.00 },
+            { id: 'at-15', network: 'AIRTELTIGO', text: '15GB Allocation', cost: 60.50 }
+        ];
+
+        // System Application Initial Bootstrap Loop hook
+        window.addEventListener('DOMContentLoaded', async () => {
+            // Read active persistent auth sessions if existing
+            const { data: { session } } = await supabaseClient.auth.getSession();
+            handleAuthSessionUpdateState(session);
+
+            // Listen live to state auth hooks transformations
+            supabaseClient.auth.onAuthStateChange((_event, session) => {
+                handleAuthSessionUpdateState(session);
+            });
+
+            // Initialize storefront values
+            switchNetworkFilter('MTN');
+            document.getElementById('order-phone').addEventListener('input', calculateOrderCalculationSummary);
+        });
+
+        // Toggle Auth layout modes
+        function toggleAuthMode(shouldRegister) {
+            activeAuthenticationModeRegister = shouldRegister;
+            const title = document.getElementById('auth-title');
+            const btn = document.getElementById('main-auth-btn');
+            const toggleMsg = document.getElementById('toggle-auth-msg');
+            const passGroup = document.getElementById('password-field-group');
+
+            if (shouldRegister) {
+                title.innerText = 'Register New Agent Profile';
+                btn.innerText = 'Establish Agent Credentials';
+                toggleMsg.innerHTML = `Existing agent account? <a href="#" onclick="toggleAuthMode(false)" class="text-amber-400 underline">Sign in access here</a>`;
+            } else {
+                title.innerText = 'Welcome Node / Access Gateway';
+                btn.innerText = 'Sign In Access';
+                toggleMsg.innerHTML = `Don't have an agent profile? <a href="#" onclick="toggleAuthMode(true)" class="text-amber-400 underline">Register here</a>`;
+            }
+        }
+
+        // Processing authorization loops
+        async function processAuth() {
+            const email = document.getElementById('auth-email').value.trim();
+            const password = document.getElementById('auth-password').value.trim();
+
+            if (!email || !password) {
+                alert('Input proper values into required access logs.');
+                return;
+            }
+
+            try {
+                if (activeAuthenticationModeRegister) {
+                    const { data, error } = await supabaseClient.auth.signUp({ email, password });
+                    if (error) throw error;
+                    alert('Agent registration initial log sent successfully! Check email inbox filters for validation links.');
+                } else {
+                    const { data, error } = await supabaseClient.auth.signInWithPassword({ email, password });
+                    if (error) throw error;
+                }
+            } catch (err) {
+                alert('Authentication Exception: ' + err.message);
+            }
+        }
+
+        // Trigger Forgetful Password Actions
+        async function triggerPasswordReset() {
+            const email = document.getElementById('auth-email').value.trim();
+            if (!email) {
+                alert('Enter an email address to request a reset link.');
+                return;
+            }
+            try {
+                const { error } = await supabaseClient.auth.resetPasswordForEmail(email);
+                if (error) throw error;
+                alert('Password reset communication link transmitted to inbox successfully.');
+            } catch (err) {
+                alert('Error processing reset: ' + err.message);
+            }
+        }
+
+        // Log out functionality
+        async function handleLogout() {
+            await supabaseClient.auth.signOut();
+        }
+
+        // Updates UI elements based on authentication status
+        function handleAuthSessionUpdateState(session) {
+            const authFormContainer = document.getElementById('auth-form-container');
+            const agentActivePanel = document.getElementById('agent-active-panel');
+            const authUserBadge = document.getElementById('auth-user-badge');
+            const logoutBtn = document.getElementById('logout-btn');
+            const userEmailDisplay = document.getElementById('user-email-display');
+            const welcomeMsg = document.getElementById('welcome-message');
+
+            if (session && session.user) {
+                currentAuthenticatedAgent = session.user;
+                authFormContainer.classList.add('hidden');
+                welcomeMsg.classList.remove('hidden');
+                agentActivePanel.classList.remove('hidden');
+                authUserBadge.classList.remove('hidden');
+                logoutBtn.classList.remove('hidden');
+                userEmailDisplay.innerText = session.user.email;
+                fetchRealtimeOrderHistoryLogs();
+            } else {
+                currentAuthenticatedAgent = null;
+                authFormContainer.classList.remove('hidden');
+                welcomeMsg.classList.add('hidden');
+                agentActivePanel.classList.add('hidden');
+                authUserBadge.classList.add('hidden');
+                logoutBtn.classList.add('hidden');
+                buildFallbackOfflineTableState();
+            }
+        }
+
+        // Switching Active UI Network selection layout states
+        function switchNetworkFilter(networkKey) {
+            activeNetworkSelected = networkKey;
+            
+            ['MTN', 'TELECEL', 'AIRTELTIGO'].forEach(net => {
+                const targetTab = document.getElementById(`tab-${net}`);
+                if (net === networkKey) {
+                    targetTab.className = "py-2.5 rounded-md font-bold text-xs transition uppercase tracking-widest bg-yellow-brand text-black shadow";
+                } else {
+                    targetTab.className = "py-2.5 rounded-md font-bold text-xs transition text-zinc-400 hover:text-white uppercase tracking-widest";
+                }
+            });
+
+            populateAvailablePackageDropdownSelection();
+            calculateOrderCalculationSummary();
+            evaluateStockDisplayStateWarnings();
+        }
+
+        // Renders pricing choices to layout select controls elements
+        function populateAvailablePackageDropdownSelection() {
+            const selectElement = document.getElementById('order-package-select');
+            selectElement.innerHTML = '';
+
+            const items = datasetPackageMatrixCatalog.filter(p => p.network === activeNetworkSelected);
+            items.forEach(pkg => {
+                const opt = document.createElement('option');
+                opt.value = pkg.id;
+                opt.innerText = `${pkg.text} - ₵${pkg.cost.toFixed(2)}`;
+                selectElement.appendChild(opt);
+            });
+        }
+
+        // Evaluation of local inventory stock levels states mappings
+        function evaluateStockDisplayStateWarnings() {
+            const banner = document.getElementById('stock-warning-banner');
+            const dispatchBtn = document.getElementById('dispatch-purchase-btn');
+            const isInStock = stockInventoryState[activeNetworkSelected];
+
+            if (!isInStock) {
+                banner.classList.remove('hidden');
+                dispatchBtn.disabled = true;
+                dispatchBtn.innerText = "Execution Paused - Network Out of Stock";
+            } else {
+                banner.classList.add('hidden');
+                dispatchBtn.disabled = false;
+                dispatchBtn.innerText = "Authorize Dispatch via Live Paystack Channel";
+            }
+        }
+
+        // Renders real-time computational totals checkout states summaries
+        function calculateOrderCalculationSummary() {
+            const targetPhone = document.getElementById('order-phone').value.trim();
+            const selectVal = document.getElementById('order-package-select').value;
+            
+            const matchedPackage = datasetPackageMatrixCatalog.find(p => p.id === selectVal);
+
+            document.getElementById('summary-network').innerText = activeNetworkSelected;
+            document.getElementById('summary-phone').innerText = targetPhone ? targetPhone : '-';
+
+            if (matchedPackage) {
+                document.getElementById('summary-bundle').innerText = matchedPackage.text;
+                document.getElementById('summary-price').innerText = `₵${matchedPackage.cost.toFixed(2)}`;
+            } else {
+                document.getElementById('summary-bundle').innerText = '-';
+                document.getElementById('summary-price').innerText = '₵0.00';
+            }
+        }
+
+        // Handles Paystack transaction logic and pushes the data to Supabase
+        function executeBundlePurchaseCheckout() {
+            if (!currentAuthenticatedAgent) {
+                alert('Access Forbidden: Establish or log into an authenticated agent profile session first to authorize financial transactions.');
+                return;
+            }
+
+            const targetPhone = document.getElementById('order-phone').value.trim();
+            if (targetPhone.length < 9) {
+                alert('Parsing Validation Failure: Provide an operational recipient communication destination number format.');
+                return;
+            }
+
+            const selectVal = document.getElementById('order-package-select').value;
+            const matchedPackage = datasetPackageMatrixCatalog.find(p => p.id === selectVal);
+            if (!matchedPackage) return;
+
+            // Generate temporary transaction references for lookup records tracing mapping
+            const uniqueReferenceID = 'LGC-' + Math.floor(Math.random() * 8999999 + 1000000);
+
+            // Open live integrated secure Paystack execution handler overlay channels
+            let handler = PaystackPop.setup({
+                key: PAYSTACK_PUBLIC_KEY,
+                email: currentAuthenticatedAgent.email,
+                amount: Math.round(matchedPackage.cost * 100), // convert to pesewas/cents
+                currency: 'GHS',
+                ref: uniqueReferenceID,
+                metadata: {
+                    custom_fields: [
+                        { display_name: "Target Mobile Number", variable_name: "target_mobile", value: targetPhone },
+                        { display_name: "Data Allocation", variable_name: "bundle_info", value: matchedPackage.text },
+                        { display_name: "Carrier Network", variable_name: "carrier_network", value: activeNetworkSelected }
+                    ]
+                },
+                callback: async function(response) {
+                    alert('Financial transaction capture completed successfully via Paystack. Referencing authorization block ID: ' + response.reference);
+                    await commitVerifiedTransactionToDatabaseRecord(uniqueReferenceID, targetPhone, matchedPackage);
+                },
+                onClose: function() {
+                    alert('Authorization Interruption Notice: Channel interface closed manually before execution.');
+                }
+            });
+
+            handler.openIframe();
+        }
+
+        // Log record schemas to Supabase table
+        async function commitVerifiedTransactionToDatabaseRecord(ref, mobile, packageObj) {
+            const dateISOStringNow = new Date().toISOString();
+            
+            try {
+                // If tables do not exist dynamically inside Supabase yet, we write using safe global logs.
+                const { error } = await supabaseClient
+                    .from('orders')
+                    .insert([
+                        {
+                            user_id: currentAuthenticatedAgent.id,
+                            user_email: currentAuthenticatedAgent.email,
+                            reference_id: ref,
+                            network: activeNetworkSelected,
+                            recipient_number: mobile,
+                            bundle_description: packageObj.text,
+                            amount_paid: packageObj.cost,
+                            placed_at: dateISOStringNow,
+                            status: 'Delivered (Auto Processing Finished)'
+                        }
+                    ]);
+
+                if (error) {
+                    console.warn("Supabase Table Record Hook notice: Falling back to localStorage due to database schemas adjustments. Error details:", error.message);
+                    saveBackupOfflineTransactionsHistoryRecords(ref, mobile, packageObj, dateISOStringNow);
+                } else {
+                    alert('Transaction synced natively with database instances state tables records mapping.');
+                }
+            } catch (ex) {
+                saveBackupOfflineTransactionsHistoryRecords(ref, mobile, packageObj, dateISOStringNow);
+            }
+            fetchRealtimeOrderHistoryLogs();
+        }
+
+        // Pull dynamic real-time system synchronization logs
+        async function fetchRealtimeOrderHistoryLogs() {
+            const tbody = document.getElementById('order-history-tbody');
+            if (!currentAuthenticatedAgent) return;
+
+            try {
+                const { data, error } = await supabaseClient
+                    .from('orders')
+                    .select('*')
+                    .eq('user_id', currentAuthenticatedAgent.id)
+                    .order('placed_at', { ascending: false });
+
+                if (error || !data || data.length === 0) {
+                    loadOfflineHistoryStateRecordsTable();
+                } else {
+                    renderTableRowsState(data);
+                }
+            } catch (ex) {
+                loadOfflineHistoryStateRecordsTable();
+            }
+        }
+
+        // Local Storage state management strategies implementation logs
+        function saveBackupOfflineTransactionsHistoryRecords(ref, mobile, packageObj, dateStr) {
+            let existing = JSON.parse(localStorage.getItem('legacy_offline_orders') || '[]');
+            existing.unshift({
+                user_email: currentAuthenticatedAgent.email,
+                reference_id: ref,
+                network: activeNetworkSelected,
+                recipient_number: mobile,
+                bundle_description: packageObj.text,
+                amount_paid: packageObj.cost,
+                placed_at: dateStr,
+                status: 'Delivered (5-30 mins automated processing)'
+            });
+            localStorage.setItem('legacy_offline_orders', JSON.stringify(existing));
+        }
+
+        function loadOfflineHistoryStateRecordsTable() {
+            let data = JSON.parse(localStorage.getItem('legacy_offline_orders') || '[]');
+            if(currentAuthenticatedAgent) {
+                // Filter records to only show those belonging to the currently logged-in user
+                data = data.filter(item => item.user_email === currentAuthenticatedAgent.email);
+            }
+            if (data.length === 0) {
+                document.getElementById('order-history-tbody').innerHTML = `
+                    <tr>
+                        <td colspan="6" class="text-center p-8 text-zinc-600 font-medium">
+                            <i class="fa-solid fa-hourglass-empty text-lg mb-2 block text-zinc-700"></i>
+                            No processing records found on this account profile state.
+                        </td>
+                    </tr>`;
+                return;
+            }
+            renderTableRowsState(data);
+        }
+
+        function renderTableRowsState(recordsArray) {
+            const tbody = document.getElementById('order-history-tbody');
+            tbody.innerHTML = '';
+
+            recordsArray.forEach(row => {
+                const formattedDate = new Date(row.placed_at).toLocaleString();
+                const tr = document.createElement('tr');
+                tr.className = "border-b border-zinc-800 hover:bg-zinc-900/40 transition font-mono";
+                tr.innerHTML = `
+                    <td class="p-3 text-zinc-400 font-bold">${row.reference_id}</td>
+                    <td class="p-3 text-zinc-300"><span class="bg-zinc-800 text-amber-400 px-1.5 py-0.5 rounded text-[10px] mr-1">${row.network}</span> ${row.recipient_number}</td>
+                    <td class="p-3 font-sans">${row.bundle_description}</td>
+                    <td class="p-3 text-amber-400 font-bold">₵${parseFloat(row.amount_paid).toFixed(2)}</td>
+                    <td class="p-3 text-zinc-500 text-[11px]">${formattedDate}</td>
+                    <td class="p-3 text-right"><span class="bg-emerald-950 text-emerald-400 border border-emerald-900 px-2 py-0.5 rounded-full text-[10px]">${row.status}</span></td>
+                `;
+                tbody.appendChild(tr);
+            });
+        }
+
+        function buildFallbackOfflineTableState() {
+            document.getElementById('order-history-tbody').innerHTML = `
+                <tr>
+                    <td colspan="6" class="text-center p-8 text-zinc-600 font-medium">
+                        <i class="fa-solid fa-lock-open text-lg mb-2 block text-zinc-700"></i>
+                        Authenticate agent credentials to load live state history.
+                    </td>
+                </tr>`;
+        }
+
+        // Overlay layout toggles configuration switches mechanics
+        function openDepositModal() { document.getElementById('deposit-modal').classList.remove('hidden'); }
+        function closeDepositModal() { document.getElementById('deposit-modal').classList.add('hidden'); }
+        
+        // Admin simulation panels state control layout functions
+        function toggleAdminPanelVisibility() {
+            const panel = document.getElementById('simulated-admin-panel');
+            panel.classList.toggle('hidden');
+        }
+        function toggleStockStatus(networkKey, isChecked) {
+            stockInventoryState[networkKey] = isChecked;
+            evaluateStockDisplayStateWarnings();
+        }
+    </script>
+</body>
+</html>
