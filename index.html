@@ -301,7 +301,7 @@
 
         const datasetPackageMatrixCatalog = [
             // MTN Catalog Data Matrix
-            { id: 'mtn-1', network: 'MTN', text: '1GB Allocation', cost: 0.1 },
+            { id: 'mtn-1', network: 'MTN', text: '1GB Allocation', cost: 4.80 },
             { id: 'mtn-2', network: 'MTN', text: '2GB Allocation', cost: 9.80 },
             { id: 'mtn-3', network: 'MTN', text: '3GB Allocation', cost: 14.30 },
             { id: 'mtn-4', network: 'MTN', text: '4GB Allocation', cost: 22.00 },
@@ -503,7 +503,7 @@
             }
         }
 
-        // PAYMENT METHOD 1: PAYSTACK CHANNELS
+        // PAYMENT METHOD 1: PAYSTACK CHANNELS (REBUILT WITH COMPREHENSIVE RECOVERY WRAPPERS)
         function executePurchaseWithPaystack() {
             if (!verifyOrderRequirements()) return;
 
@@ -511,12 +511,18 @@
             const selectVal = document.getElementById('order-package-select').value;
             const matchedPackage = datasetPackageMatrixCatalog.find(p => p.id === selectVal);
 
+            if (!matchedPackage) {
+                alert('Please select a valid bundle allocation.');
+                return;
+            }
+
             const uniqueReferenceID = 'LGC-PS-' + Math.floor(Math.random() * 8999999 + 1000000);
 
-            let handler = PaystackPop.setup({
+            // Initializing Paystack using the updated Popup implementation
+            const handler = PaystackPop.setup({
                 key: PAYSTACK_PUBLIC_KEY,
                 email: currentAuthenticatedAgent.email,
-                amount: Math.round(matchedPackage.cost * 100), 
+                amount: Math.round(parseFloat(matchedPackage.cost) * 100), // Converted to pesewas (GHS cents)
                 currency: 'GHS',
                 ref: uniqueReferenceID,
                 metadata: {
@@ -533,7 +539,29 @@
                     alert('Authorization Interruption: Closed before execution.');
                 }
             });
-            handler.openIframe();
+
+            // Explicitly fallback if handler object structure variations occur
+            if (handler && typeof handler.openIframe === 'function') {
+                handler.openIframe();
+            } else if (typeof PaystackPop.open === 'function') {
+                // Fallback option for updated Paystack inline library standard
+                PaystackPop.open({
+                    key: PAYSTACK_PUBLIC_KEY,
+                    email: currentAuthenticatedAgent.email,
+                    amount: Math.round(parseFloat(matchedPackage.cost) * 100),
+                    currency: 'GHS',
+                    ref: uniqueReferenceID,
+                    onSuccess: async function(response) {
+                        alert('Paystack verification clear. Syncing order details to database...');
+                        await commitVerifiedTransactionToDatabaseRecord(uniqueReferenceID, 'Paystack Inline', targetPhone, matchedPackage);
+                    },
+                    onCancel: function() {
+                        alert('Authorization Interruption: Closed before execution.');
+                    }
+                });
+            } else {
+                alert('Paystack initialization error. Please check your network connection or API keys.');
+            }
         }
 
         // PAYMENT METHOD 2: FOUNDED AGENT BALANCE WALLET
