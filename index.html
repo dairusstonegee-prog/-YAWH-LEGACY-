@@ -4,9 +4,13 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>LEGACY DATA HUB | Premium Data Bundle Reseller</title>
+    <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
+    <!-- FontAwesome Logos/Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Supabase JS Library CDN -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <!-- Paystack Inline Script -->
     <script src="https://js.paystack.co/v1/inline.js"></script>
 
     <style>
@@ -20,6 +24,7 @@
 </head>
 <body class="font-sans min-h-screen flex flex-col">
 
+    <!-- Top Banner Notifications -->
     <div class="bg-amber-500 text-black text-xs font-bold px-4 py-2 flex flex-col sm:flex-row justify-between items-center gap-2">
         <div class="flex items-center gap-2">
             <i class="fa-solid fa-bullhorn animate-bounce"></i>
@@ -31,6 +36,7 @@
         </div>
     </div>
 
+    <!-- Navigation Header -->
     <header class="bg-[#1A1A22] border-b border-zinc-800 sticky top-0 z-40">
         <div class="max-w-6xl mx-auto px-4 py-4 flex justify-between items-center">
             <div class="flex items-center gap-2">
@@ -48,18 +54,22 @@
         </div>
     </header>
 
+    <!-- App Main Frame Layout -->
     <main class="flex-grow max-w-6xl w-full mx-auto p-4 grid grid-cols-1 lg:grid-cols-12 gap-6">
         
+        <!-- Left Sidebar: Auth, Balance & Support Controls -->
         <section class="lg:col-span-4 flex flex-col gap-6">
             
+            <!-- Auth Component View Card -->
             <div id="auth-card" class="bg-[#1A1A22] border border-zinc-800 rounded-xl p-5 shadow-xl">
                 <h2 id="auth-title" class="text-lg font-bold text-amber-400 mb-4">Welcome Node / Access Gateway</h2>
                 <p id="welcome-message" class="text-xs text-zinc-400 mb-4 hidden">Welcome back to your Agent Store storefront dashboard.</p>
                 
+                <!-- Login/Register Forms Container -->
                 <div id="auth-form-container">
                     <div class="mb-3">
                         <label class="block text-xs uppercase tracking-wider text-zinc-400 font-bold mb-1">Email Address</label>
-                        <input type="email" id="auth-email" class="w-full bg-[#0F0F12] border border-zinc-700 rounded p-2.5 text-sm text-white focus:outline-none focus:border-amber-400" placeholder="legacydatahub@gmail.com">
+                        <input type="email" id="auth-email" class="w-full bg-[#0F0F12] border border-zinc-700 rounded p-2.5 text-sm text-white focus:outline-none focus:border-amber-400" placeholder="agent@legacy.com">
                     </div>
                     <div id="password-field-group" class="mb-4">
                         <label class="block text-xs uppercase tracking-wider text-zinc-400 font-bold mb-1">Password</label>
@@ -76,40 +86,50 @@
                     </div>
                 </div>
 
+                <!-- Active Logged In Options Dashboard Panel -->
                 <div id="agent-active-panel" class="hidden">
                     <div class="bg-zinc-900 border border-zinc-800 p-4 rounded-lg text-center mb-4">
-                        <span class="text-xs text-zinc-400 uppercase tracking-widest block font-medium">Virtual Agent Balance</span>
-                        <span class="text-3xl font-black text-white mt-1 block">₵0.00</span>
+                        <span class="text-xs text-zinc-400 uppercase tracking-widest block font-medium">Virtual Agent Wallet Balance</span>
+                        <span id="agent-balance-display" class="text-3xl font-black text-amber-400 mt-1 block">₵0.00</span>
                     </div>
-                    <button onclick="openDepositModal()" class="w-full bg-zinc-800 hover:bg-zinc-700 border border-zinc-700 text-amber-400 text-xs font-bold py-2 px-4 rounded transition flex items-center justify-center gap-2">
-                        <i class="fa-solid fa-wallet"></i> Instant Fund Wallet Option
+                    <button onclick="openDepositModal()" class="w-full bg-zinc-800 hover:bg-zinc-700 border border-zinc-700 text-zinc-300 text-xs font-bold py-2 px-4 rounded transition flex items-center justify-center gap-2">
+                        <i class="fa-solid fa-wallet text-amber-400"></i> Manual Deposit Instructions
                     </button>
                 </div>
             </div>
 
+            <!-- Global Live Dynamic Broadcast Board -->
             <div class="bg-[#1A1A22] border border-zinc-800 rounded-xl p-4 flex flex-col gap-3">
                 <div class="flex items-center gap-2 border-b border-zinc-800 pb-2">
                     <i class="fa-solid fa-circle-exclamation text-amber-400 text-sm"></i>
                     <h3 class="text-xs font-bold uppercase tracking-wider text-zinc-300">ADMIN LIVE FEED UPDATES</h3>
                 </div>
                 <div id="admin-broadcast-feed" class="text-xs text-zinc-400 bg-black/40 p-3 rounded border border-zinc-900 leading-relaxed">
-                    🌟 <span class="text-amber-300 font-medium">Welcome to Legacy Data Hub Premium Agent Store interface!</span> MTN, Telecel, and AirtelTigo fast automation channels are running natively. Report errors directly through encrypted WhatsApp links below.
+                    🌟 <span class="text-amber-300 font-medium">Welcome to Legacy Data Hub!</span> MTN, Telecel, and AirtelTigo lines are up. Complete checkouts using your pre-funded account balance wallet or straight through Paystack.
                 </div>
+                
+                <!-- Admin Simulation Tools -->
                 <div class="mt-2 pt-2 border-t border-zinc-800/50">
                     <button onclick="toggleAdminPanelVisibility()" class="text-[10px] text-zinc-600 hover:text-amber-500 tracking-wide underline uppercase block transition">
-                        Toggle Simulated Platform Inventory (Admin Feature)
+                        Toggle Admin Simulated Tools
                     </button>
                     <div id="simulated-admin-panel" class="hidden mt-3 p-2 bg-zinc-900/50 rounded border border-zinc-800 text-[11px] text-zinc-400">
                         <p class="font-bold text-zinc-300 mb-1">Simulate Inventory Stocks:</p>
-                        <div class="flex flex-col gap-1.5">
+                        <div class="flex flex-col gap-1.5 mb-3">
                             <label class="flex items-center gap-2 cursor-pointer"><input type="checkbox" checked onchange="toggleStockStatus('MTN', this.checked)"> MTN Status (In Stock)</label>
-                            <label class="flex items-center gap-2 cursor-pointer"><input type="checkbox" checked unchange="StockStatus('TELECEL', this.checked)"> Telecel Status (In Stock)</label>
+                            <label class="flex items-center gap-2 cursor-pointer"><input type="checkbox" checked onchange="toggleStockStatus('TELECEL', this.checked)"> Telecel Status (In Stock)</label>
                             <label class="flex items-center gap-2 cursor-pointer"><input type="checkbox" checked onchange="toggleStockStatus('AIRTELTIGO', this.checked)"> AirtelTigo Status (In Stock)</label>
+                        </div>
+                        <p class="font-bold text-zinc-300 mb-1">Simulate Crediting Wallet Balance:</p>
+                        <div class="flex gap-2">
+                            <input type="number" id="admin-credit-amount" class="w-20 bg-black border border-zinc-700 text-white rounded p-1 text-xs" placeholder="₵50">
+                            <button onclick="simulateAdminBalanceCredit()" class="bg-amber-400 text-black font-bold px-2 py-1 rounded text-[10px]">Add Balance</button>
                         </div>
                     </div>
                 </div>
             </div>
 
+            <!-- Communication channels & Support links -->
             <div class="bg-[#1A1A22] border border-zinc-800 rounded-xl p-4 flex flex-col gap-3 text-xs">
                 <h3 class="font-bold text-zinc-300 uppercase tracking-wider text-xs mb-1">Secure Support Lines</h3>
                 
@@ -136,20 +156,24 @@
             </div>
         </section>
 
+        <!-- Right Side: Order Storefront Processing Engine & Summaries -->
         <section class="lg:col-span-8 flex flex-col gap-6">
             
+            <!-- Storefront Main Control Panel Router -->
             <div class="bg-[#1A1A22] border border-zinc-800 rounded-xl p-5 shadow-xl">
                 <h2 class="text-lg font-bold text-zinc-200 mb-4 flex items-center gap-2">
                     <span class="p-1.5 bg-amber-400 text-black rounded text-xs"><i class="fa-solid fa-shopping-cart"></i></span> 
                     Agent Selection Storefront
                 </h2>
 
+                <!-- Network Switcher Selector Tabs -->
                 <div class="grid grid-cols-3 gap-2 p-1 bg-black rounded-lg mb-5 border border-zinc-800">
                     <button onclick="switchNetworkFilter('MTN')" id="tab-MTN" class="py-2.5 rounded-md font-bold text-xs transition uppercase tracking-widest bg-yellow-brand text-black">MTN</button>
                     <button onclick="switchNetworkFilter('TELECEL')" id="tab-TELECEL" class="py-2.5 rounded-md font-bold text-xs transition text-zinc-400 hover:text-white uppercase tracking-widest">TELECEL</button>
                     <button onclick="switchNetworkFilter('AIRTELTIGO')" id="tab-AIRTELTIGO" class="py-2.5 rounded-md font-bold text-xs transition text-zinc-400 hover:text-white uppercase tracking-widest">AIRTELTIGO</button>
                 </div>
 
+                <!-- Input Form Field Mechanics -->
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-5">
                     <div>
                         <label class="block text-xs uppercase tracking-wider text-zinc-400 font-bold mb-1">Target Account Mobile Number</label>
@@ -164,11 +188,13 @@
                     </div>
                 </div>
 
+                <!-- Out of stock alert window dynamically inserted -->
                 <div id="stock-warning-banner" class="hidden mb-4 p-3 bg-red-900/30 text-red-400 border border-red-800/50 rounded text-xs flex items-center gap-2">
                     <i class="fa-solid fa-triangle-exclamation"></i>
                     <span>Selected network allocation is temporarily marked OUT OF STOCK by admin. Purchases paused.</span>
                 </div>
 
+                <!-- Live Dynamic Realtime Order Summary Checkbox Block -->
                 <div class="bg-black/60 border border-zinc-800 rounded-lg p-4 mb-5">
                     <h3 class="text-xs uppercase tracking-wider text-amber-400 font-bold mb-3 border-b border-zinc-800 pb-1.5">Live Checkout Summary</h3>
                     <div class="grid grid-cols-2 gap-y-2 text-xs">
@@ -180,37 +206,46 @@
                     </div>
                 </div>
 
-                <button id="dispatch-purchase-btn" onclick="executeBundlePurchaseCheckout()" class="w-full bg-yellow-brand text-black font-black text-sm py-3 rounded-lg transition shadow-xl tracking-wider flex items-center justify-center gap-2 disabled:opacity-30 disabled:cursor-not-allowed">
-                    <i class="fa-solid fa-shield-halved"></i> Authorize Dispatch via Live Paystack Channel
-                </button>
+                <!-- Dual Dynamic Action Triggers -->
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+                    <button id="dispatch-wallet-btn" onclick="executePurchaseWithWallet()" class="w-full bg-zinc-800 hover:bg-zinc-700 text-amber-400 border border-zinc-700 font-bold text-xs py-3 rounded-lg transition tracking-wider flex items-center justify-center gap-2 disabled:opacity-30 disabled:cursor-not-allowed">
+                        <i class="fa-solid fa-wallet"></i> Pay via Founded Account Balance
+                    </button>
+                    <button id="dispatch-purchase-btn" onclick="executePurchaseWithPaystack()" class="w-full bg-yellow-brand text-black font-black text-xs py-3 rounded-lg transition shadow-xl tracking-wider flex items-center justify-center gap-2 disabled:opacity-30 disabled:cursor-not-allowed">
+                        <i class="fa-solid fa-credit-card"></i> Pay via Instant Paystack Gate
+                    </button>
+                </div>
             </div>
 
+            <!-- Historical Transaction Ledger & Sync Logs -->
             <div class="bg-[#1A1A22] border border-zinc-800 rounded-xl p-5 shadow-xl flex-grow">
                 <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2 mb-4 border-b border-zinc-800 pb-3">
                     <div>
                         <h2 class="text-base font-bold text-zinc-200">Personal Account Order History</h2>
-                        <p class="text-xs text-zinc-500">Live system status records showing exact dates and execution delivery times.</p>
+                        <p class="text-xs text-zinc-500">Live system records showing payment methods, order placement execution, and exact dates.</p>
                     </div>
                     <button onclick="fetchRealtimeOrderHistoryLogs()" class="text-xs text-amber-400 hover:underline bg-zinc-900 border border-zinc-800 px-2.5 py-1 rounded flex items-center gap-1.5">
                         <i class="fa-solid fa-rotate"></i> Refresh Logs
                     </button>
                 </div>
 
+                <!-- Table Context Layout Frame -->
                 <div class="overflow-x-auto">
                     <table class="w-full text-xs text-left text-zinc-400">
                         <thead class="text-[10px] uppercase bg-black text-zinc-500 font-mono border-b border-zinc-800">
                             <tr>
-                                <th class="p-3">Reference / System ID</th>
+                                <th class="p-3">Reference / ID</th>
+                                <th class="p-3">Method Origin</th>
                                 <th class="p-3">Network & Number</th>
-                                <th class="p-3">Bundle Description</th>
-                                <th class="p-3">Cost Amount</th>
+                                <th class="p-3">Bundle Size</th>
+                                <th class="p-3">Cost</th>
                                 <th class="p-3">Placement Date & Time</th>
-                                <th class="p-3 text-right">Delivery Status</th>
+                                <th class="p-3 text-right">Status</th>
                             </tr>
                         </thead>
                         <tbody id="order-history-tbody">
                             <tr>
-                                <td colspan="6" class="text-center p-8 text-zinc-600 font-medium">
+                                <td colspan="7" class="text-center p-8 text-zinc-600 font-medium">
                                     <i class="fa-solid fa-lock-open text-lg mb-2 block text-zinc-700"></i>
                                     Authenticate agent credentials to load live state history.
                                 </td>
@@ -222,6 +257,7 @@
         </section>
     </main>
 
+    <!-- Deposit Options Modal -->
     <div id="deposit-modal" class="fixed inset-0 bg-black/80 z-50 backdrop-blur-xs hidden flex items-center justify-center p-4">
         <div class="bg-[#1A1A22] border border-zinc-800 rounded-xl p-5 w-full max-w-sm">
             <div class="flex justify-between items-center mb-4">
@@ -229,23 +265,26 @@
                 <button onclick="closeDepositModal()" class="text-zinc-500 hover:text-white text-lg">&times;</button>
             </div>
             <p class="text-xs text-zinc-400 mb-4 leading-relaxed">
-                To instantly add funds to your virtual balance wallet, process automated transfers or send direct manual mobile money payments to:
+                To credit your account balance, complete manual transfers or direct mobile money payments to:
             </p>
             <div class="bg-black/50 border border-zinc-800 rounded p-3 text-xs mb-4 flex flex-col gap-2">
-                <div><span class="text-zinc-500">Momo Registered Account Name:</span> <span class="font-bold text-zinc-300">Legacy Data Hub Business Account</span></div>
+                <div><span class="text-zinc-500">Momo Account Name:</span> <span class="font-bold text-zinc-300">Legacy Data Hub Account</span></div>
                 <div><span class="text-zinc-500">Momo Network Provider:</span> <span class="font-bold text-zinc-300">MTN Mobile Money</span></div>
                 <div><span class="text-zinc-500">Registered Line:</span> <span class="font-mono font-bold text-amber-400">0599821047</span></div>
             </div>
+            <p class="text-[11px] text-zinc-500 mb-4">⚠️ Send proof of payment to support line to get your Virtual Wallet Balance funded.</p>
             <button onclick="closeDepositModal()" class="w-full bg-zinc-800 hover:bg-zinc-700 text-zinc-300 py-2 rounded text-xs font-bold transition">
                 Close Panel Configuration
             </button>
         </div>
     </div>
 
+    <!-- Footing Metadata Section Container -->
     <footer class="bg-black border-t border-zinc-900 py-4 text-center mt-8">
-        <p class="text-[11px] text-zinc-600">&copy; 2026 LEGACY DATA HUB. Automated secure encryption protocol networks enabled.</p>
+        <p class="text-[11px] text-zinc-600">&copy; 2026 LEGACY DATA HUB. Automated secure encryption protocols enabled.</p>
     </footer>
 
+    <!-- System JavaScript Logic Architecture Mechanics Execution Engine -->
     <script>
         const SUPABASE_URL = 'https://egrwptogexqkzcjfqxbn.supabase.co';
         const SUPABASE_ANON_KEY = 'sb_publishable_UeY0e0sN7e2W7CgVACzcPg_H0feTX6I';
@@ -256,12 +295,13 @@
         let activeNetworkSelected = 'MTN';
         let currentAuthenticatedAgent = null;
         let activeAuthenticationModeRegister = false;
+        let virtualWalletBalance = 0.00;
 
         const stockInventoryState = { MTN: true, TELECEL: true, AIRTELTIGO: true };
 
         const datasetPackageMatrixCatalog = [
             // MTN Catalog Data Matrix
-            { id: 'mtn-1', network: 'MTN', text: '1GB Allocation', cost: 0.1 },
+            { id: 'mtn-1', network: 'MTN', text: '1GB Allocation', cost: 4.80 },
             { id: 'mtn-2', network: 'MTN', text: '2GB Allocation', cost: 9.80 },
             { id: 'mtn-3', network: 'MTN', text: '3GB Allocation', cost: 14.30 },
             { id: 'mtn-4', network: 'MTN', text: '4GB Allocation', cost: 22.00 },
@@ -307,6 +347,7 @@
 
             switchNetworkFilter('MTN');
             document.getElementById('order-phone').addEventListener('input', calculateOrderCalculationSummary);
+            loadSimulatedWalletBalance();
         });
 
         function toggleAuthMode(shouldRegister) {
@@ -384,6 +425,7 @@
                 authUserBadge.classList.remove('hidden');
                 logoutBtn.classList.remove('hidden');
                 userEmailDisplay.innerText = session.user.email;
+                loadSimulatedWalletBalance();
                 fetchRealtimeOrderHistoryLogs();
             } else {
                 currentAuthenticatedAgent = null;
@@ -428,18 +470,19 @@
 
         function evaluateStockDisplayStateWarnings() {
             const banner = document.getElementById('stock-warning-banner');
-            const dispatchBtn = document.getElementById('dispatch-purchase-btn');
+            const walletBtn = document.getElementById('dispatch-wallet-btn');
+            const paystackBtn = document.getElementById('dispatch-purchase-btn');
             const isInStock = stockInventoryState[activeNetworkSelected];
 
-            if (!isInStock) {
-                banner.classList.remove('hidden');
-                dispatchBtn.disabled = true;
-                dispatchBtn.innerText = "Execution Paused - Network Out of Stock";
-            } else {
-                banner.classList.add('hidden');
-                dispatchBtn.disabled = false;
-                dispatchBtn.innerText = "Authorize Dispatch via Live Paystack Channel";
-            }
+            [walletBtn, paystackBtn].forEach(btn => {
+                if (!isInStock) {
+                    banner.classList.remove('hidden');
+                    btn.disabled = true;
+                } else {
+                    banner.classList.add('hidden');
+                    btn.disabled = false;
+                }
+            });
         }
 
         function calculateOrderCalculationSummary() {
@@ -460,23 +503,15 @@
             }
         }
 
-        function executeBundlePurchaseCheckout() {
-            if (!currentAuthenticatedAgent) {
-                alert('Access Forbidden: Establish or log into an authenticated agent profile session first to authorize financial transactions.');
-                return;
-            }
+        // PAYMENT METHOD 1: PAYSTACK CHANNELS
+        function executePurchaseWithPaystack() {
+            if (!verifyOrderRequirements()) return;
 
             const targetPhone = document.getElementById('order-phone').value.trim();
-            if (targetPhone.length < 9) {
-                alert('Parsing Validation Failure: Provide an operational recipient communication destination number format.');
-                return;
-            }
-
             const selectVal = document.getElementById('order-package-select').value;
             const matchedPackage = datasetPackageMatrixCatalog.find(p => p.id === selectVal);
-            if (!matchedPackage) return;
 
-            const uniqueReferenceID = 'LGC-' + Math.floor(Math.random() * 8999999 + 1000000);
+            const uniqueReferenceID = 'LGC-PS-' + Math.floor(Math.random() * 8999999 + 1000000);
 
             let handler = PaystackPop.setup({
                 key: PAYSTACK_PUBLIC_KEY,
@@ -486,27 +521,64 @@
                 ref: uniqueReferenceID,
                 metadata: {
                     custom_fields: [
-                        { display_name: "Target Mobile Number", variable_name: "target_mobile", value: targetPhone },
-                        { display_name: "Data Allocation", variable_name: "bundle_info", value: matchedPackage.text },
+                        { display_name: "Mobile Number", variable_name: "target_mobile", value: targetPhone },
                         { display_name: "Carrier Network", variable_name: "carrier_network", value: activeNetworkSelected }
                     ]
                 },
                 callback: async function(response) {
-                    alert('Financial transaction capture completed successfully via Paystack. Referencing authorization block ID: ' + response.reference);
-                    await commitVerifiedTransactionToDatabaseRecord(uniqueReferenceID, targetPhone, matchedPackage);
+                    alert('Paystack verification clear. Syncing order details to database...');
+                    await commitVerifiedTransactionToDatabaseRecord(uniqueReferenceID, 'Paystack Inline', targetPhone, matchedPackage);
                 },
                 onClose: function() {
-                    alert('Authorization Interruption Notice: Channel interface closed manually before execution.');
+                    alert('Authorization Interruption: Closed before execution.');
                 }
             });
-
             handler.openIframe();
         }
 
-        async function commitVerifiedTransactionToDatabaseRecord(ref, mobile, packageObj) {
+        // PAYMENT METHOD 2: FOUNDED AGENT BALANCE WALLET
+        async function executePurchaseWithWallet() {
+            if (!verifyOrderRequirements()) return;
+
+            const targetPhone = document.getElementById('order-phone').value.trim();
+            const selectVal = document.getElementById('order-package-select').value;
+            const matchedPackage = datasetPackageMatrixCatalog.find(p => p.id === selectVal);
+
+            if (virtualWalletBalance < matchedPackage.cost) {
+                alert(`Insufficient Funds! Your founded balance is ₵${virtualWalletBalance.toFixed(2)}, but this package costs ₵${matchedPackage.cost.toFixed(2)}.`);
+                return;
+            }
+
+            // Deduct locally and save
+            virtualWalletBalance -= matchedPackage.cost;
+            saveSimulatedWalletBalance();
+            updateBalanceUI();
+
+            const uniqueReferenceID = 'LGC-WL-' + Math.floor(Math.random() * 8999999 + 1000000);
+            
+            alert('Processing bundle via Account Balance channels...');
+            await commitVerifiedTransactionToDatabaseRecord(uniqueReferenceID, 'Founded Account', targetPhone, matchedPackage);
+        }
+
+        function verifyOrderRequirements() {
+            if (!currentAuthenticatedAgent) {
+                alert('Access Forbidden: Authenticate your profile agent account session first.');
+                return false;
+            }
+            const targetPhone = document.getElementById('order-phone').value.trim();
+            if (targetPhone.length < 9) {
+                alert('Validation Failure: Provide a valid recipient telephone number.');
+                return false;
+            }
+            return true;
+        }
+
+        // UNIVERSAL DB SYNC: Logs exact details to Supabase (including Method types)
+        async function commitVerifiedTransactionToDatabaseRecord(ref, paymentMethod, mobile, packageObj) {
             const dateISOStringNow = new Date().toISOString();
             
             try {
+                // Inserts data structure directly into Supabase orders collection
                 const { error } = await supabaseClient
                     .from('orders')
                     .insert([
@@ -514,6 +586,7 @@
                             user_id: currentAuthenticatedAgent.id,
                             user_email: currentAuthenticatedAgent.email,
                             reference_id: ref,
+                            payment_method: paymentMethod, // Specifies "Paystack Inline" or "Founded Account"
                             network: activeNetworkSelected,
                             recipient_number: mobile,
                             bundle_description: packageObj.text,
@@ -524,13 +597,13 @@
                     ]);
 
                 if (error) {
-                    console.warn("Supabase Table Record Hook notice: Falling back to localStorage due to database schemas adjustments. Error details:", error.message);
-                    saveBackupOfflineTransactionsHistoryRecords(ref, mobile, packageObj, dateISOStringNow);
+                    console.warn("DB Scheme Warning: Writing backup logging state to localStorage.", error.message);
+                    saveBackupOfflineTransactionsHistoryRecords(ref, paymentMethod, mobile, packageObj, dateISOStringNow);
                 } else {
-                    alert('Transaction synced natively with database instances state tables records mapping.');
+                    alert('Order history successfully written directly to Supabase logs!');
                 }
             } catch (ex) {
-                saveBackupOfflineTransactionsHistoryRecords(ref, mobile, packageObj, dateISOStringNow);
+                saveBackupOfflineTransactionsHistoryRecords(ref, paymentMethod, mobile, packageObj, dateISOStringNow);
             }
             fetchRealtimeOrderHistoryLogs();
         }
@@ -555,11 +628,12 @@
             }
         }
 
-        function saveBackupOfflineTransactionsHistoryRecords(ref, mobile, packageObj, dateStr) {
+        function saveBackupOfflineTransactionsHistoryRecords(ref, paymentMethod, mobile, packageObj, dateStr) {
             let existing = JSON.parse(localStorage.getItem('legacy_offline_orders') || '[]');
             existing.unshift({
                 user_email: currentAuthenticatedAgent.email,
                 reference_id: ref,
+                payment_method: paymentMethod,
                 network: activeNetworkSelected,
                 recipient_number: mobile,
                 bundle_description: packageObj.text,
@@ -578,7 +652,7 @@
             if (data.length === 0) {
                 document.getElementById('order-history-tbody').innerHTML = `
                     <tr>
-                        <td colspan="6" class="text-center p-8 text-zinc-600 font-medium">
+                        <td colspan="7" class="text-center p-8 text-zinc-600 font-medium">
                             <i class="fa-solid fa-hourglass-empty text-lg mb-2 block text-zinc-700"></i>
                             No processing records found on this account profile state.
                         </td>
@@ -596,8 +670,15 @@
                 const formattedDate = new Date(row.placed_at).toLocaleString();
                 const tr = document.createElement('tr');
                 tr.className = "border-b border-zinc-800 hover:bg-zinc-900/40 transition font-mono";
+                
+                // Set badge design variations based on payment origins
+                const methodBadgeColor = (row.payment_method || '').includes('Paystack') 
+                    ? 'bg-blue-950 text-blue-400 border-blue-900' 
+                    : 'bg-amber-950 text-amber-400 border-amber-900';
+
                 tr.innerHTML = `
                     <td class="p-3 text-zinc-400 font-bold">${row.reference_id}</td>
+                    <td class="p-3"><span class="border px-2 py-0.5 rounded text-[9px] font-bold tracking-wide uppercase ${methodBadgeColor}">${row.payment_method || 'Paystack Inline'}</span></td>
                     <td class="p-3 text-zinc-300"><span class="bg-zinc-800 text-amber-400 px-1.5 py-0.5 rounded text-[10px] mr-1">${row.network}</span> ${row.recipient_number}</td>
                     <td class="p-3 font-sans">${row.bundle_description}</td>
                     <td class="p-3 text-amber-400 font-bold">₵${parseFloat(row.amount_paid).toFixed(2)}</td>
@@ -611,20 +692,58 @@
         function buildFallbackOfflineTableState() {
             document.getElementById('order-history-tbody').innerHTML = `
                 <tr>
-                    <td colspan="6" class="text-center p-8 text-zinc-600 font-medium">
+                    <td colspan="7" class="text-center p-8 text-zinc-600 font-medium">
                         <i class="fa-solid fa-lock-open text-lg mb-2 block text-zinc-700"></i>
                         Authenticate agent credentials to load live state history.
                     </td>
                 </tr>`;
         }
 
+        // SIMULATED SYSTEM BALANCES LOGIC MANAGEMENTS
+        function loadSimulatedWalletBalance() {
+            if (currentAuthenticatedAgent) {
+                const userKey = `wallet_balance_${currentAuthenticatedAgent.id}`;
+                const saved = localStorage.getItem(userKey);
+                virtualWalletBalance = saved ? parseFloat(saved) : 0.00;
+            } else {
+                virtualWalletBalance = 0.00;
+            }
+            updateBalanceUI();
+        }
+
+        function saveSimulatedWalletBalance() {
+            if (currentAuthenticatedAgent) {
+                const userKey = `wallet_balance_${currentAuthenticatedAgent.id}`;
+                localStorage.setItem(userKey, virtualWalletBalance);
+            }
+        }
+
+        function updateBalanceUI() {
+            const el = document.getElementById('agent-balance-display');
+            if (el) el.innerText = `₵${virtualWalletBalance.toFixed(2)}`;
+        }
+
+        function simulateAdminBalanceCredit() {
+            const amountInput = document.getElementById('admin-credit-amount');
+            const val = parseFloat(amountInput.value);
+            if (isNaN(val) || val <= 0) {
+                alert('Enter a valid amount to credit.');
+                return;
+            }
+            if (!currentAuthenticatedAgent) {
+                alert('Log into an active account profile to credit.');
+                return;
+            }
+            virtualWalletBalance += val;
+            saveSimulatedWalletBalance();
+            updateBalanceUI();
+            amountInput.value = '';
+            alert(`Simulated Action Complete: Credited ₵${val.toFixed(2)} directly to agent dashboard profile balance.`);
+        }
+
         function openDepositModal() { document.getElementById('deposit-modal').classList.remove('hidden'); }
         function closeDepositModal() { document.getElementById('deposit-modal').classList.add('hidden'); }
-        
-        function toggleAdminPanelVisibility() {
-            const panel = document.getElementById('simulated-admin-panel');
-            panel.classList.toggle('hidden');
-        }
+        function toggleAdminPanelVisibility() { document.getElementById('simulated-admin-panel').classList.toggle('hidden'); }
         function toggleStockStatus(networkKey, isChecked) {
             stockInventoryState[networkKey] = isChecked;
             evaluateStockDisplayStateWarnings();
