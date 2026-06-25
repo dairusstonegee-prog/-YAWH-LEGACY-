@@ -4,13 +4,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>LEGACY DATA HUB | Premium Data Bundle Reseller</title>
-    <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
-    <!-- FontAwesome Logos/Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <!-- Supabase JS Library CDN -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-    <!-- Paystack Inline Script -->
     <script src="https://js.paystack.co/v1/inline.js"></script>
 
     <style>
@@ -24,7 +20,6 @@
 </head>
 <body class="font-sans min-h-screen flex flex-col">
 
-    <!-- Top Banner Notifications -->
     <div class="bg-amber-500 text-black text-xs font-bold px-4 py-2 flex flex-col sm:flex-row justify-between items-center gap-2">
         <div class="flex items-center gap-2">
             <i class="fa-solid fa-bullhorn animate-bounce"></i>
@@ -36,7 +31,6 @@
         </div>
     </div>
 
-    <!-- Navigation Header -->
     <header class="bg-[#1A1A22] border-b border-zinc-800 sticky top-0 z-40">
         <div class="max-w-6xl mx-auto px-4 py-4 flex justify-between items-center">
             <div class="flex items-center gap-2">
@@ -54,18 +48,14 @@
         </div>
     </header>
 
-    <!-- App Main Frame Layout -->
     <main class="flex-grow max-w-6xl w-full mx-auto p-4 grid grid-cols-1 lg:grid-cols-12 gap-6">
         
-        <!-- Left Sidebar: Auth, Balance & Support Controls -->
         <section class="lg:col-span-4 flex flex-col gap-6">
             
-            <!-- Auth Component View Card -->
             <div id="auth-card" class="bg-[#1A1A22] border border-zinc-800 rounded-xl p-5 shadow-xl">
                 <h2 id="auth-title" class="text-lg font-bold text-amber-400 mb-4">Welcome Node / Access Gateway</h2>
                 <p id="welcome-message" class="text-xs text-zinc-400 mb-4 hidden">Welcome back to your Agent Store storefront dashboard.</p>
                 
-                <!-- Login/Register Forms Container -->
                 <div id="auth-form-container">
                     <div class="mb-3">
                         <label class="block text-xs uppercase tracking-wider text-zinc-400 font-bold mb-1">Email Address</label>
@@ -86,7 +76,6 @@
                     </div>
                 </div>
 
-                <!-- Active Logged In Options Dashboard Panel -->
                 <div id="agent-active-panel" class="hidden">
                     <div class="bg-zinc-900 border border-zinc-800 p-4 rounded-lg text-center mb-4">
                         <span class="text-xs text-zinc-400 uppercase tracking-widest block font-medium">Virtual Agent Balance</span>
@@ -98,7 +87,6 @@
                 </div>
             </div>
 
-            <!-- Global Live Dynamic Broadcast Board -->
             <div class="bg-[#1A1A22] border border-zinc-800 rounded-xl p-4 flex flex-col gap-3">
                 <div class="flex items-center gap-2 border-b border-zinc-800 pb-2">
                     <i class="fa-solid fa-circle-exclamation text-amber-400 text-sm"></i>
@@ -107,7 +95,6 @@
                 <div id="admin-broadcast-feed" class="text-xs text-zinc-400 bg-black/40 p-3 rounded border border-zinc-900 leading-relaxed">
                     🌟 <span class="text-amber-300 font-medium">Welcome to Legacy Data Hub Premium Agent Store interface!</span> MTN, Telecel, and AirtelTigo fast automation channels are running natively. Report errors directly through encrypted WhatsApp links below.
                 </div>
-                <!-- Admin Simulation Section inside HTML directly -->
                 <div class="mt-2 pt-2 border-t border-zinc-800/50">
                     <button onclick="toggleAdminPanelVisibility()" class="text-[10px] text-zinc-600 hover:text-amber-500 tracking-wide underline uppercase block transition">
                         Toggle Simulated Platform Inventory (Admin Feature)
@@ -123,7 +110,6 @@
                 </div>
             </div>
 
-            <!-- Communication channels & Support links -->
             <div class="bg-[#1A1A22] border border-zinc-800 rounded-xl p-4 flex flex-col gap-3 text-xs">
                 <h3 class="font-bold text-zinc-300 uppercase tracking-wider text-xs mb-1">Secure Support Lines</h3>
                 
@@ -135,11 +121,11 @@
                     </div>
                 </a>
 
-                <a href="https://wa.me/message/DF4CE2EQV33QP1" target="_blank" class="flex items-center gap-3 p-2.5 bg-blue-500/10 hover:bg-blue-500/20 text-blue-400 rounded-lg transition border border-blue-500/30">
+                <a href="https://whatsapp.com/channel/0029VaCiikI23n3Wt1d5z402" target="_blank" class="flex items-center gap-3 p-2.5 bg-[#25D366]/10 hover:bg-[#25D366]/20 text-emerald-400 rounded-lg transition border border-emerald-500/30">
                     <i class="fa-brands fa-whatsapp text-lg"></i>
                     <div>
                         <p class="font-bold">WhatsApp Channel Broadcasts</p>
-                        <p class="text-[10px] opacity-80">Join update channel feeds</p>
+                        <p class="text-[10px] opacity-80">Join live update channel feeds</p>
                     </div>
                 </a>
 
@@ -150,24 +136,20 @@
             </div>
         </section>
 
-        <!-- Right Side: Order Storefront Processing Engine & Summaries -->
         <section class="lg:col-span-8 flex flex-col gap-6">
             
-            <!-- Storefront Main Control Panel Router -->
             <div class="bg-[#1A1A22] border border-zinc-800 rounded-xl p-5 shadow-xl">
                 <h2 class="text-lg font-bold text-zinc-200 mb-4 flex items-center gap-2">
                     <span class="p-1.5 bg-amber-400 text-black rounded text-xs"><i class="fa-solid fa-shopping-cart"></i></span> 
                     Agent Selection Storefront
                 </h2>
 
-                <!-- Network Switcher Selector Tabs -->
                 <div class="grid grid-cols-3 gap-2 p-1 bg-black rounded-lg mb-5 border border-zinc-800">
                     <button onclick="switchNetworkFilter('MTN')" id="tab-MTN" class="py-2.5 rounded-md font-bold text-xs transition uppercase tracking-widest bg-yellow-brand text-black">MTN</button>
                     <button onclick="switchNetworkFilter('TELECEL')" id="tab-TELECEL" class="py-2.5 rounded-md font-bold text-xs transition text-zinc-400 hover:text-white uppercase tracking-widest">TELECEL</button>
                     <button onclick="switchNetworkFilter('AIRTELTIGO')" id="tab-AIRTELTIGO" class="py-2.5 rounded-md font-bold text-xs transition text-zinc-400 hover:text-white uppercase tracking-widest">AIRTELTIGO</button>
                 </div>
 
-                <!-- Input Form Field Mechanics -->
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-5">
                     <div>
                         <label class="block text-xs uppercase tracking-wider text-zinc-400 font-bold mb-1">Target Account Mobile Number</label>
@@ -182,13 +164,11 @@
                     </div>
                 </div>
 
-                <!-- Out of stock alert window dynamically inserted -->
                 <div id="stock-warning-banner" class="hidden mb-4 p-3 bg-red-900/30 text-red-400 border border-red-800/50 rounded text-xs flex items-center gap-2">
                     <i class="fa-solid fa-triangle-exclamation"></i>
                     <span>Selected network allocation is temporarily marked OUT OF STOCK by admin. Purchases paused.</span>
                 </div>
 
-                <!-- Live Dynamic Realtime Order Summary Checkbox Block -->
                 <div class="bg-black/60 border border-zinc-800 rounded-lg p-4 mb-5">
                     <h3 class="text-xs uppercase tracking-wider text-amber-400 font-bold mb-3 border-b border-zinc-800 pb-1.5">Live Checkout Summary</h3>
                     <div class="grid grid-cols-2 gap-y-2 text-xs">
@@ -200,13 +180,11 @@
                     </div>
                 </div>
 
-                <!-- Submission Dispatch Action Triggers -->
                 <button id="dispatch-purchase-btn" onclick="executeBundlePurchaseCheckout()" class="w-full bg-yellow-brand text-black font-black text-sm py-3 rounded-lg transition shadow-xl tracking-wider flex items-center justify-center gap-2 disabled:opacity-30 disabled:cursor-not-allowed">
                     <i class="fa-solid fa-shield-halved"></i> Authorize Dispatch via Live Paystack Channel
                 </button>
             </div>
 
-            <!-- Historical Transaction Ledger & Sync Logs -->
             <div class="bg-[#1A1A22] border border-zinc-800 rounded-xl p-5 shadow-xl flex-grow">
                 <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2 mb-4 border-b border-zinc-800 pb-3">
                     <div>
@@ -218,7 +196,6 @@
                     </button>
                 </div>
 
-                <!-- Table Context Layout Frame -->
                 <div class="overflow-x-auto">
                     <table class="w-full text-xs text-left text-zinc-400">
                         <thead class="text-[10px] uppercase bg-black text-zinc-500 font-mono border-b border-zinc-800">
@@ -245,7 +222,6 @@
         </section>
     </main>
 
-    <!-- Deposit Options Modal (Pure Simulated Overlay View) -->
     <div id="deposit-modal" class="fixed inset-0 bg-black/80 z-50 backdrop-blur-xs hidden flex items-center justify-center p-4">
         <div class="bg-[#1A1A22] border border-zinc-800 rounded-xl p-5 w-full max-w-sm">
             <div class="flex justify-between items-center mb-4">
@@ -266,14 +242,11 @@
         </div>
     </div>
 
-    <!-- Footing Metadata Section Container -->
     <footer class="bg-black border-t border-zinc-900 py-4 text-center mt-8">
         <p class="text-[11px] text-zinc-600">&copy; 2026 LEGACY DATA HUB. Automated secure encryption protocol networks enabled.</p>
     </footer>
 
-    <!-- System JavaScript Logic Architecture Mechanics Execution Engine -->
     <script>
-        // Global variables initialization using credentials provided by client
         const SUPABASE_URL = 'https://egrwptogexqkzcjfqxbn.supabase.co';
         const SUPABASE_ANON_KEY = 'sb_publishable_UeY0e0sN7e2W7CgVACzcPg_H0feTX6I';
         const PAYSTACK_PUBLIC_KEY = 'pk_live_8b9d5c666a57f0c2c1a5cb908083e50972b1e2aa';
@@ -284,13 +257,11 @@
         let currentAuthenticatedAgent = null;
         let activeAuthenticationModeRegister = false;
 
-        // In-memory dynamic inventory status tracking state
         const stockInventoryState = { MTN: true, TELECEL: true, AIRTELTIGO: true };
 
-        // Packages array catalog dictionary compiled entirely from instruction prompt rules
         const datasetPackageMatrixCatalog = [
             // MTN Catalog Data Matrix
-            { id: 'mtn-1', network: 'MTN', text: '1GB Allocation', cost: 0.1 },
+            { id: 'mtn-1', network: 'MTN', text: '1GB Allocation', cost: 4.80 },
             { id: 'mtn-2', network: 'MTN', text: '2GB Allocation', cost: 9.80 },
             { id: 'mtn-3', network: 'MTN', text: '3GB Allocation', cost: 14.30 },
             { id: 'mtn-4', network: 'MTN', text: '4GB Allocation', cost: 22.00 },
@@ -326,29 +297,23 @@
             { id: 'at-15', network: 'AIRTELTIGO', text: '15GB Allocation', cost: 60.50 }
         ];
 
-        // System Application Initial Bootstrap Loop hook
         window.addEventListener('DOMContentLoaded', async () => {
-            // Read active persistent auth sessions if existing
             const { data: { session } } = await supabaseClient.auth.getSession();
             handleAuthSessionUpdateState(session);
 
-            // Listen live to state auth hooks transformations
             supabaseClient.auth.onAuthStateChange((_event, session) => {
                 handleAuthSessionUpdateState(session);
             });
 
-            // Initialize storefront values
             switchNetworkFilter('MTN');
             document.getElementById('order-phone').addEventListener('input', calculateOrderCalculationSummary);
         });
 
-        // Toggle Auth layout modes
         function toggleAuthMode(shouldRegister) {
             activeAuthenticationModeRegister = shouldRegister;
             const title = document.getElementById('auth-title');
             const btn = document.getElementById('main-auth-btn');
             const toggleMsg = document.getElementById('toggle-auth-msg');
-            const passGroup = document.getElementById('password-field-group');
 
             if (shouldRegister) {
                 title.innerText = 'Register New Agent Profile';
@@ -361,7 +326,6 @@
             }
         }
 
-        // Processing authorization loops
         async function processAuth() {
             const email = document.getElementById('auth-email').value.trim();
             const password = document.getElementById('auth-password').value.trim();
@@ -385,7 +349,6 @@
             }
         }
 
-        // Trigger Forgetful Password Actions
         async function triggerPasswordReset() {
             const email = document.getElementById('auth-email').value.trim();
             if (!email) {
@@ -401,12 +364,10 @@
             }
         }
 
-        // Log out functionality
         async function handleLogout() {
             await supabaseClient.auth.signOut();
         }
 
-        // Updates UI elements based on authentication status
         function handleAuthSessionUpdateState(session) {
             const authFormContainer = document.getElementById('auth-form-container');
             const agentActivePanel = document.getElementById('agent-active-panel');
@@ -435,7 +396,6 @@
             }
         }
 
-        // Switching Active UI Network selection layout states
         function switchNetworkFilter(networkKey) {
             activeNetworkSelected = networkKey;
             
@@ -453,7 +413,6 @@
             evaluateStockDisplayStateWarnings();
         }
 
-        // Renders pricing choices to layout select controls elements
         function populateAvailablePackageDropdownSelection() {
             const selectElement = document.getElementById('order-package-select');
             selectElement.innerHTML = '';
@@ -467,7 +426,6 @@
             });
         }
 
-        // Evaluation of local inventory stock levels states mappings
         function evaluateStockDisplayStateWarnings() {
             const banner = document.getElementById('stock-warning-banner');
             const dispatchBtn = document.getElementById('dispatch-purchase-btn');
@@ -484,7 +442,6 @@
             }
         }
 
-        // Renders real-time computational totals checkout states summaries
         function calculateOrderCalculationSummary() {
             const targetPhone = document.getElementById('order-phone').value.trim();
             const selectVal = document.getElementById('order-package-select').value;
@@ -503,7 +460,6 @@
             }
         }
 
-        // Handles Paystack transaction logic and pushes the data to Supabase
         function executeBundlePurchaseCheckout() {
             if (!currentAuthenticatedAgent) {
                 alert('Access Forbidden: Establish or log into an authenticated agent profile session first to authorize financial transactions.');
@@ -520,14 +476,12 @@
             const matchedPackage = datasetPackageMatrixCatalog.find(p => p.id === selectVal);
             if (!matchedPackage) return;
 
-            // Generate temporary transaction references for lookup records tracing mapping
             const uniqueReferenceID = 'LGC-' + Math.floor(Math.random() * 8999999 + 1000000);
 
-            // Open live integrated secure Paystack execution handler overlay channels
             let handler = PaystackPop.setup({
                 key: PAYSTACK_PUBLIC_KEY,
                 email: currentAuthenticatedAgent.email,
-                amount: Math.round(matchedPackage.cost * 100), // convert to pesewas/cents
+                amount: Math.round(matchedPackage.cost * 100), 
                 currency: 'GHS',
                 ref: uniqueReferenceID,
                 metadata: {
@@ -549,12 +503,10 @@
             handler.openIframe();
         }
 
-        // Log record schemas to Supabase table
         async function commitVerifiedTransactionToDatabaseRecord(ref, mobile, packageObj) {
             const dateISOStringNow = new Date().toISOString();
             
             try {
-                // If tables do not exist dynamically inside Supabase yet, we write using safe global logs.
                 const { error } = await supabaseClient
                     .from('orders')
                     .insert([
@@ -583,9 +535,7 @@
             fetchRealtimeOrderHistoryLogs();
         }
 
-        // Pull dynamic real-time system synchronization logs
         async function fetchRealtimeOrderHistoryLogs() {
-            const tbody = document.getElementById('order-history-tbody');
             if (!currentAuthenticatedAgent) return;
 
             try {
@@ -605,7 +555,6 @@
             }
         }
 
-        // Local Storage state management strategies implementation logs
         function saveBackupOfflineTransactionsHistoryRecords(ref, mobile, packageObj, dateStr) {
             let existing = JSON.parse(localStorage.getItem('legacy_offline_orders') || '[]');
             existing.unshift({
@@ -624,7 +573,6 @@
         function loadOfflineHistoryStateRecordsTable() {
             let data = JSON.parse(localStorage.getItem('legacy_offline_orders') || '[]');
             if(currentAuthenticatedAgent) {
-                // Filter records to only show those belonging to the currently logged-in user
                 data = data.filter(item => item.user_email === currentAuthenticatedAgent.email);
             }
             if (data.length === 0) {
@@ -670,11 +618,9 @@
                 </tr>`;
         }
 
-        // Overlay layout toggles configuration switches mechanics
         function openDepositModal() { document.getElementById('deposit-modal').classList.remove('hidden'); }
         function closeDepositModal() { document.getElementById('deposit-modal').classList.add('hidden'); }
         
-        // Admin simulation panels state control layout functions
         function toggleAdminPanelVisibility() {
             const panel = document.getElementById('simulated-admin-panel');
             panel.classList.toggle('hidden');
