@@ -1,781 +1,764 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>LEGACY DATA HUB | Premium Data Bundle Reseller</title>
-    <!-- Tailwind CSS CDN -->
-    <script src="https://cdn.tailwindcss.com"></script>
-    <!-- FontAwesome Logos/Icons -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <!-- Supabase JS Library CDN -->
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-    <!-- Paystack Inline Script -->
-    <script src="https://js.paystack.co/v1/inline.js"></script>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>LEGACY DATA HUB</title>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+  <script src="https://js.paystack.co/v1/inline.js"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;700&family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --yellow: #FFD700;
+      --black: #000000;
+      --dark-bg: #0a0a0a;
+      --card-bg: rgba(20, 20, 20, 0.85);
+      --glow-yellow: rgba(255, 215, 0, 0.2);
+      --whatsapp-green: #25D366;
+      --neon-green: #00FF66;
+      --glow-green: rgba(0, 255, 102, 0.2);
+    }
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    body {
+      font-family: 'Inter', sans-serif;
+      background-color: var(--dark-bg);
+      color: white;
+      overflow-x: hidden;
+    }
+    #scene-container {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: -1;
+      pointer-events: none;
+    }
+    header {
+      background: rgba(0, 0, 0, 0.9);
+      backdrop-filter: blur(10px);
+      padding: 1rem 1.5rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-bottom: 1px solid var(--yellow);
+      position: relative;
+      z-index: 10;
+    }
+    .logo-container {
+      font-family: 'Orbitron', sans-serif;
+      font-size: 1.4rem;
+      font-weight: 700;
+      color: var(--yellow);
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+      text-shadow: 0 0 10px var(--glow-yellow);
+    }
+    .contact-info {
+      font-size: 0.85rem;
+      display: flex;
+      gap: 1rem;
+      text-align: right;
+    }
+    .container {
+      max-width: 1200px;
+      margin: 1.5rem auto;
+      padding: 0 1rem;
+      position: relative;
+      z-index: 5;
+    }
+    .hero {
+      text-align: center;
+      margin-bottom: 1.8rem;
+    }
+    .hero h1 {
+      font-family: 'Orbitron', sans-serif;
+      font-size: 2.2rem;
+      margin-bottom: 0.4rem;
+      background: linear-gradient(to right, var(--yellow), #fff);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      text-shadow: 0 0 15px var(--glow-yellow);
+    }
+    .hero p {
+      font-size: 0.95rem;
+      opacity: 0.8;
+    }
+    .network-selector {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 0.5rem;
+      margin: 1.5rem 0 1rem;
+    }
+    .network-btn {
+      background: transparent;
+      color: white;
+      border: 1.5px solid var(--yellow);
+      padding: 0.6rem 0.4rem;
+      font-size: 0.9rem;
+      font-weight: 600;
+      cursor: pointer;
+      border-radius: 8px;
+      transition: all 0.3s ease;
+      font-family: 'Orbitron', sans-serif;
+      text-align: center;
+    }
+    .network-btn.active {
+      background: var(--yellow);
+      color: var(--black);
+      box-shadow: 0 0 12px var(--glow-yellow);
+    }
+    
+    .toggle-packages-btn {
+      background: rgba(0, 255, 102, 0.08);
+      color: var(--neon-green);
+      border: 1px solid var(--neon-green);
+      padding: 0.9rem 1.5rem;
+      font-size: 1rem;
+      font-weight: 700;
+      border-radius: 8px;
+      cursor: pointer;
+      width: 100%;
+      max-width: 100%;
+      margin: 1rem auto 1.5rem;
+      display: block;
+      font-family: 'Orbitron', sans-serif;
+      transition: all 0.3s ease;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      box-shadow: 0 0 10px var(--glow-green);
+    }
+    .toggle-packages-btn:hover, .toggle-packages-btn:active {
+      background: var(--neon-green);
+      color: var(--black);
+      box-shadow: 0 0 18px rgba(0, 255, 102, 0.5);
+    }
 
-    <style>
-        /* Custom Yellow and Black theme elements */
-        .theme-yellow { color: #FBBF24; }
-        .bg-yellow-brand { background-color: #FBBF24; }
-        .bg-yellow-brand:hover { background-color: #F59E0B; }
-        .border-yellow-brand { border-color: #FBBF24; }
-        body { background-color: #0F0F12; color: #E5E7EB; }
-    </style>
+    .packages-drawer {
+      max-height: 0;
+      opacity: 0;
+      overflow: hidden;
+      transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+      margin-bottom: 0;
+    }
+    .packages-drawer.open {
+      max-height: 1200px;
+      opacity: 1;
+      margin-bottom: 1.5rem;
+    }
+
+    .packages-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 0.6rem;
+      padding: 0.2rem;
+    }
+    .package-btn {
+      background: var(--card-bg);
+      border: 1px solid rgba(255, 215, 0, 0.2);
+      border-radius: 10px;
+      padding: 1rem 0.4rem;
+      text-align: center;
+      cursor: pointer;
+      color: white;
+      font-family: 'Inter', sans-serif;
+      transition: transform 0.2s, box-shadow 0.2s;
+      width: 100%;
+    }
+    .package-btn:hover, .package-btn:active {
+      border-color: var(--yellow);
+      box-shadow: 0 4px 12px rgba(255, 215, 0, 0.25);
+    }
+    .package-btn.selected {
+      border: 2px solid var(--yellow) !important;
+      box-shadow: 0 0 12px rgba(255, 215, 0, 0.4);
+      background: rgba(30, 30, 30, 0.95);
+    }
+    .package-size {
+      font-family: 'Orbitron', sans-serif;
+      font-size: 1.1rem;
+      font-weight: 700;
+      margin-bottom: 0.3rem;
+      color: var(--yellow);
+    }
+    .package-price {
+      font-size: 0.95rem;
+      font-weight: 600;
+      opacity: 0.9;
+    }
+    .order-form {
+      background: var(--card-bg);
+      padding: 1.5rem 1.2rem;
+      border-radius: 16px;
+      margin-bottom: 2rem;
+      border: 1px solid rgba(255, 215, 0, 0.15);
+    }
+    .form-group {
+      margin-bottom: 1.2rem;
+    }
+    label {
+      display: block;
+      margin-bottom: 0.5rem;
+      font-weight: 600;
+      font-size: 0.95rem;
+      color: rgba(255, 255, 255, 0.9);
+    }
+    input {
+      width: 100%;
+      padding: 0.8rem;
+      border-radius: 8px;
+      border: 1px solid rgba(255, 215, 0, 0.3);
+      background: rgba(10, 10, 10, 0.9);
+      color: white;
+      font-size: 1rem;
+    }
+    input:focus {
+      outline: none;
+      border-color: var(--yellow);
+    }
+    .btn {
+      background: linear-gradient(to right, var(--yellow), #e6c200);
+      color: var(--black);
+      border: none;
+      padding: 0.9rem;
+      font-size: 1.05rem;
+      font-weight: 700;
+      border-radius: 8px;
+      cursor: pointer;
+      width: 100%;
+      transition: all 0.2s;
+      font-family: 'Orbitron', sans-serif;
+      letter-spacing: 0.5px;
+      text-transform: uppercase;
+      box-shadow: 0 4px 12px rgba(255, 215, 0, 0.2);
+    }
+    .btn:active {
+      transform: scale(0.99);
+    }
+    
+    .track-trigger-btn {
+      background: linear-gradient(to right, var(--whatsapp-green), #128C7E);
+      color: white;
+      box-shadow: 0 4px 12px rgba(37, 211, 102, 0.15);
+    }
+    .search-bar-container {
+      max-height: 0;
+      opacity: 0;
+      overflow: hidden;
+      transition: all 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+      background: rgba(0, 0, 0, 0.3);
+      border-radius: 12px;
+      padding: 0;
+    }
+    .search-bar-container.open {
+      max-height: 250px;
+      opacity: 1;
+      padding: 1.2rem;
+      border: 1px dashed rgba(255, 215, 0, 0.25);
+      margin-top: 1rem;
+    }
+    .search-actions {
+      display: flex;
+      gap: 0.6rem;
+      margin-top: 1rem;
+    }
+    .btn-cancel {
+      background: rgba(255, 255, 255, 0.1);
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      color: white;
+      padding: 0.8rem;
+      border-radius: 8px;
+      font-weight: 600;
+      cursor: pointer;
+      flex: 1;
+    }
+    
+    .divider {
+      height: 1px;
+      background: rgba(255, 215, 0, 0.15);
+      margin: 2rem 0 1.2rem;
+    }
+    .summary {
+      background: rgba(10, 10, 10, 0.5);
+      padding: 1.2rem;
+      border-radius: 12px;
+      border: 1px solid rgba(255, 215, 0, 0.1);
+      margin-bottom: 1.2rem;
+    }
+    .summary h3 {
+      font-family: 'Orbitron', sans-serif;
+      margin-bottom: 0.8rem;
+      color: var(--yellow);
+      font-size: 1rem;
+    }
+    .summary-item {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 0.5rem;
+      font-size: 0.9rem;
+    }
+    .notice {
+      background: rgba(15, 15, 15, 0.85);
+      padding: 1rem;
+      border-radius: 12px;
+      margin-top: 1.2rem;
+      font-size: 0.85rem;
+      border-left: 3px solid var(--yellow);
+      display: block;
+      text-align: left;
+    }
+    .hero-whatsapp-container {
+      display: flex;
+      gap: 0.6rem;
+      justify-content: center;
+      align-items: center;
+      margin-top: 1.2rem;
+      flex-direction: column;
+      width: 100%;
+    }
+    .whatsapp-link {
+      color: var(--whatsapp-green);
+      text-decoration: none;
+      font-weight: 600;
+      font-size: 0.9rem;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+      padding: 0.6rem 1rem;
+      border-radius: 8px;
+      background: rgba(37, 211, 102, 0.05);
+      border: 1px solid rgba(37, 211, 102, 0.15);
+      width: 100%;
+      max-width: 320px;
+    }
+    footer {
+      text-align: center;
+      padding: 2rem 1rem;
+      background: rgba(5, 5, 5, 0.95);
+      margin-top: 3rem;
+      position: relative;
+      z-index: 5;
+      border-top: 1px solid rgba(255, 215, 0, 0.05);
+    }
+    .whatsapp-icon {
+      width: 18px;
+      height: 18px;
+      fill: var(--whatsapp-green);
+    }
+
+    /* Target Responsive Adjustments for Mobile and Tablets Specifically */
+    @media (max-width: 480px) {
+      .packages-grid {
+        grid-template-columns: repeat(2, 1fr); /* 2 grid items on very tiny devices */
+      }
+    }
+    @media (min-width: 768px) {
+      header { padding: 1.2rem 2rem; }
+      .logo-container { font-size: 1.6rem; }
+      .contact-info { font-size: 0.95rem; flex-direction: row; gap: 1.5rem; }
+      .container { margin: 2.5rem auto; padding: 0 1.5rem; }
+      .hero h1 { font-size: 2.6rem; }
+      .hero p { font-size: 1.1rem; }
+      .network-selector { display: flex; justify-content: center; gap: 1rem; margin: 2rem 0 1rem; }
+      .network-btn { padding: 0.7rem 1.4rem; font-size: 1.1rem; width: auto; }
+      .toggle-packages-btn { max-width: 400px; margin: 1rem auto 2rem; }
+      .packages-grid { grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 1.2rem; }
+      .package-btn { padding: 1.4rem 1rem; }
+      .package-size { font-size: 1.4rem; }
+      .package-price { font-size: 1.2rem; }
+      .order-form { padding: 2rem; }
+      .hero-whatsapp-container { flex-direction: row; gap: 1rem; }
+      .whatsapp-link { width: auto; }
+    }
+  </style>
 </head>
-<body class="font-sans min-h-screen flex flex-col">
+<body>
+  <div id="scene-container"></div>
 
-    <!-- Top Banner Notifications -->
-    <div class="bg-amber-500 text-black text-xs font-bold px-4 py-2 flex flex-col sm:flex-row justify-between items-center gap-2">
-        <div class="flex items-center gap-2">
-            <i class="fa-solid fa-bullhorn animate-bounce"></i>
-            <span>NOTICE: 5 to 30 minutes to reflect. Enter a valid network number. Data sent to a wrong number cannot be refunded!</span>
-        </div>
-        <div class="flex items-center gap-1 bg-black text-amber-400 px-2 py-0.5 rounded-full text-[10px]">
-            <span class="w-2 h-2 rounded-full bg-green-500 inline-block animate-ping"></span>
-            SYSTEM ONLINE 24/7
-        </div>
+  <header>
+    <div class="logo-container">
+      <svg width="38" height="38" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <linearGradient id="logo-grad" x1="0%" y1="100%" x2="100%" y2="0%">
+            <stop offset="0%" stop-color="#FFD700" />
+            <stop offset="100%" stop-color="#00E5FF" />
+          </linearGradient>
+          <linearGradient id="border-grad" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" stop-color="#FFD700" stop-opacity="0.8"/>
+            <stop offset="100%" stop-color="#101010" stop-opacity="0.2"/>
+          </linearGradient>
+        </defs>
+        <polygon points="50,5 90,25 90,75 50,95 10,75 10,25" fill="#0A0A0A" stroke="url(#border-grad)" stroke-width="3"/>
+        <rect x="28" y="68" width="44" height="8" rx="4" fill="url(#logo-grad)" />
+        <rect x="28" y="24" width="8" height="38" rx="4" fill="url(#logo-grad)" />
+        <rect x="40" y="36" width="8" height="26" rx="4" fill="url(#logo-grad)" opacity="0.85" />
+        <rect x="52" y="46" width="8" height="16" rx="4" fill="url(#logo-grad)" opacity="0.7" />
+        <rect x="64" y="54" width="8" height="8" rx="4" fill="url(#logo-grad)" opacity="0.5" />
+        <path d="M 32 14 A 22 22 0 0 1 68 14" stroke="#00E5FF" stroke-width="3" stroke-linecap="round" opacity="0.9" />
+      </svg>
+      <div style="display: flex; flex-direction: column;">
+        <span style="font-family: 'Orbitron', sans-serif; font-size: 1.2rem; font-weight: 700; color: #FFD700; letter-spacing: 1px; line-height: 1.1;">LEGACY</span>
+        <span style="font-family: 'Inter', sans-serif; font-size: 0.65rem; font-weight: 600; color: #00E5FF; letter-spacing: 2px; text-transform: uppercase;">Data Hub</span>
+      </div>
     </div>
+    <div class="contact-info" style="display: flex; flex-direction: column; line-height: 1.2;">
+      <span>📞 0599821047</span>
+      <span style="font-size: 0.75rem; opacity: 0.6;">legacydatahub@gmail.com</span>
+    </div>
+  </header>
 
-    <!-- Navigation Header -->
-    <header class="bg-[#1A1A22] border-b border-zinc-800 sticky top-0 z-40">
-        <div class="max-w-6xl mx-auto px-4 py-4 flex justify-between items-center">
-            <div class="flex items-center gap-2">
-                <span class="text-3xl">🛜</span>
-                <span class="text-xl font-black tracking-wider text-amber-400">LEGACY DATA HUB</span>
-            </div>
-            <div class="flex items-center gap-3">
-                <div id="auth-user-badge" class="hidden text-sm bg-zinc-800 px-3 py-1.5 rounded-md text-zinc-300 border border-zinc-700">
-                    <i class="fa-solid fa-user text-amber-400 mr-1"></i> <span id="user-email-display"></span>
-                </div>
-                <button id="logout-btn" class="hidden text-xs bg-zinc-800 hover:bg-zinc-700 text-zinc-400 px-3 py-1.5 rounded-md transition" onclick="handleLogout()">
-                    Logout <i class="fa-solid fa-sign-out-alt ml-1"></i>
-                </button>
-            </div>
-        </div>
-    </header>
+  <div class="container">
+    <div class="hero">
+      <h1>Your NO.1 data shop</h1>
+      <p>Secure • Fast • Reliable</p>
+      
+      <div class="notice">
+        <strong>Delivery Time:</strong> 5 to 30 minutes<br>
+        <strong>Important:</strong> Enter a valid network number. Data sent to a wrong number cannot be refunded.
+      </div>
 
-    <!-- App Main Frame Layout -->
-    <main class="flex-grow max-w-6xl w-full mx-auto p-4 grid grid-cols-1 lg:grid-cols-12 gap-6">
+      <div class="hero-whatsapp-container">
+        <a href="https://wa.me/message/DF4CE2EQV33QP1" target="_blank" class="whatsapp-link">
+          <svg class="whatsapp-icon" viewBox="0 0 24 24"><path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946C.06 5.348 5.397.01 12.008.01c3.202.001 6.212 1.246 8.477 3.514 2.266 2.268 3.507 5.28 3.505 8.484-.004 6.657-5.34 11.997-11.953 11.997-2.005-.001-3.973-.502-5.713-1.455L0 24zm6.59-3.847c1.62.963 3.424 1.47 5.267 1.471h.005c5.445 0 9.876-4.43 9.88-9.878.002-2.64-1.019-5.123-2.877-6.983-1.857-1.86-4.339-2.883-6.98-2.884-5.448 0-9.88 4.43-9.884 9.88-.001 1.83.479 3.619 1.392 5.216l-.961 3.513 3.6-.945zm11.233-7.561c-.3-.149-1.772-.875-2.046-.975-.274-.1-.474-.149-.674.15-.2.299-.773.975-.947 1.174-.174.199-.349.224-.648.075-.3-.15-1.265-.466-2.41-1.485-.89-.794-1.49-1.775-1.665-2.074-.174-.299-.019-.461.13-.609.135-.133.3-.299.449-.449.149-.15.199-.249.299-.498.1-.2.05-.374-.025-.524-.075-.15-.674-1.62-.923-2.219-.242-.582-.487-.504-.674-.513-.174-.009-.374-.009-.573-.009-.2 0-.523.075-.797.374-.274.299-1.047 1.022-1.047 2.494 0 1.471 1.071 2.892 1.221 3.092.149.199 2.107 3.216 5.106 4.512.714.309 1.271.494 1.708.633.717.228 1.37.195 1.887.118.575-.085 1.772-.723 2.021-1.396.249-.673.249-1.246.174-1.396-.075-.149-.274-.249-.574-.398z"/></svg>
+          Chat on WhatsApp
+        </a>
         
-        <!-- Left Sidebar: Auth, Balance & Support Controls -->
-        <section class="lg:col-span-4 flex flex-col gap-6">
-            
-            <!-- Auth Component View Card -->
-            <div id="auth-card" class="bg-[#1A1A22] border border-zinc-800 rounded-xl p-5 shadow-xl">
-                <h2 id="auth-title" class="text-lg font-bold text-amber-400 mb-4">Welcome Node / Access Gateway</h2>
-                <p id="welcome-message" class="text-xs text-zinc-400 mb-4 hidden">Welcome back to your Agent Store storefront dashboard.</p>
-                
-                <!-- Login/Register Forms Container -->
-                <div id="auth-form-container">
-                    <div class="mb-3">
-                        <label class="block text-xs uppercase tracking-wider text-zinc-400 font-bold mb-1">Email Address</label>
-                        <input type="email" id="auth-email" class="w-full bg-[#0F0F12] border border-zinc-700 rounded p-2.5 text-sm text-white focus:outline-none focus:border-amber-400" placeholder="agent@legacy.com">
-                    </div>
-                    <div id="password-field-group" class="mb-4">
-                        <label class="block text-xs uppercase tracking-wider text-zinc-400 font-bold mb-1">Password</label>
-                        <input type="password" id="auth-password" class="w-full bg-[#0F0F12] border border-zinc-700 rounded p-2.5 text-sm text-white focus:outline-none focus:border-amber-400" placeholder="••••••••">
-                    </div>
-                    
-                    <button id="main-auth-btn" onclick="processAuth()" class="w-full bg-yellow-brand text-black font-extrabold text-sm py-2.5 rounded transition shadow-lg mb-3">
-                        Sign In Access
-                    </button>
-
-                    <div class="text-xs text-center text-zinc-400 flex flex-col gap-2">
-                        <span id="toggle-auth-msg">Don't have an agent profile? <a href="#" onclick="toggleAuthMode(true)" class="text-amber-400 underline">Register here</a></span>
-                        <a href="#" onclick="triggerPasswordReset()" class="text-zinc-500 hover:text-amber-400 transition underline">Forgot / Reset Password?</a>
-                    </div>
-                </div>
-
-                <!-- Active Logged In Options Dashboard Panel -->
-                <div id="agent-active-panel" class="hidden">
-                    <div class="bg-zinc-900 border border-zinc-800 p-4 rounded-lg text-center mb-4">
-                        <span class="text-xs text-zinc-400 uppercase tracking-widest block font-medium">Virtual Agent Wallet Balance</span>
-                        <span id="agent-balance-display" class="text-3xl font-black text-amber-400 mt-1 block">₵0.00</span>
-                    </div>
-                    <button onclick="openDepositModal()" class="w-full bg-zinc-800 hover:bg-zinc-700 border border-zinc-700 text-zinc-300 text-xs font-bold py-2 px-4 rounded transition flex items-center justify-center gap-2">
-                        <i class="fa-solid fa-wallet text-amber-400"></i> Manual Deposit Instructions
-                    </button>
-                </div>
-            </div>
-
-            <!-- Global Live Dynamic Broadcast Board -->
-            <div class="bg-[#1A1A22] border border-zinc-800 rounded-xl p-4 flex flex-col gap-3">
-                <div class="flex items-center gap-2 border-b border-zinc-800 pb-2">
-                    <i class="fa-solid fa-circle-exclamation text-amber-400 text-sm"></i>
-                    <h3 class="text-xs font-bold uppercase tracking-wider text-zinc-300">ADMIN LIVE FEED UPDATES</h3>
-                </div>
-                <div id="admin-broadcast-feed" class="text-xs text-zinc-400 bg-black/40 p-3 rounded border border-zinc-900 leading-relaxed">
-                    🌟 <span class="text-amber-300 font-medium">Welcome to Legacy Data Hub!</span> MTN, Telecel, and AirtelTigo lines are up. Complete checkouts using your pre-funded account balance wallet or straight through Paystack.
-                </div>
-                
-                <!-- Admin Simulation Tools -->
-                <div class="mt-2 pt-2 border-t border-zinc-800/50">
-                    <button onclick="toggleAdminPanelVisibility()" class="text-[10px] text-zinc-600 hover:text-amber-500 tracking-wide underline uppercase block transition">
-                        Toggle Admin Simulated Tools
-                    </button>
-                    <div id="simulated-admin-panel" class="hidden mt-3 p-2 bg-zinc-900/50 rounded border border-zinc-800 text-[11px] text-zinc-400">
-                        <p class="font-bold text-zinc-300 mb-1">Simulate Inventory Stocks:</p>
-                        <div class="flex flex-col gap-1.5 mb-3">
-                            <label class="flex items-center gap-2 cursor-pointer"><input type="checkbox" checked onchange="toggleStockStatus('MTN', this.checked)"> MTN Status (In Stock)</label>
-                            <label class="flex items-center gap-2 cursor-pointer"><input type="checkbox" checked onchange="toggleStockStatus('TELECEL', this.checked)"> Telecel Status (In Stock)</label>
-                            <label class="flex items-center gap-2 cursor-pointer"><input type="checkbox" checked onchange="toggleStockStatus('AIRTELTIGO', this.checked)"> AirtelTigo Status (In Stock)</label>
-                        </div>
-                        <p class="font-bold text-zinc-300 mb-1">Simulate Crediting Wallet Balance:</p>
-                        <div class="flex gap-2">
-                            <input type="number" id="admin-credit-amount" class="w-20 bg-black border border-zinc-700 text-white rounded p-1 text-xs" placeholder="₵50">
-                            <button onclick="simulateAdminBalanceCredit()" class="bg-amber-400 text-black font-bold px-2 py-1 rounded text-[10px]">Add Balance</button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Communication channels & Support links -->
-            <div class="bg-[#1A1A22] border border-zinc-800 rounded-xl p-4 flex flex-col gap-3 text-xs">
-                <h3 class="font-bold text-zinc-300 uppercase tracking-wider text-xs mb-1">Secure Support Lines</h3>
-                
-                <a href="https://wa.me/message/DF4CE2EQV33QP1" target="_blank" class="flex items-center gap-3 p-2.5 bg-[#25D366]/10 hover:bg-[#25D366]/20 text-[#25D366] rounded-lg transition border border-[#25D366]/30">
-                    <i class="fa-brands fa-whatsapp text-lg"></i>
-                    <div>
-                        <p class="font-bold">Official Support Line</p>
-                        <p class="text-[10px] opacity-80">Tap to text securely on WhatsApp</p>
-                    </div>
-                </a>
-
-                <a href="https://whatsapp.com/channel/0029VaCiikI23n3Wt1d5z402" target="_blank" class="flex items-center gap-3 p-2.5 bg-[#25D366]/10 hover:bg-[#25D366]/20 text-emerald-400 rounded-lg transition border border-emerald-500/30">
-                    <i class="fa-brands fa-whatsapp text-lg"></i>
-                    <div>
-                        <p class="font-bold">WhatsApp Channel Broadcasts</p>
-                        <p class="text-[10px] opacity-80">Join live update channel feeds</p>
-                    </div>
-                </a>
-
-                <div class="pt-2 border-t border-zinc-800 flex flex-col gap-1.5 text-zinc-400">
-                    <div class="flex items-center gap-2"><i class="fa-solid fa-phone text-amber-400 w-4"></i> <span>0599821047</span></div>
-                    <div class="flex items-center gap-2"><i class="fa-solid fa-envelope text-amber-400 w-4"></i> <span>legacydatahub@gmail.com</span></div>
-                </div>
-            </div>
-        </section>
-
-        <!-- Right Side: Order Storefront Processing Engine & Summaries -->
-        <section class="lg:col-span-8 flex flex-col gap-6">
-            
-            <!-- Storefront Main Control Panel Router -->
-            <div class="bg-[#1A1A22] border border-zinc-800 rounded-xl p-5 shadow-xl">
-                <h2 class="text-lg font-bold text-zinc-200 mb-4 flex items-center gap-2">
-                    <span class="p-1.5 bg-amber-400 text-black rounded text-xs"><i class="fa-solid fa-shopping-cart"></i></span> 
-                    Agent Selection Storefront
-                </h2>
-
-                <!-- Network Switcher Selector Tabs -->
-                <div class="grid grid-cols-3 gap-2 p-1 bg-black rounded-lg mb-5 border border-zinc-800">
-                    <button onclick="switchNetworkFilter('MTN')" id="tab-MTN" class="py-2.5 rounded-md font-bold text-xs transition uppercase tracking-widest bg-yellow-brand text-black">MTN</button>
-                    <button onclick="switchNetworkFilter('TELECEL')" id="tab-TELECEL" class="py-2.5 rounded-md font-bold text-xs transition text-zinc-400 hover:text-white uppercase tracking-widest">TELECEL</button>
-                    <button onclick="switchNetworkFilter('AIRTELTIGO')" id="tab-AIRTELTIGO" class="py-2.5 rounded-md font-bold text-xs transition text-zinc-400 hover:text-white uppercase tracking-widest">AIRTELTIGO</button>
-                </div>
-
-                <!-- Input Form Field Mechanics -->
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-5">
-                    <div>
-                        <label class="block text-xs uppercase tracking-wider text-zinc-400 font-bold mb-1">Target Account Mobile Number</label>
-                        <div class="relative">
-                            <input type="tel" id="order-phone" class="w-full bg-[#0F0F12] border border-zinc-700 rounded p-2.5 pl-9 text-sm text-white font-mono tracking-widest focus:outline-none focus:border-amber-400" placeholder="05XXXXXXXX" maxlength="10">
-                            <i class="fa-solid fa-mobile-screen absolute left-3 top-3.5 text-zinc-500 text-xs"></i>
-                        </div>
-                    </div>
-                    <div>
-                        <label class="block text-xs uppercase tracking-wider text-zinc-400 font-bold mb-1">Select Bundle Size Allocation</label>
-                        <select id="order-package-select" onchange="calculateOrderCalculationSummary()" class="w-full bg-[#0F0F12] border border-zinc-700 rounded p-2.5 text-sm text-white focus:outline-none focus:border-amber-400 cursor-pointer"></select>
-                    </div>
-                </div>
-
-                <!-- Out of stock alert window dynamically inserted -->
-                <div id="stock-warning-banner" class="hidden mb-4 p-3 bg-red-900/30 text-red-400 border border-red-800/50 rounded text-xs flex items-center gap-2">
-                    <i class="fa-solid fa-triangle-exclamation"></i>
-                    <span>Selected network allocation is temporarily marked OUT OF STOCK by admin. Purchases paused.</span>
-                </div>
-
-                <!-- Live Dynamic Realtime Order Summary Checkbox Block -->
-                <div class="bg-black/60 border border-zinc-800 rounded-lg p-4 mb-5">
-                    <h3 class="text-xs uppercase tracking-wider text-amber-400 font-bold mb-3 border-b border-zinc-800 pb-1.5">Live Checkout Summary</h3>
-                    <div class="grid grid-cols-2 gap-y-2 text-xs">
-                        <span class="text-zinc-500">Selected Provider Network:</span> <span id="summary-network" class="text-right font-bold text-zinc-300">-</span>
-                        <span class="text-zinc-500">Selected Allocation Data:</span> <span id="summary-bundle" class="text-right font-bold text-zinc-300">-</span>
-                        <span class="text-zinc-500">Target Recipient Number:</span> <span id="summary-phone" class="text-right font-mono font-bold text-amber-400">-</span>
-                        <div class="col-span-2 border-t border-zinc-800 my-1"></div>
-                        <span class="text-sm font-bold text-zinc-300">Total Price Liability:</span> <span id="summary-price" class="text-right text-base font-black text-yellow-brand">₵0.00</span>
-                    </div>
-                </div>
-
-                <!-- Dual Dynamic Action Triggers -->
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
-                    <button id="dispatch-wallet-btn" onclick="executePurchaseWithWallet()" class="w-full bg-zinc-800 hover:bg-zinc-700 text-amber-400 border border-zinc-700 font-bold text-xs py-3 rounded-lg transition tracking-wider flex items-center justify-center gap-2 disabled:opacity-30 disabled:cursor-not-allowed">
-                        <i class="fa-solid fa-wallet"></i> Pay via Founded Account Balance
-                    </button>
-                    <button id="dispatch-purchase-btn" onclick="executePurchaseWithPaystack()" class="w-full bg-yellow-brand text-black font-black text-xs py-3 rounded-lg transition shadow-xl tracking-wider flex items-center justify-center gap-2 disabled:opacity-30 disabled:cursor-not-allowed">
-                        <i class="fa-solid fa-credit-card"></i> Pay via Instant Paystack Gate
-                    </button>
-                </div>
-            </div>
-
-            <!-- Historical Transaction Ledger & Sync Logs -->
-            <div class="bg-[#1A1A22] border border-zinc-800 rounded-xl p-5 shadow-xl flex-grow">
-                <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2 mb-4 border-b border-zinc-800 pb-3">
-                    <div>
-                        <h2 class="text-base font-bold text-zinc-200">Personal Account Order History</h2>
-                        <p class="text-xs text-zinc-500">Live system records showing payment methods, order placement execution, and exact dates.</p>
-                    </div>
-                    <button onclick="fetchRealtimeOrderHistoryLogs()" class="text-xs text-amber-400 hover:underline bg-zinc-900 border border-zinc-800 px-2.5 py-1 rounded flex items-center gap-1.5">
-                        <i class="fa-solid fa-rotate"></i> Refresh Logs
-                    </button>
-                </div>
-
-                <!-- Table Context Layout Frame -->
-                <div class="overflow-x-auto">
-                    <table class="w-full text-xs text-left text-zinc-400">
-                        <thead class="text-[10px] uppercase bg-black text-zinc-500 font-mono border-b border-zinc-800">
-                            <tr>
-                                <th class="p-3">Reference / ID</th>
-                                <th class="p-3">Method Origin</th>
-                                <th class="p-3">Network & Number</th>
-                                <th class="p-3">Bundle Size</th>
-                                <th class="p-3">Cost</th>
-                                <th class="p-3">Placement Date & Time</th>
-                                <th class="p-3 text-right">Status</th>
-                            </tr>
-                        </thead>
-                        <tbody id="order-history-tbody">
-                            <tr>
-                                <td colspan="7" class="text-center p-8 text-zinc-600 font-medium">
-                                    <i class="fa-solid fa-lock-open text-lg mb-2 block text-zinc-700"></i>
-                                    Authenticate agent credentials to load live state history.
-                                </td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-        </section>
-    </main>
-
-    <!-- Deposit Options Modal -->
-    <div id="deposit-modal" class="fixed inset-0 bg-black/80 z-50 backdrop-blur-xs hidden flex items-center justify-center p-4">
-        <div class="bg-[#1A1A22] border border-zinc-800 rounded-xl p-5 w-full max-w-sm">
-            <div class="flex justify-between items-center mb-4">
-                <h3 class="font-bold text-amber-400 text-sm uppercase tracking-wider">Deposit Options Panel</h3>
-                <button onclick="closeDepositModal()" class="text-zinc-500 hover:text-white text-lg">&times;</button>
-            </div>
-            <p class="text-xs text-zinc-400 mb-4 leading-relaxed">
-                To credit your account balance, complete manual transfers or direct mobile money payments to:
-            </p>
-            <div class="bg-black/50 border border-zinc-800 rounded p-3 text-xs mb-4 flex flex-col gap-2">
-                <div><span class="text-zinc-500">Momo Account Name:</span> <span class="font-bold text-zinc-300">Legacy Data Hub Account</span></div>
-                <div><span class="text-zinc-500">Momo Network Provider:</span> <span class="font-bold text-zinc-300">MTN Mobile Money</span></div>
-                <div><span class="text-zinc-500">Registered Line:</span> <span class="font-mono font-bold text-amber-400">0599821047</span></div>
-            </div>
-            <p class="text-[11px] text-zinc-500 mb-4">⚠️ Send proof of payment to support line to get your Virtual Wallet Balance funded.</p>
-            <button onclick="closeDepositModal()" class="w-full bg-zinc-800 hover:bg-zinc-700 text-zinc-300 py-2 rounded text-xs font-bold transition">
-                Close Panel Configuration
-            </button>
-        </div>
+        <a href="https://whatsapp.com/channel/0029VaCiikI23n3Wt1d5z402" target="_blank" class="whatsapp-link">
+          <svg class="whatsapp-icon" viewBox="0 0 24 24"><path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946C.06 5.348 5.397.01 12.008.01c3.202.001 6.212 1.246 8.477 3.514 2.266 2.268 3.507 5.28 3.505 8.484-.004 6.657-5.34 11.997-11.953 11.997-2.005-.001-3.973-.502-5.713-1.455L0 24zm6.59-3.847c1.62.963 3.424 1.47 5.267 1.471h.005c5.445 0 9.876-4.43 9.88-9.878.002-2.64-1.019-5.123-2.877-6.983-1.857-1.86-4.339-2.883-6.98-2.884-5.448 0-9.88 4.43-9.884 9.88-.001 1.83.479 3.619 1.392 5.216l-.961 3.513 3.6-.945zm11.233-7.561c-.3-.149-1.772-.875-2.046-.975-.274-.1-.474-.149-.674.15-.2.299-.773.975-.947 1.174-.174.199-.349.224-.648.075-.3-.15-1.265-.466-2.41-1.485-.89-.794-1.49-1.775-1.665-2.074-.174-.299-.019-.461.13-.609.135-.133.3-.299.449-.449.149-.15.199-.249.299-.498.1-.2.05-.374-.025-.524-.075-.15-.674-1.62-.923-2.219-.242-.582-.487-.504-.674-.513-.174-.009-.374-.009-.573-.009-.2 0-.523.075-.797.374-.274.299-1.047 1.022-1.047 2.494 0 1.471 1.071 2.892 1.221 3.092.149.199 2.107 3.216 5.106 4.512.714.309 1.271.494 1.708.633.717.228 1.37.195 1.887.118.575-.085 1.772-.723 2.021-1.396.249-.673.249-1.246.174-1.396-.075-.149-.274-.249-.574-.398z"/></svg>
+          Join Channel for Updates
+        </a>
+      </div>
     </div>
 
-    <!-- Footing Metadata Section Container -->
-    <footer class="bg-black border-t border-zinc-900 py-4 text-center mt-8">
-        <p class="text-[11px] text-zinc-600">&copy; 2026 LEGACY DATA HUB. Automated secure encryption protocols enabled.</p>
-    </footer>
+    <div class="network-selector">
+      <button class="network-btn active" data-network="MTN">MTN</button>
+      <button class="network-btn" data-network="TELECEL">TELECEL</button>
+      <button class="network-btn" data-network="AIRTELTIGO">AIRTELTIGO</button>
+    </div>
 
-    <!-- System JavaScript Logic Architecture Mechanics Execution Engine -->
-    <script>
-        const SUPABASE_URL = 'https://egrwptogexqkzcjfqxbn.supabase.co';
-        const SUPABASE_ANON_KEY = 'sb_publishable_UeY0e0sN7e2W7CgVACzcPg_H0feTX6I';
-        const PAYSTACK_PUBLIC_KEY = 'pk_live_8b9d5c666a57f0c2c1a5cb908083e50972b1e2aa';
+    <button class="toggle-packages-btn" id="toggleDrawerBtn" onclick="togglePackagesDrawer()">View Available Packages</button>
 
-        const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+    <div class="packages-drawer" id="packagesDrawer">
+      <div class="packages-grid" id="packagesContainer"></div>
+    </div>
 
-        let activeNetworkSelected = 'MTN';
-        let currentAuthenticatedAgent = null;
-        let activeAuthenticationModeRegister = false;
-        let virtualWalletBalance = 0.00;
+    <div class="order-form">
+      <h3 style="text-align:center; margin-bottom:1.2rem; color:var(--yellow); font-family:'Orbitron', sans-serif; font-size: 1.15rem;">Order Placement</h3>
+      <div class="form-group">
+        <label for="phoneNumber">Phone Number (Enter valid network number)</label>
+        <input type="tel" id="phoneNumber" placeholder="e.g. 0599821047" maxlength="10" required>
+      </div>
+      <div class="form-group">
+        <label for="selectedPackage">Selected Package</label>
+        <input type="text" id="selectedPackage" readonly placeholder="Select a package button from above">
+      </div>
+      <div class="form-group">
+        <label for="totalAmount">Total Amount (GHC)</label>
+        <input type="text" id="totalAmount" readonly placeholder="₵0.00">
+      </div>
 
-        const stockInventoryState = { MTN: true, TELECEL: true, AIRTELTIGO: true };
+      <div class="summary">
+        <h3>Live Summary Preview</h3>
+        <div class="summary-item"><span>Network:</span><span id="summaryNetwork">MTN</span></div>
+        <div class="summary-item"><span>Package:</span><span id="summaryPackage">-</span></div>
+        <div class="summary-item"><span>Amount:</span><span id="summaryAmount">-</span></div>
+        <div class="summary-item"><span>Phone:</span><span id="summaryPhone">-</span></div>
+      </div>
 
-        const datasetPackageMatrixCatalog = [
-            // MTN Catalog Data Matrix
-            { id: 'mtn-1', network: 'MTN', text: '1GB Allocation', cost: 4.80 },
-            { id: 'mtn-2', network: 'MTN', text: '2GB Allocation', cost: 9.80 },
-            { id: 'mtn-3', network: 'MTN', text: '3GB Allocation', cost: 14.30 },
-            { id: 'mtn-4', network: 'MTN', text: '4GB Allocation', cost: 22.00 },
-            { id: 'mtn-5', network: 'MTN', text: '5GB Allocation', cost: 26.00 },
-            { id: 'mtn-6', network: 'MTN', text: '6GB Allocation', cost: 29.00 },
-            { id: 'mtn-8', network: 'MTN', text: '8GB Allocation', cost: 37.00 },
-            { id: 'mtn-10', network: 'MTN', text: '10GB Allocation', cost: 46.00 },
-            { id: 'mtn-15', network: 'MTN', text: '15GB Allocation', cost: 64.00 },
-            { id: 'mtn-20', network: 'MTN', text: '20GB Allocation', cost: 84.00 },
-            { id: 'mtn-25', network: 'MTN', text: '25GB Allocation', cost: 104.00 },
-            { id: 'mtn-30', network: 'MTN', text: '30GB Allocation', cost: 126.00 },
-            { id: 'mtn-40', network: 'MTN', text: '40GB Allocation', cost: 163.00 },
-            { id: 'mtn-50', network: 'MTN', text: '50GB Allocation', cost: 205.00 },
+      <button class="btn" id="payButton">Pay Now with Paystack</button>
 
-            // Telecel Catalog Data Matrix
-            { id: 'tcl-10', network: 'TELECEL', text: '10GB Allocation', cost: 41.00 },
-            { id: 'tcl-15', network: 'TELECEL', text: '15GB Allocation', cost: 57.85 },
-            { id: 'tcl-20', network: 'TELECEL', text: '20GB Allocation', cost: 76.80 },
-            { id: 'tcl-25', network: 'TELECEL', text: '25GB Allocation', cost: 93.75 },
-            { id: 'tcl-40', network: 'TELECEL', text: '40GB Allocation', cost: 146.60 },
-            { id: 'tcl-50', network: 'TELECEL', text: '50GB Allocation', cost: 181.50 },
+      <div class="divider"></div>
 
-            // AirtelTigo Catalog Data Matrix
-            { id: 'at-1', network: 'AIRTELTIGO', text: '1GB Allocation', cost: 4.75 },
-            { id: 'at-2', network: 'AIRTELTIGO', text: '2GB Allocation', cost: 9.25 },
-            { id: 'at-3', network: 'AIRTELTIGO', text: '14.25 Allocation', cost: 14.25 },
-            { id: 'at-4', network: 'AIRTELTIGO', text: '4GB Allocation', cost: 17.50 },
-            { id: 'at-5', network: 'AIRTELTIGO', text: '5GB Allocation', cost: 20.50 },
-            { id: 'at-6', network: 'AIRTELTIGO', text: '6GB Allocation', cost: 24.50 },
-            { id: 'at-8', network: 'AIRTELTIGO', text: '8GB Allocation', cost: 32.00 },
-            { id: 'at-10', network: 'AIRTELTIGO', text: '10GB Allocation', cost: 40.00 },
-            { id: 'at-12', network: 'AIRTELTIGO', text: '12GB Allocation', cost: 47.00 },
-            { id: 'at-15', network: 'AIRTELTIGO', text: '15GB Allocation', cost: 60.50 }
-        ];
+      <button class="btn track-trigger-btn" id="openTrackBtn" onclick="toggleTrackingSearch(true)">Track My Order</button>
+      
+      <div class="search-bar-container" id="searchBarContainer">
+        <div class="form-group">
+          <label for="trackPhoneNumber">Enter Phone Number to Track Order</label>
+          <input type="tel" id="trackPhoneNumber" placeholder="e.g. 0599821047" maxlength="10">
+        </div>
+        <div class="search-actions">
+          <button class="btn-cancel" onclick="toggleTrackingSearch(false)">Cancel</button>
+          <button class="btn" id="trackButton" style="box-shadow: none; flex: 2;">Search</button>
+        </div>
+      </div>
+    </div>
+  </div>
 
-        window.addEventListener('DOMContentLoaded', async () => {
-            const { data: { session } } = await supabaseClient.auth.getSession();
-            handleAuthSessionUpdateState(session);
+  <footer>
+    <p style="opacity: 0.5; font-size: 0.8rem;">&copy; 2026 LEGACY DATA HUB. All rights reserved.</p>
+  </footer>
 
-            supabaseClient.auth.onAuthStateChange((_event, session) => {
-                handleAuthSessionUpdateState(session);
-            });
+  <script>
+    const scene = new THREE.Scene();
+    const camera = new THREE.PerspectiveCamera(60, window.innerWidth / window.innerHeight, 0.1, 500);
+    
+    const renderer = new THREE.WebGLRenderer({ antialias: false, alpha: true });
+    renderer.setSize(window.innerWidth, window.innerHeight);
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2)); 
+    document.getElementById('scene-container').appendChild(renderer.domElement);
 
-            switchNetworkFilter('MTN');
-            document.getElementById('order-phone').addEventListener('input', calculateOrderCalculationSummary);
-            loadSimulatedWalletBalance();
+    const particlesGeometry = new THREE.BufferGeometry();
+    const particlesCount = window.innerWidth < 768 ? 250 : 600; 
+    const posArray = new Float32Array(particlesCount * 3);
+    for(let i = 0; i < particlesCount * 3; i++) {
+      posArray[i] = (Math.random() - 0.5) * 120;
+    }
+    particlesGeometry.setAttribute('position', new THREE.BufferAttribute(posArray, 3));
+
+    const particlesMaterial = new THREE.PointsMaterial({
+      size: 0.9,
+      color: 0xFFD700,
+      transparent: true,
+      opacity: 0.5
+    });
+
+    const particlesMesh = new THREE.Points(particlesGeometry, particlesMaterial);
+    scene.add(particlesMesh);
+
+    const torusGeometry = new THREE.TorusGeometry(6, 1.2, 10, 30);
+    const torusMaterial = new THREE.MeshBasicMaterial({ 
+      color: 0xFFD700,
+      wireframe: true,
+      transparent: true,
+      opacity: 0.25
+    });
+    const torus = new THREE.Mesh(torusGeometry, torusMaterial);
+    torus.position.y = 2;
+    scene.add(torus);
+
+    const baseSizes = ['1GB', '2GB', '3GB', '4GB', '5GB', '6GB', '8GB', '10GB', '15GB', '20GB', '30GB', '40GB'];
+    const totalLabelsCount = window.innerWidth < 768 ? 90 : 216; 
+    const dataMeshes = [];
+
+    const textureCache = {};
+    baseSizes.forEach(sz => {
+      const canvas = document.createElement('canvas');
+      canvas.width = 128;
+      canvas.height = 64;
+      const ctx = canvas.getContext('2d');
+      ctx.fillStyle = 'rgba(0,0,0,0)';
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+      ctx.font = 'bold 32px "Orbitron", sans-serif';
+      ctx.fillStyle = '#FFD700';
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'middle';
+      ctx.shadowColor = 'rgba(255, 215, 0, 0.6)';
+      ctx.shadowBlur = 6;
+      ctx.fillText(sz, canvas.width / 2, canvas.height / 2);
+      textureCache[sz] = new THREE.CanvasTexture(canvas);
+    });
+
+    for(let i = 0; i < totalLabelsCount; i++) {
+      const selectedSize = baseSizes[i % baseSizes.length];
+      const texture = textureCache[selectedSize];
+      
+      const spriteMaterial = new THREE.SpriteMaterial({ 
+        map: texture, 
+        transparent: true, 
+        opacity: Math.random() * 0.35 + 0.2 
+      });
+      const sprite = new THREE.Sprite(spriteMaterial);
+      
+      const randomScaleFactor = Math.random() * 1.5 + 2.0; 
+      sprite.scale.set(randomScaleFactor, randomScaleFactor * 0.5, 1);
+      
+      sprite.position.set(
+        (Math.random() - 0.5) * 60,
+        (Math.random() - 0.5) * 40,
+        (Math.random() - 0.5) * 35 - 10
+      );
+      
+      sprite.userData = {
+        vx: (Math.random() - 0.5) * 0.035, 
+        vy: (Math.random() - 0.5) * 0.035, 
+        timeOffset: Math.random() * 200
+      };
+      
+      scene.add(sprite);
+      dataMeshes.push(sprite);
+    }
+
+    camera.position.z = window.innerWidth < 768 ? 30 : 25;
+
+    window.addEventListener('resize', () => {
+      camera.aspect = window.innerWidth / window.innerHeight;
+      camera.updateProjectionMatrix();
+      renderer.setSize(window.innerWidth, window.innerHeight);
+    });
+
+    const animate = () => {
+      requestAnimationFrame(animate);
+      particlesMesh.rotation.x += 0.0002;
+      particlesMesh.rotation.y += 0.0002;
+      torus.rotation.x += 0.002;
+      torus.rotation.y += 0.004;
+      
+      const time = Date.now() * 0.0015;
+      dataMeshes.forEach(sprite => {
+        sprite.position.x += sprite.userData.vx;
+        sprite.position.y += sprite.userData.vy;
+        sprite.position.y += Math.sin(time + sprite.userData.timeOffset) * 0.006;
+
+        if (Math.abs(sprite.position.x) > 35) sprite.userData.vx *= -1;
+        if (Math.abs(sprite.position.y) > 22) sprite.userData.vy *= -1;
+      });
+
+      renderer.render(scene, camera);
+    };
+    animate();
+
+    const PAYSTACK_PUBLIC_KEY = 'pk_live_8b9d5c666a57f0c2c1a5cb908083e50972b1e2aa';
+    
+    const packages = {
+      MTN: [
+        { size: '1GB', price: 4.80 }, { size: '2GB', price: 9.80 }, { size: '3GB', price: 14.30 },
+        { size: '4GB', price: 22 }, { size: '5GB', price: 26 }, { size: '6GB', price: 29 },
+        { size: '8GB', price: 37 }, { size: '10GB', price: 46 }, { size: '15GB', price: 64 },
+        { size: '20GB', price: 84 }, { size: '25GB', price: 104 }, { size: '30GB', price: 126 },
+        { size: '40GB', price: 163 }, { size: '50GB', price: 205 }
+      ],
+      TELECEL: [
+        { size: '10GB', price: 43 }, { size: '15GB', price: 58.85 }, { size: '20GB', price: 78.80 },
+        { size: '25GB', price: 95.75 }, { size: '40GB', price: 148.60 }, { size: '50GB', price: 184.50 }
+      ],
+      AIRTELTIGO: [
+        { size: '1GB', price: 4.75 }, { size: '2GB', price: 9.25 }, { size: '3GB', price: 14.25 },
+        { size: '4GB', price: 17.50 }, { size: '5GB', price: 20.50 }, { size: '6GB', price: 24.50 },
+        { size: '8GB', price: 32 }, { size: '10GB', price: 40 }, { size: '12GB', price: 47 },
+        { size: '15GB', price: 60.50 }
+      ]
+    };
+
+    let currentNetwork = 'MTN';
+    let selectedPackage = null;
+
+    const forceNumeric = (e) => { e.target.value = e.target.value.replace(/[^0-9]/g, ''); };
+    document.getElementById('phoneNumber').addEventListener('input', (e) => {
+      forceNumeric(e);
+      document.getElementById('summaryPhone').textContent = e.target.value || '-';
+    });
+    document.getElementById('trackPhoneNumber').addEventListener('input', forceNumeric);
+
+    function togglePackagesDrawer() {
+      const drawer = document.getElementById('packagesDrawer');
+      const btn = document.getElementById('toggleDrawerBtn');
+      
+      if (drawer.classList.contains('open')) {
+        drawer.classList.remove('open');
+        btn.textContent = 'View Available Packages';
+      } else {
+        drawer.classList.add('open');
+        btn.textContent = 'Hide Packages Grid';
+      }
+    }
+
+    function renderPackages(network) {
+      const container = document.getElementById('packagesContainer');
+      container.innerHTML = '';
+      
+      packages[network].forEach(pkg => {
+        const button = document.createElement('button');
+        button.type = 'button';
+        button.className = 'package-btn';
+        button.innerHTML = `
+          <div class="package-size">${pkg.size}</div>
+          <div class="package-price">₵${pkg.price.toFixed(2)}</div>
+        `;
+        button.addEventListener('click', () => {
+          selectedPackage = pkg;
+          document.getElementById('selectedPackage').value = `${pkg.size} (${network})`;
+          document.getElementById('totalAmount').value = `₵${pkg.price.toFixed(2)}`;
+          document.getElementById('summaryPackage').textContent = `${pkg.size} (${network})`;
+          document.getElementById('summaryAmount').textContent = `₵${pkg.price.toFixed(2)}`;
+          
+          document.querySelectorAll('.package-btn').forEach(b => b.classList.remove('selected'));
+          button.classList.add('selected');
         });
+        container.appendChild(button);
+      });
+    }
 
-        function toggleAuthMode(shouldRegister) {
-            activeAuthenticationModeRegister = shouldRegister;
-            const title = document.getElementById('auth-title');
-            const btn = document.getElementById('main-auth-btn');
-            const toggleMsg = document.getElementById('toggle-auth-msg');
+    document.querySelectorAll('.network-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        document.querySelectorAll('.network-btn').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        currentNetwork = btn.dataset.network;
+        document.getElementById('summaryNetwork').textContent = currentNetwork;
+        renderPackages(currentNetwork);
+        selectedPackage = null;
+        document.getElementById('selectedPackage').value = '';
+        document.getElementById('totalAmount').value = '';
+        document.getElementById('summaryPackage').textContent = '-';
+        document.getElementById('summaryAmount').textContent = '-';
+      });
+    });
 
-            if (shouldRegister) {
-                title.innerText = 'Register New Agent Profile';
-                btn.innerText = 'Establish Agent Credentials';
-                toggleMsg.innerHTML = `Existing agent account? <a href="#" onclick="toggleAuthMode(false)" class="text-amber-400 underline">Sign in access here</a>`;
-            } else {
-                title.innerText = 'Welcome Node / Access Gateway';
-                btn.innerText = 'Sign In Access';
-                toggleMsg.innerHTML = `Don't have an agent profile? <a href="#" onclick="toggleAuthMode(true)" class="text-amber-400 underline">Register here</a>`;
-            }
+    document.getElementById('payButton').addEventListener('click', () => {
+      const phone = document.getElementById('phoneNumber').value;
+      if (!selectedPackage) {
+        alert('Please open the package drawer above and pick a bundle first.');
+        return;
+      }
+      if (!phone || phone.length < 10) {
+        alert('Please enter a complete 10-digit valid phone number.');
+        return;
+      }
+      
+      const handler = PaystackPop.setup({
+        key: PAYSTACK_PUBLIC_KEY,
+        email: 'legacydatahub@gmail.com',
+        amount: Math.round(selectedPackage.price * 100),
+        currency: 'GHS',
+        ref: 'LDH-' + Date.now() + '-' + Math.floor((Math.random() * 100000) + 1),
+        metadata: {
+          custom_fields: [
+            { display_name: "Network", variable_name: "network", value: currentNetwork },
+            { display_name: "Package Size", variable_name: "package_size", value: selectedPackage.size },
+            { display_name: "Recipient Phone", variable_name: "recipient_phone", value: phone }
+          ]
+        },
+        callback: function(response) {
+          alert('Payment successful! Reference: ' + response.reference + '\nYour bundle will arrive within 5-30 minutes.');
+        },
+        onClose: function() {
+          alert('Transaction window closed.');
         }
+      });
+      handler.openIframe();
+    });
 
-        async function processAuth() {
-            const email = document.getElementById('auth-email').value.trim();
-            const password = document.getElementById('auth-password').value.trim();
+    function toggleTrackingSearch(show) {
+      const searchContainer = document.getElementById('searchBarContainer');
+      const openBtn = document.getElementById('openTrackBtn');
+      
+      if (show) {
+        searchContainer.classList.add('open');
+        openBtn.style.display = 'none';
+        document.getElementById('trackPhoneNumber').focus();
+      } else {
+        searchContainer.classList.remove('open');
+        openBtn.style.display = 'block';
+        document.getElementById('trackPhoneNumber').value = '';
+      }
+    }
 
-            if (!email || !password) {
-                alert('Input proper values into required access logs.');
-                return;
-            }
+    document.getElementById('trackButton').addEventListener('click', () => {
+      const trackPhone = document.getElementById('trackPhoneNumber').value;
+      if (!trackPhone || trackPhone.length < 10) {
+        alert('Please enter a complete 10-digit telephone order identity.');
+        return;
+      }
+      const message = encodeURIComponent(`order tracking ${trackPhone}`);
+      window.open(`https://wa.me/233599821047?text=${message}`, '_blank');
+    });
 
-            try {
-                if (activeAuthenticationModeRegister) {
-                    const { data, error } = await supabaseClient.auth.signUp({ email, password });
-                    if (error) throw error;
-                    alert('Agent registration initial log sent successfully! Check email inbox filters for validation links.');
-                } else {
-                    const { data, error } = await supabaseClient.auth.signInWithPassword({ email, password });
-                    if (error) throw error;
-                }
-            } catch (err) {
-                alert('Authentication Exception: ' + err.message);
-            }
-        }
-
-        async function triggerPasswordReset() {
-            const email = document.getElementById('auth-email').value.trim();
-            if (!email) {
-                alert('Enter an email address to request a reset link.');
-                return;
-            }
-            try {
-                const { error } = await supabaseClient.auth.resetPasswordForEmail(email);
-                if (error) throw error;
-                alert('Password reset communication link transmitted to inbox successfully.');
-            } catch (err) {
-                alert('Error processing reset: ' + err.message);
-            }
-        }
-
-        async function handleLogout() {
-            await supabaseClient.auth.signOut();
-        }
-
-        function handleAuthSessionUpdateState(session) {
-            const authFormContainer = document.getElementById('auth-form-container');
-            const agentActivePanel = document.getElementById('agent-active-panel');
-            const authUserBadge = document.getElementById('auth-user-badge');
-            const logoutBtn = document.getElementById('logout-btn');
-            const userEmailDisplay = document.getElementById('user-email-display');
-            const welcomeMsg = document.getElementById('welcome-message');
-
-            if (session && session.user) {
-                currentAuthenticatedAgent = session.user;
-                authFormContainer.classList.add('hidden');
-                welcomeMsg.classList.remove('hidden');
-                agentActivePanel.classList.remove('hidden');
-                authUserBadge.classList.remove('hidden');
-                logoutBtn.classList.remove('hidden');
-                userEmailDisplay.innerText = session.user.email;
-                loadSimulatedWalletBalance();
-                fetchRealtimeOrderHistoryLogs();
-            } else {
-                currentAuthenticatedAgent = null;
-                authFormContainer.classList.remove('hidden');
-                welcomeMsg.classList.add('hidden');
-                agentActivePanel.classList.add('hidden');
-                authUserBadge.classList.add('hidden');
-                logoutBtn.classList.add('hidden');
-                buildFallbackOfflineTableState();
-            }
-        }
-
-        function switchNetworkFilter(networkKey) {
-            activeNetworkSelected = networkKey;
-            
-            ['MTN', 'TELECEL', 'AIRTELTIGO'].forEach(net => {
-                const targetTab = document.getElementById(`tab-${net}`);
-                if (net === networkKey) {
-                    targetTab.className = "py-2.5 rounded-md font-bold text-xs transition uppercase tracking-widest bg-yellow-brand text-black shadow";
-                } else {
-                    targetTab.className = "py-2.5 rounded-md font-bold text-xs transition text-zinc-400 hover:text-white uppercase tracking-widest";
-                }
-            });
-
-            populateAvailablePackageDropdownSelection();
-            calculateOrderCalculationSummary();
-            evaluateStockDisplayStateWarnings();
-        }
-
-        function populateAvailablePackageDropdownSelection() {
-            const selectElement = document.getElementById('order-package-select');
-            selectElement.innerHTML = '';
-
-            const items = datasetPackageMatrixCatalog.filter(p => p.network === activeNetworkSelected);
-            items.forEach(pkg => {
-                const opt = document.createElement('option');
-                opt.value = pkg.id;
-                opt.innerText = `${pkg.text} - ₵${pkg.cost.toFixed(2)}`;
-                selectElement.appendChild(opt);
-            });
-        }
-
-        function evaluateStockDisplayStateWarnings() {
-            const banner = document.getElementById('stock-warning-banner');
-            const walletBtn = document.getElementById('dispatch-wallet-btn');
-            const paystackBtn = document.getElementById('dispatch-purchase-btn');
-            const isInStock = stockInventoryState[activeNetworkSelected];
-
-            [walletBtn, paystackBtn].forEach(btn => {
-                if (!isInStock) {
-                    banner.classList.remove('hidden');
-                    btn.disabled = true;
-                } else {
-                    banner.classList.add('hidden');
-                    btn.disabled = false;
-                }
-            });
-        }
-
-        function calculateOrderCalculationSummary() {
-            const targetPhone = document.getElementById('order-phone').value.trim();
-            const selectVal = document.getElementById('order-package-select').value;
-            
-            const matchedPackage = datasetPackageMatrixCatalog.find(p => p.id === selectVal);
-
-            document.getElementById('summary-network').innerText = activeNetworkSelected;
-            document.getElementById('summary-phone').innerText = targetPhone ? targetPhone : '-';
-
-            if (matchedPackage) {
-                document.getElementById('summary-bundle').innerText = matchedPackage.text;
-                document.getElementById('summary-price').innerText = `₵${matchedPackage.cost.toFixed(2)}`;
-            } else {
-                document.getElementById('summary-bundle').innerText = '-';
-                document.getElementById('summary-price').innerText = '₵0.00';
-            }
-        }
-
-        // PAYMENT METHOD 1: PAYSTACK CHANNELS (REBUILT WITH COMPREHENSIVE RECOVERY WRAPPERS)
-        function executePurchaseWithPaystack() {
-            if (!verifyOrderRequirements()) return;
-
-            const targetPhone = document.getElementById('order-phone').value.trim();
-            const selectVal = document.getElementById('order-package-select').value;
-            const matchedPackage = datasetPackageMatrixCatalog.find(p => p.id === selectVal);
-
-            if (!matchedPackage) {
-                alert('Please select a valid bundle allocation.');
-                return;
-            }
-
-            const uniqueReferenceID = 'LGC-PS-' + Math.floor(Math.random() * 8999999 + 1000000);
-
-            // Initializing Paystack using the updated Popup implementation
-            const handler = PaystackPop.setup({
-                key: PAYSTACK_PUBLIC_KEY,
-                email: currentAuthenticatedAgent.email,
-                amount: Math.round(parseFloat(matchedPackage.cost) * 100), // Converted to pesewas (GHS cents)
-                currency: 'GHS',
-                ref: uniqueReferenceID,
-                metadata: {
-                    custom_fields: [
-                        { display_name: "Mobile Number", variable_name: "target_mobile", value: targetPhone },
-                        { display_name: "Carrier Network", variable_name: "carrier_network", value: activeNetworkSelected }
-                    ]
-                },
-                callback: async function(response) {
-                    alert('Paystack verification clear. Syncing order details to database...');
-                    await commitVerifiedTransactionToDatabaseRecord(uniqueReferenceID, 'Paystack Inline', targetPhone, matchedPackage);
-                },
-                onClose: function() {
-                    alert('Authorization Interruption: Closed before execution.');
-                }
-            });
-
-            // Explicitly fallback if handler object structure variations occur
-            if (handler && typeof handler.openIframe === 'function') {
-                handler.openIframe();
-            } else if (typeof PaystackPop.open === 'function') {
-                // Fallback option for updated Paystack inline library standard
-                PaystackPop.open({
-                    key: PAYSTACK_PUBLIC_KEY,
-                    email: currentAuthenticatedAgent.email,
-                    amount: Math.round(parseFloat(matchedPackage.cost) * 100),
-                    currency: 'GHS',
-                    ref: uniqueReferenceID,
-                    onSuccess: async function(response) {
-                        alert('Paystack verification clear. Syncing order details to database...');
-                        await commitVerifiedTransactionToDatabaseRecord(uniqueReferenceID, 'Paystack Inline', targetPhone, matchedPackage);
-                    },
-                    onCancel: function() {
-                        alert('Authorization Interruption: Closed before execution.');
-                    }
-                });
-            } else {
-                alert('Paystack initialization error. Please check your network connection or API keys.');
-            }
-        }
-
-        // PAYMENT METHOD 2: FOUNDED AGENT BALANCE WALLET
-        async function executePurchaseWithWallet() {
-            if (!verifyOrderRequirements()) return;
-
-            const targetPhone = document.getElementById('order-phone').value.trim();
-            const selectVal = document.getElementById('order-package-select').value;
-            const matchedPackage = datasetPackageMatrixCatalog.find(p => p.id === selectVal);
-
-            if (virtualWalletBalance < matchedPackage.cost) {
-                alert(`Insufficient Funds! Your founded balance is ₵${virtualWalletBalance.toFixed(2)}, but this package costs ₵${matchedPackage.cost.toFixed(2)}.`);
-                return;
-            }
-
-            // Deduct locally and save
-            virtualWalletBalance -= matchedPackage.cost;
-            saveSimulatedWalletBalance();
-            updateBalanceUI();
-
-            const uniqueReferenceID = 'LGC-WL-' + Math.floor(Math.random() * 8999999 + 1000000);
-            
-            alert('Processing bundle via Account Balance channels...');
-            await commitVerifiedTransactionToDatabaseRecord(uniqueReferenceID, 'Founded Account', targetPhone, matchedPackage);
-        }
-
-        function verifyOrderRequirements() {
-            if (!currentAuthenticatedAgent) {
-                alert('Access Forbidden: Authenticate your profile agent account session first.');
-                return false;
-            }
-            const targetPhone = document.getElementById('order-phone').value.trim();
-            if (targetPhone.length < 9) {
-                alert('Validation Failure: Provide a valid recipient telephone number.');
-                return false;
-            }
-            return true;
-        }
-
-        // UNIVERSAL DB SYNC: Logs exact details to Supabase (including Method types)
-        async function commitVerifiedTransactionToDatabaseRecord(ref, paymentMethod, mobile, packageObj) {
-            const dateISOStringNow = new Date().toISOString();
-            
-            try {
-                // Inserts data structure directly into Supabase orders collection
-                const { error } = await supabaseClient
-                    .from('orders')
-                    .insert([
-                        {
-                            user_id: currentAuthenticatedAgent.id,
-                            user_email: currentAuthenticatedAgent.email,
-                            reference_id: ref,
-                            payment_method: paymentMethod, // Specifies "Paystack Inline" or "Founded Account"
-                            network: activeNetworkSelected,
-                            recipient_number: mobile,
-                            bundle_description: packageObj.text,
-                            amount_paid: packageObj.cost,
-                            placed_at: dateISOStringNow,
-                            status: 'Delivered (Auto Processing Finished)'
-                        }
-                    ]);
-
-                if (error) {
-                    console.warn("DB Scheme Warning: Writing backup logging state to localStorage.", error.message);
-                    saveBackupOfflineTransactionsHistoryRecords(ref, paymentMethod, mobile, packageObj, dateISOStringNow);
-                } else {
-                    alert('Order history successfully written directly to Supabase logs!');
-                }
-            } catch (ex) {
-                saveBackupOfflineTransactionsHistoryRecords(ref, paymentMethod, mobile, packageObj, dateISOStringNow);
-            }
-            fetchRealtimeOrderHistoryLogs();
-        }
-
-        async function fetchRealtimeOrderHistoryLogs() {
-            if (!currentAuthenticatedAgent) return;
-
-            try {
-                const { data, error } = await supabaseClient
-                    .from('orders')
-                    .select('*')
-                    .eq('user_id', currentAuthenticatedAgent.id)
-                    .order('placed_at', { ascending: false });
-
-                if (error || !data || data.length === 0) {
-                    loadOfflineHistoryStateRecordsTable();
-                } else {
-                    renderTableRowsState(data);
-                }
-            } catch (ex) {
-                loadOfflineHistoryStateRecordsTable();
-            }
-        }
-
-        function saveBackupOfflineTransactionsHistoryRecords(ref, paymentMethod, mobile, packageObj, dateStr) {
-            let existing = JSON.parse(localStorage.getItem('legacy_offline_orders') || '[]');
-            existing.unshift({
-                user_email: currentAuthenticatedAgent.email,
-                reference_id: ref,
-                payment_method: paymentMethod,
-                network: activeNetworkSelected,
-                recipient_number: mobile,
-                bundle_description: packageObj.text,
-                amount_paid: packageObj.cost,
-                placed_at: dateStr,
-                status: 'Delivered (5-30 mins automated processing)'
-            });
-            localStorage.setItem('legacy_offline_orders', JSON.stringify(existing));
-        }
-
-        function loadOfflineHistoryStateRecordsTable() {
-            let data = JSON.parse(localStorage.getItem('legacy_offline_orders') || '[]');
-            if(currentAuthenticatedAgent) {
-                data = data.filter(item => item.user_email === currentAuthenticatedAgent.email);
-            }
-            if (data.length === 0) {
-                document.getElementById('order-history-tbody').innerHTML = `
-                    <tr>
-                        <td colspan="7" class="text-center p-8 text-zinc-600 font-medium">
-                            <i class="fa-solid fa-hourglass-empty text-lg mb-2 block text-zinc-700"></i>
-                            No processing records found on this account profile state.
-                        </td>
-                    </tr>`;
-                return;
-            }
-            renderTableRowsState(data);
-        }
-
-        function renderTableRowsState(recordsArray) {
-            const tbody = document.getElementById('order-history-tbody');
-            tbody.innerHTML = '';
-
-            recordsArray.forEach(row => {
-                const formattedDate = new Date(row.placed_at).toLocaleString();
-                const tr = document.createElement('tr');
-                tr.className = "border-b border-zinc-800 hover:bg-zinc-900/40 transition font-mono";
-                
-                // Set badge design variations based on payment origins
-                const methodBadgeColor = (row.payment_method || '').includes('Paystack') 
-                    ? 'bg-blue-950 text-blue-400 border-blue-900' 
-                    : 'bg-amber-950 text-amber-400 border-amber-900';
-
-                tr.innerHTML = `
-                    <td class="p-3 text-zinc-400 font-bold">${row.reference_id}</td>
-                    <td class="p-3"><span class="border px-2 py-0.5 rounded text-[9px] font-bold tracking-wide uppercase ${methodBadgeColor}">${row.payment_method || 'Paystack Inline'}</span></td>
-                    <td class="p-3 text-zinc-300"><span class="bg-zinc-800 text-amber-400 px-1.5 py-0.5 rounded text-[10px] mr-1">${row.network}</span> ${row.recipient_number}</td>
-                    <td class="p-3 font-sans">${row.bundle_description}</td>
-                    <td class="p-3 text-amber-400 font-bold">₵${parseFloat(row.amount_paid).toFixed(2)}</td>
-                    <td class="p-3 text-zinc-500 text-[11px]">${formattedDate}</td>
-                    <td class="p-3 text-right"><span class="bg-emerald-950 text-emerald-400 border border-emerald-900 px-2 py-0.5 rounded-full text-[10px]">${row.status}</span></td>
-                `;
-                tbody.appendChild(tr);
-            });
-        }
-
-        function buildFallbackOfflineTableState() {
-            document.getElementById('order-history-tbody').innerHTML = `
-                <tr>
-                    <td colspan="7" class="text-center p-8 text-zinc-600 font-medium">
-                        <i class="fa-solid fa-lock-open text-lg mb-2 block text-zinc-700"></i>
-                        Authenticate agent credentials to load live state history.
-                    </td>
-                </tr>`;
-        }
-
-        // SIMULATED SYSTEM BALANCES LOGIC MANAGEMENTS
-        function loadSimulatedWalletBalance() {
-            if (currentAuthenticatedAgent) {
-                const userKey = `wallet_balance_${currentAuthenticatedAgent.id}`;
-                const saved = localStorage.getItem(userKey);
-                virtualWalletBalance = saved ? parseFloat(saved) : 0.00;
-            } else {
-                virtualWalletBalance = 0.00;
-            }
-            updateBalanceUI();
-        }
-
-        function saveSimulatedWalletBalance() {
-            if (currentAuthenticatedAgent) {
-                const userKey = `wallet_balance_${currentAuthenticatedAgent.id}`;
-                localStorage.setItem(userKey, virtualWalletBalance);
-            }
-        }
-
-        function updateBalanceUI() {
-            const el = document.getElementById('agent-balance-display');
-            if (el) el.innerText = `₵${virtualWalletBalance.toFixed(2)}`;
-        }
-
-        function simulateAdminBalanceCredit() {
-            const amountInput = document.getElementById('admin-credit-amount');
-            const val = parseFloat(amountInput.value);
-            if (isNaN(val) || val <= 0) {
-                alert('Enter a valid amount to credit.');
-                return;
-            }
-            if (!currentAuthenticatedAgent) {
-                alert('Log into an active account profile to credit.');
-                return;
-            }
-            virtualWalletBalance += val;
-            saveSimulatedWalletBalance();
-            updateBalanceUI();
-            amountInput.value = '';
-            alert(`Simulated Action Complete: Credited ₵${val.toFixed(2)} directly to agent dashboard profile balance.`);
-        }
-
-        function openDepositModal() { document.getElementById('deposit-modal').classList.remove('hidden'); }
-        function closeDepositModal() { document.getElementById('deposit-modal').classList.add('hidden'); }
-        function toggleAdminPanelVisibility() { document.getElementById('simulated-admin-panel').classList.toggle('hidden'); }
-        function toggleStockStatus(networkKey, isChecked) {
-            stockInventoryState[networkKey] = isChecked;
-            evaluateStockDisplayStateWarnings();
-        }
-    </script>
+    renderPackages(currentNetwork);
+  </script>
 </body>
 </html>
