@@ -6,6 +6,8 @@
   <title>LEGACY DATA HUB</title>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
   <script src="https://js.paystack.co/v1/inline.js"></script>
+  <!-- Canvas Confetti Library for purchase celebration -->
+  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
   <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;700&family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
   <style>
     :root {
@@ -15,8 +17,8 @@
       --card-bg: rgba(20, 20, 20, 0.85);
       --glow-yellow: rgba(255, 215, 0, 0.2);
       --whatsapp-green: #25D366;
-      --neon-green: #00FF66;
-      --glow-green: rgba(0, 255, 102, 0.2);
+      --cyan: #00E5FF;
+      --red: #ff4d4d;
     }
     * {
       margin: 0;
@@ -39,9 +41,9 @@
       pointer-events: none;
     }
     header {
-      background: rgba(0, 0, 0, 0.9);
+      background: rgba(0, 0, 0, 0.85);
       backdrop-filter: blur(10px);
-      padding: 1rem 1.5rem;
+      padding: 1.2rem 2rem;
       display: flex;
       align-items: center;
       justify-content: space-between;
@@ -49,9 +51,9 @@
       position: relative;
       z-index: 10;
     }
-    .logo-container {
+    .logo {
       font-family: 'Orbitron', sans-serif;
-      font-size: 1.4rem;
+      font-size: 1.6rem;
       font-weight: 700;
       color: var(--yellow);
       display: flex;
@@ -60,159 +62,106 @@
       text-shadow: 0 0 10px var(--glow-yellow);
     }
     .contact-info {
-      font-size: 0.85rem;
+      font-size: 0.95rem;
       display: flex;
-      gap: 1rem;
-      text-align: right;
+      gap: 1.5rem;
     }
     .container {
       max-width: 1200px;
-      margin: 1.5rem auto;
-      padding: 0 1rem;
+      margin: 2.5rem auto;
+      padding: 0 1.5rem;
       position: relative;
       z-index: 5;
     }
     .hero {
       text-align: center;
-      margin-bottom: 1.8rem;
+      margin-bottom: 2.5rem;
     }
     .hero h1 {
       font-family: 'Orbitron', sans-serif;
-      font-size: 2.2rem;
-      margin-bottom: 0.4rem;
+      font-size: 2.6rem;
+      margin-bottom: 0.5rem;
       background: linear-gradient(to right, var(--yellow), #fff);
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
       text-shadow: 0 0 15px var(--glow-yellow);
     }
-    .hero p {
-      font-size: 0.95rem;
-      opacity: 0.8;
-    }
     .network-selector {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 0.5rem;
-      margin: 1.5rem 0 1rem;
+      display: flex;
+      gap: 1rem;
+      margin: 2rem 0;
+      justify-content: center;
+      flex-wrap: wrap;
     }
     .network-btn {
       background: transparent;
       color: white;
-      border: 1.5px solid var(--yellow);
-      padding: 0.6rem 0.4rem;
-      font-size: 0.9rem;
+      border: 2px solid var(--yellow);
+      padding: 0.7rem 1.4rem;
+      font-size: 1.1rem;
       font-weight: 600;
       cursor: pointer;
-      border-radius: 8px;
+      border-radius: 6px;
       transition: all 0.3s ease;
-      font-family: 'Orbitron', sans-serif;
-      text-align: center;
     }
     .network-btn.active {
       background: var(--yellow);
       color: var(--black);
-      box-shadow: 0 0 12px var(--glow-yellow);
+      box-shadow: 0 0 15px var(--glow-yellow);
     }
-    
-    .toggle-packages-btn {
-      background: rgba(0, 255, 102, 0.08);
-      color: var(--neon-green);
-      border: 1px solid var(--neon-green);
-      padding: 0.9rem 1.5rem;
-      font-size: 1rem;
-      font-weight: 700;
-      border-radius: 8px;
-      cursor: pointer;
-      width: 100%;
-      max-width: 100%;
-      margin: 1rem auto 1.5rem;
-      display: block;
-      font-family: 'Orbitron', sans-serif;
-      transition: all 0.3s ease;
-      text-transform: uppercase;
-      letter-spacing: 1px;
-      box-shadow: 0 0 10px var(--glow-green);
-    }
-    .toggle-packages-btn:hover, .toggle-packages-btn:active {
-      background: var(--neon-green);
-      color: var(--black);
-      box-shadow: 0 0 18px rgba(0, 255, 102, 0.5);
-    }
-
-    .packages-drawer {
-      max-height: 0;
-      opacity: 0;
-      overflow: hidden;
-      transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-      margin-bottom: 0;
-    }
-    .packages-drawer.open {
-      max-height: 1200px;
-      opacity: 1;
-      margin-bottom: 1.5rem;
-    }
-
     .packages-grid {
       display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 0.6rem;
-      padding: 0.2rem;
+      grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+      gap: 1.2rem;
+      margin-bottom: 2.5rem;
     }
-    .package-btn {
+    .package-card {
       background: var(--card-bg);
       border: 1px solid rgba(255, 215, 0, 0.2);
-      border-radius: 10px;
-      padding: 1rem 0.4rem;
+      border-radius: 12px;
+      padding: 1.4rem 1rem;
       text-align: center;
       cursor: pointer;
-      color: white;
-      font-family: 'Inter', sans-serif;
       transition: transform 0.2s, box-shadow 0.2s;
-      width: 100%;
     }
-    .package-btn:hover, .package-btn:active {
+    .package-card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 6px 15px rgba(255, 215, 0, 0.3);
       border-color: var(--yellow);
-      box-shadow: 0 4px 12px rgba(255, 215, 0, 0.25);
-    }
-    .package-btn.selected {
-      border: 2px solid var(--yellow) !important;
-      box-shadow: 0 0 12px rgba(255, 215, 0, 0.4);
-      background: rgba(30, 30, 30, 0.95);
     }
     .package-size {
       font-family: 'Orbitron', sans-serif;
-      font-size: 1.1rem;
-      font-weight: 700;
-      margin-bottom: 0.3rem;
+      font-size: 1.4rem;
+      font-weight: 600;
+      margin-bottom: 0.5rem;
       color: var(--yellow);
     }
     .package-price {
-      font-size: 0.95rem;
-      font-weight: 600;
-      opacity: 0.9;
+      font-size: 1.2rem;
+      font-weight: 700;
+      color: white;
     }
     .order-form {
       background: var(--card-bg);
-      padding: 1.5rem 1.2rem;
+      padding: 2rem;
       border-radius: 16px;
-      margin-bottom: 2rem;
-      border: 1px solid rgba(255, 215, 0, 0.15);
+      margin-bottom: 2.5rem;
+      border: 1px solid rgba(255, 215, 0, 0.2);
     }
     .form-group {
       margin-bottom: 1.2rem;
     }
     label {
       display: block;
-      margin-bottom: 0.5rem;
+      margin-bottom: 0.6rem;
       font-weight: 600;
-      font-size: 0.95rem;
-      color: rgba(255, 255, 255, 0.9);
+      font-size: 1.05rem;
     }
-    input {
+    input[type="tel"], input[type="text"] {
       width: 100%;
-      padding: 0.8rem;
+      padding: 0.85rem;
       border-radius: 8px;
-      border: 1px solid rgba(255, 215, 0, 0.3);
+      border: 1px solid rgba(255, 215, 0, 0.4);
       background: rgba(10, 10, 10, 0.9);
       color: white;
       font-size: 1rem;
@@ -221,160 +170,261 @@
       outline: none;
       border-color: var(--yellow);
     }
+
+    .checkbox-container {
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+      cursor: pointer;
+      user-select: none;
+      font-size: 0.95rem;
+      color: var(--red);
+      font-weight: 600;
+      margin-top: 0.5rem;
+    }
+    .checkbox-container input[type="checkbox"] {
+      width: 18px;
+      height: 18px;
+      accent-color: var(--yellow);
+      cursor: pointer;
+    }
+    .verification-box {
+      display: none;
+      background: rgba(0, 229, 255, 0.05);
+      border: 1px dashed var(--cyan);
+      border-radius: 10px;
+      padding: 1.2rem;
+      margin-top: 1rem;
+      margin-bottom: 1.2rem;
+    }
+    .otp-input-group {
+      display: flex;
+      gap: 0.8rem;
+      margin-top: 0.6rem;
+    }
+    .btn-secondary {
+      background: transparent;
+      color: var(--cyan);
+      border: 1px solid var(--cyan);
+      padding: 0.8rem 1rem;
+      font-weight: 600;
+      border-radius: 8px;
+      cursor: pointer;
+      white-space: nowrap;
+      transition: all 0.2s ease;
+    }
+    .btn-secondary:hover {
+      background: rgba(0, 229, 255, 0.15);
+      box-shadow: 0 0 10px rgba(0, 229, 255, 0.3);
+    }
+    .badge-verified {
+      display: none;
+      color: #25D366;
+      font-size: 0.9rem;
+      font-weight: 600;
+      margin-top: 0.5rem;
+    }
+
     .btn {
       background: linear-gradient(to right, var(--yellow), #e6c200);
       color: var(--black);
       border: none;
-      padding: 0.9rem;
-      font-size: 1.05rem;
+      padding: 1rem;
+      font-size: 1.1rem;
       font-weight: 700;
       border-radius: 8px;
       cursor: pointer;
       width: 100%;
-      transition: all 0.2s;
+      transition: transform 0.2s, box-shadow 0.2s;
       font-family: 'Orbitron', sans-serif;
-      letter-spacing: 0.5px;
+      letter-spacing: 1px;
       text-transform: uppercase;
-      box-shadow: 0 4px 12px rgba(255, 215, 0, 0.2);
+      box-shadow: 0 4px 15px rgba(255, 215, 0, 0.3);
     }
-    .btn:active {
-      transform: scale(0.99);
+    .btn:hover {
+      transform: scale(1.01);
+      box-shadow: 0 6px 20px rgba(255, 215, 0, 0.5);
     }
-    
-    .track-trigger-btn {
+    .track-btn {
       background: linear-gradient(to right, var(--whatsapp-green), #128C7E);
-      color: white;
-      box-shadow: 0 4px 12px rgba(37, 211, 102, 0.15);
-    }
-    .search-bar-container {
-      max-height: 0;
-      opacity: 0;
-      overflow: hidden;
-      transition: all 0.35s cubic-bezier(0.4, 0, 0.2, 1);
-      background: rgba(0, 0, 0, 0.3);
-      border-radius: 12px;
-      padding: 0;
-    }
-    .search-bar-container.open {
-      max-height: 250px;
-      opacity: 1;
-      padding: 1.2rem;
-      border: 1px dashed rgba(255, 215, 0, 0.25);
       margin-top: 1rem;
-    }
-    .search-actions {
-      display: flex;
-      gap: 0.6rem;
-      margin-top: 1rem;
-    }
-    .btn-cancel {
-      background: rgba(255, 255, 255, 0.1);
-      border: 1px solid rgba(255, 255, 255, 0.15);
       color: white;
-      padding: 0.8rem;
-      border-radius: 8px;
-      font-weight: 600;
-      cursor: pointer;
-      flex: 1;
+      box-shadow: 0 4px 15px rgba(37, 211, 102, 0.2);
     }
-    
+    .track-btn:hover {
+      box-shadow: 0 6px 20px rgba(37, 211, 102, 0.4);
+    }
     .divider {
       height: 1px;
-      background: rgba(255, 215, 0, 0.15);
-      margin: 2rem 0 1.2rem;
+      background: rgba(255, 215, 0, 0.2);
+      margin: 2.5rem 0 1.5rem;
     }
     .summary {
-      background: rgba(10, 10, 10, 0.5);
-      padding: 1.2rem;
-      border-radius: 12px;
-      border: 1px solid rgba(255, 215, 0, 0.1);
-      margin-bottom: 1.2rem;
+      background: var(--card-bg);
+      padding: 1.8rem;
+      border-radius: 16px;
+      border: 1px solid rgba(255, 215, 0, 0.15);
     }
     .summary h3 {
       font-family: 'Orbitron', sans-serif;
-      margin-bottom: 0.8rem;
+      margin-bottom: 1.2rem;
       color: var(--yellow);
-      font-size: 1rem;
+      text-align: center;
     }
     .summary-item {
       display: flex;
       justify-content: space-between;
-      margin-bottom: 0.5rem;
-      font-size: 0.9rem;
+      margin-bottom: 0.8rem;
+      font-size: 1.05rem;
     }
     .notice {
-      background: rgba(15, 15, 15, 0.85);
-      padding: 1rem;
+      background: rgba(15, 15, 15, 0.9);
+      padding: 1.4rem;
       border-radius: 12px;
-      margin-top: 1.2rem;
-      font-size: 0.85rem;
+      margin-top: 2rem;
+      font-size: 0.95rem;
       border-left: 3px solid var(--yellow);
-      display: block;
-      text-align: left;
     }
-    .hero-whatsapp-container {
-      display: flex;
-      gap: 0.6rem;
+    .notice-highlight {
+      color: var(--red);
+      font-weight: 600;
+    }
+
+    /* Welcome Modal Styles */
+    .modal-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      background: rgba(0, 0, 0, 0.85);
+      backdrop-filter: blur(8px);
+      display: none;
       justify-content: center;
       align-items: center;
-      margin-top: 1.2rem;
-      flex-direction: column;
+      z-index: 1000;
+      animation: fadeIn 0.3s ease-out;
+    }
+    .modal-card {
+      background: #111111;
+      border: 2px solid var(--yellow);
+      border-radius: 20px;
+      padding: 2.5rem 2rem;
+      max-width: 450px;
+      width: 90%;
+      text-align: center;
+      box-shadow: 0 0 30px rgba(255, 215, 0, 0.3);
+      position: relative;
+      animation: popIn 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    }
+    .hugging-emoji {
+      font-size: 4.5rem;
+      margin-bottom: 0.5rem;
+      display: inline-block;
+      animation: bounce 1.2s infinite alternate ease-in-out;
+    }
+    .modal-card h2 {
+      font-family: 'Orbitron', sans-serif;
+      color: var(--yellow);
+      font-size: 2rem;
+      margin-bottom: 0.8rem;
+    }
+    .modal-card p {
+      font-size: 1.05rem;
+      line-height: 1.6;
+      color: #e0e0e0;
+      margin-bottom: 1.5rem;
+    }
+    .modal-details {
+      background: rgba(255, 215, 0, 0.08);
+      border: 1px solid rgba(255, 215, 0, 0.2);
+      border-radius: 10px;
+      padding: 1rem;
+      margin-bottom: 1.5rem;
+      text-align: left;
+      font-size: 0.95rem;
+    }
+    .close-modal-btn {
+      background: var(--yellow);
+      color: var(--black);
+      font-family: 'Orbitron', sans-serif;
+      font-weight: 700;
+      padding: 0.85rem 2rem;
+      border: none;
+      border-radius: 8px;
+      font-size: 1rem;
+      cursor: pointer;
+      transition: all 0.2s ease;
       width: 100%;
+    }
+    .close-modal-btn:hover {
+      background: #e6c200;
+      transform: scale(1.02);
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+    @keyframes popIn {
+      from { transform: scale(0.7); opacity: 0; }
+      to { transform: scale(1); opacity: 1; }
+    }
+    @keyframes bounce {
+      0% { transform: translateY(0) scale(1); }
+      100% { transform: translateY(-10px) scale(1.08); }
+    }
+
+    footer {
+      text-align: center;
+      padding: 3rem 2rem 2rem;
+      background: rgba(5, 5, 5, 0.95);
+      margin-top: 4rem;
+      position: relative;
+      z-index: 5;
+      border-top: 1px solid rgba(255, 215, 0, 0.1);
+    }
+    .footer-links-container {
+      display: flex;
+      flex-direction: row;
+      justify-content: center;
+      gap: 1rem;
+      align-items: center;
+      margin: 1.5rem 0 2rem;
+      flex-wrap: wrap;
     }
     .whatsapp-link {
       color: var(--whatsapp-green);
       text-decoration: none;
       font-weight: 600;
-      font-size: 0.9rem;
+      font-size: 0.95rem;
       display: inline-flex;
       align-items: center;
-      justify-content: center;
-      gap: 0.5rem;
-      padding: 0.6rem 1rem;
-      border-radius: 8px;
+      gap: 0.6rem;
+      padding: 0.5rem 1rem;
+      border-radius: 6px;
       background: rgba(37, 211, 102, 0.05);
-      border: 1px solid rgba(37, 211, 102, 0.15);
-      width: 100%;
-      max-width: 320px;
+      border: 1px solid rgba(37, 211, 102, 0.2);
+      transition: all 0.3s ease;
     }
-    footer {
-      text-align: center;
-      padding: 2rem 1rem;
-      background: rgba(5, 5, 5, 0.95);
-      margin-top: 3rem;
-      position: relative;
-      z-index: 5;
-      border-top: 1px solid rgba(255, 215, 0, 0.05);
+    .whatsapp-link:hover {
+      background: rgba(37, 211, 102, 0.15);
+      border-color: var(--whatsapp-green);
+      box-shadow: 0 0 12px rgba(37, 211, 102, 0.3);
+      transform: translateY(-2px);
     }
     .whatsapp-icon {
-      width: 18px;
-      height: 18px;
+      width: 22px;
+      height: 22px;
       fill: var(--whatsapp-green);
     }
-
-    /* Target Responsive Adjustments for Mobile and Tablets Specifically */
-    @media (max-width: 480px) {
-      .packages-grid {
-        grid-template-columns: repeat(2, 1fr); /* 2 grid items on very tiny devices */
-      }
-    }
-    @media (min-width: 768px) {
-      header { padding: 1.2rem 2rem; }
-      .logo-container { font-size: 1.6rem; }
-      .contact-info { font-size: 0.95rem; flex-direction: row; gap: 1.5rem; }
-      .container { margin: 2.5rem auto; padding: 0 1.5rem; }
-      .hero h1 { font-size: 2.6rem; }
-      .hero p { font-size: 1.1rem; }
-      .network-selector { display: flex; justify-content: center; gap: 1rem; margin: 2rem 0 1rem; }
-      .network-btn { padding: 0.7rem 1.4rem; font-size: 1.1rem; width: auto; }
-      .toggle-packages-btn { max-width: 400px; margin: 1rem auto 2rem; }
-      .packages-grid { grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 1.2rem; }
-      .package-btn { padding: 1.4rem 1rem; }
-      .package-size { font-size: 1.4rem; }
-      .package-price { font-size: 1.2rem; }
-      .order-form { padding: 2rem; }
-      .hero-whatsapp-container { flex-direction: row; gap: 1rem; }
-      .whatsapp-link { width: auto; }
+    @media (max-width: 768px) {
+      .hero h1 { font-size: 2rem; }
+      .network-selector { flex-direction: column; align-items: center; }
+      .packages-grid { grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); }
+      .contact-info { flex-direction: column; gap: 0.4rem; align-items: flex-end; }
+      .otp-input-group { flex-direction: column; }
+      .footer-links-container { flex-direction: column; }
     }
   </style>
 </head>
@@ -382,8 +432,8 @@
   <div id="scene-container"></div>
 
   <header>
-    <div class="logo-container">
-      <svg width="38" height="38" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <div class="logo-container" style="display: flex; align-items: center; gap: 12px;">
+      <svg width="45" height="45" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg" style="filter: drop-shadow(0px 0px 8px rgba(255, 215, 0, 0.4));">
         <defs>
           <linearGradient id="logo-grad" x1="0%" y1="100%" x2="100%" y2="0%">
             <stop offset="0%" stop-color="#FFD700" />
@@ -394,6 +444,7 @@
             <stop offset="100%" stop-color="#101010" stop-opacity="0.2"/>
           </linearGradient>
         </defs>
+        
         <polygon points="50,5 90,25 90,75 50,95 10,75 10,25" fill="#0A0A0A" stroke="url(#border-grad)" stroke-width="3"/>
         <rect x="28" y="68" width="44" height="8" rx="4" fill="url(#logo-grad)" />
         <rect x="28" y="24" width="8" height="38" rx="4" fill="url(#logo-grad)" />
@@ -402,14 +453,15 @@
         <rect x="64" y="54" width="8" height="8" rx="4" fill="url(#logo-grad)" opacity="0.5" />
         <path d="M 32 14 A 22 22 0 0 1 68 14" stroke="#00E5FF" stroke-width="3" stroke-linecap="round" opacity="0.9" />
       </svg>
+
       <div style="display: flex; flex-direction: column;">
-        <span style="font-family: 'Orbitron', sans-serif; font-size: 1.2rem; font-weight: 700; color: #FFD700; letter-spacing: 1px; line-height: 1.1;">LEGACY</span>
-        <span style="font-family: 'Inter', sans-serif; font-size: 0.65rem; font-weight: 600; color: #00E5FF; letter-spacing: 2px; text-transform: uppercase;">Data Hub</span>
+        <span style="font-family: 'Orbitron', sans-serif; font-size: 1.4rem; font-weight: 700; color: #FFD700; letter-spacing: 1px; line-height: 1.1;">LEGACY</span>
+        <span style="font-family: 'Inter', sans-serif; font-size: 0.75rem; font-weight: 600; color: #00E5FF; letter-spacing: 3.5px; text-transform: uppercase;">Data Hub</span>
       </div>
     </div>
-    <div class="contact-info" style="display: flex; flex-direction: column; line-height: 1.2;">
+    <div class="contact-info">
       <span>📞 0599821047</span>
-      <span style="font-size: 0.75rem; opacity: 0.6;">legacydatahub@gmail.com</span>
+      <span>✉️ legacydatahub@gmail.com</span>
     </div>
   </header>
 
@@ -417,23 +469,23 @@
     <div class="hero">
       <h1>Your NO.1 data shop</h1>
       <p>Secure • Fast • Reliable</p>
-      
-      <div class="notice">
-        <strong>Delivery Time:</strong> 5 to 30 minutes<br>
-        <strong>Important:</strong> Enter a valid network number. Data sent to a wrong number cannot be refunded.
-      </div>
+    </div>
+    <div class="notice">
+      <strong>Delivery Time:</strong> 5 to 30 minutes<br>
+      <strong>Important:</strong> Enter a valid network number. Data sent to a wrong number cannot be refunded. <span class="notice-highlight">Verify your number for first time purchase.</span>
+    </div>
 
-      <div class="hero-whatsapp-container">
-        <a href="https://wa.me/message/DF4CE2EQV33QP1" target="_blank" class="whatsapp-link">
-          <svg class="whatsapp-icon" viewBox="0 0 24 24"><path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946C.06 5.348 5.397.01 12.008.01c3.202.001 6.212 1.246 8.477 3.514 2.266 2.268 3.507 5.28 3.505 8.484-.004 6.657-5.34 11.997-11.953 11.997-2.005-.001-3.973-.502-5.713-1.455L0 24zm6.59-3.847c1.62.963 3.424 1.47 5.267 1.471h.005c5.445 0 9.876-4.43 9.88-9.878.002-2.64-1.019-5.123-2.877-6.983-1.857-1.86-4.339-2.883-6.98-2.884-5.448 0-9.88 4.43-9.884 9.88-.001 1.83.479 3.619 1.392 5.216l-.961 3.513 3.6-.945zm11.233-7.561c-.3-.149-1.772-.875-2.046-.975-.274-.1-.474-.149-.674.15-.2.299-.773.975-.947 1.174-.174.199-.349.224-.648.075-.3-.15-1.265-.466-2.41-1.485-.89-.794-1.49-1.775-1.665-2.074-.174-.299-.019-.461.13-.609.135-.133.3-.299.449-.449.149-.15.199-.249.299-.498.1-.2.05-.374-.025-.524-.075-.15-.674-1.62-.923-2.219-.242-.582-.487-.504-.674-.513-.174-.009-.374-.009-.573-.009-.2 0-.523.075-.797.374-.274.299-1.047 1.022-1.047 2.494 0 1.471 1.071 2.892 1.221 3.092.149.199 2.107 3.216 5.106 4.512.714.309 1.271.494 1.708.633.717.228 1.37.195 1.887.118.575-.085 1.772-.723 2.021-1.396.249-.673.249-1.246.174-1.396-.075-.149-.274-.249-.574-.398z"/></svg>
-          Chat on WhatsApp
-        </a>
-        
-        <a href="https://whatsapp.com/channel/0029VaCiikI23n3Wt1d5z402" target="_blank" class="whatsapp-link">
-          <svg class="whatsapp-icon" viewBox="0 0 24 24"><path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946C.06 5.348 5.397.01 12.008.01c3.202.001 6.212 1.246 8.477 3.514 2.266 2.268 3.507 5.28 3.505 8.484-.004 6.657-5.34 11.997-11.953 11.997-2.005-.001-3.973-.502-5.713-1.455L0 24zm6.59-3.847c1.62.963 3.424 1.47 5.267 1.471h.005c5.445 0 9.876-4.43 9.88-9.878.002-2.64-1.019-5.123-2.877-6.983-1.857-1.86-4.339-2.883-6.98-2.884-5.448 0-9.88 4.43-9.884 9.88-.001 1.83.479 3.619 1.392 5.216l-.961 3.513 3.6-.945zm11.233-7.561c-.3-.149-1.772-.875-2.046-.975-.274-.1-.474-.149-.674.15-.2.299-.773.975-.947 1.174-.174.199-.349.224-.648.075-.3-.15-1.265-.466-2.41-1.485-.89-.794-1.49-1.775-1.665-2.074-.174-.299-.019-.461.13-.609.135-.133.3-.299.449-.449.149-.15.199-.249.299-.498.1-.2.05-.374-.025-.524-.075-.15-.674-1.62-.923-2.219-.242-.582-.487-.504-.674-.513-.174-.009-.374-.009-.573-.009-.2 0-.523.075-.797.374-.274.299-1.047 1.022-1.047 2.494 0 1.471 1.071 2.892 1.221 3.092.149.199 2.107 3.216 5.106 4.512.714.309 1.271.494 1.708.633.717.228 1.37.195 1.887.118.575-.085 1.772-.723 2.021-1.396.249-.673.249-1.246.174-1.396-.075-.149-.274-.249-.574-.398z"/></svg>
-          Join Channel for Updates
-        </a>
-      </div>
+    <!-- WhatsApp Links placed directly under notice info -->
+    <div class="footer-links-container">
+      <a href="https://wa.me/message/DF4CE2EQV33QP1" target="_blank" class="whatsapp-link">
+        <svg class="whatsapp-icon" viewBox="0 0 24 24"><path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946C.06 5.348 5.397.01 12.008.01c3.202.001 6.212 1.246 8.477 3.514 2.266 2.268 3.507 5.28 3.505 8.484-.004 6.657-5.34 11.997-11.953 11.997-2.005-.001-3.973-.502-5.713-1.455L0 24zm6.59-3.847c1.62.963 3.424 1.47 5.267 1.471h.005c5.445 0 9.876-4.43 9.88-9.878.002-2.64-1.019-5.123-2.877-6.983-1.857-1.86-4.339-2.883-6.98-2.884-5.448 0-9.88 4.43-9.884 9.88-.001 1.83.479 3.619 1.392 5.216l-.961 3.513 3.6-.945zm11.233-7.561c-.3-.149-1.772-.875-2.046-.975-.274-.1-.474-.149-.674.15-.2.299-.773.975-.947 1.174-.174.199-.349.224-.648.075-.3-.15-1.265-.466-2.41-1.485-.89-.794-1.49-1.775-1.665-2.074-.174-.299-.019-.461.13-.609.135-.133.3-.299.449-.449.149-.15.199-.249.299-.498.1-.2.05-.374-.025-.524-.075-.15-.674-1.62-.923-2.219-.242-.582-.487-.504-.674-.513-.174-.009-.374-.009-.573-.009-.2 0-.523.075-.797.374-.274.299-1.047 1.022-1.047 2.494 0 1.471 1.071 2.892 1.221 3.092.149.199 2.107 3.216 5.106 4.512.714.309 1.271.494 1.708.633.717.228 1.37.195 1.887.118.575-.085 1.772-.723 2.021-1.396.249-.673.249-1.246.174-1.396-.075-.149-.274-.249-.574-.398z"/></svg>
+        Chat on WhatsApp
+      </a>
+      
+      <a href="https://whatsapp.com/channel/0029VaCiikI23n3Wt1d5z402" target="_blank" class="whatsapp-link">
+        <svg class="whatsapp-icon" viewBox="0 0 24 24"><path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946C.06 5.348 5.397.01 12.008.01c3.202.001 6.212 1.246 8.477 3.514 2.266 2.268 3.507 5.28 3.505 8.484-.004 6.657-5.34 11.997-11.953 11.997-2.005-.001-3.973-.502-5.713-1.455L0 24zm6.59-3.847c1.62.963 3.424 1.47 5.267 1.471h.005c5.445 0 9.876-4.43 9.88-9.878.002-2.64-1.019-5.123-2.877-6.983-1.857-1.86-4.339-2.883-6.98-2.884-5.448 0-9.88 4.43-9.884 9.88-.001 1.83.479 3.619 1.392 5.216l-.961 3.513 3.6-.945zm11.233-7.561c-.3-.149-1.772-.875-2.046-.975-.274-.1-.474-.149-.674.15-.2.299-.773.975-.947 1.174-.174.199-.349.224-.648.075-.3-.15-1.265-.466-2.41-1.485-.89-.794-1.49-1.775-1.665-2.074-.174-.299-.019-.461.13-.609.135-.133.3-.299.449-.449.149-.15.199-.249.299-.498.1-.2.05-.374-.025-.524-.075-.15-.674-1.62-.923-2.219-.242-.582-.487-.504-.674-.513-.174-.009-.374-.009-.573-.009-.2 0-.523.075-.797.374-.274.299-1.047 1.022-1.047 2.494 0 1.471 1.071 2.892 1.221 3.092.149.199 2.107 3.216 5.106 4.512.714.309 1.271.494 1.708.633.717.228 1.37.195 1.887.118.575-.085 1.772-.723 2.021-1.396.249-.673.249-1.246.174-1.396-.075-.149-.274-.249-.574-.398z"/></svg>
+        Join Community for Updates
+      </a>
     </div>
 
     <div class="network-selector">
@@ -442,59 +494,89 @@
       <button class="network-btn" data-network="AIRTELTIGO">AIRTELTIGO</button>
     </div>
 
-    <button class="toggle-packages-btn" id="toggleDrawerBtn" onclick="togglePackagesDrawer()">View Available Packages</button>
-
-    <div class="packages-drawer" id="packagesDrawer">
-      <div class="packages-grid" id="packagesContainer"></div>
-    </div>
+    <div class="packages-grid" id="packagesContainer"></div>
 
     <div class="order-form">
-      <h3 style="text-align:center; margin-bottom:1.2rem; color:var(--yellow); font-family:'Orbitron', sans-serif; font-size: 1.15rem;">Order Placement</h3>
+      <h3 style="text-align:center; margin-bottom:1.5rem; color:var(--yellow); font-family:'Orbitron', sans-serif;">Complete Your Order</h3>
+      
       <div class="form-group">
         <label for="phoneNumber">Phone Number (Enter valid network number)</label>
-        <input type="tel" id="phoneNumber" placeholder="e.g. 0599821047" maxlength="10" required>
+        <input type="tel" id="phoneNumber" placeholder="e.g. 0599821047" max-length="10" required>
+        
+        <label class="checkbox-container">
+          <input type="checkbox" id="firstTimeCheckbox">
+          Verify your number for first time purchase
+        </label>
+        <div id="verifiedBadge" class="badge-verified">✓ Phone Number Verified</div>
       </div>
+
+      <!-- Live Verification Block -->
+      <div class="verification-box" id="verificationBox">
+        <p style="font-size:0.9rem; color:#fff; margin-bottom:0.8rem;">Click below to send an automatic verification message to admin (0599821047) on WhatsApp.</p>
+        <button type="button" class="btn-secondary" id="sendOtpBtn" style="border-color: var(--whatsapp-green); color: var(--whatsapp-green);">
+          Send Verification Request via WhatsApp
+        </button>
+        
+        <div class="otp-input-group" id="otpInputGroup" style="display:none; margin-top:0.8rem;">
+          <input type="text" id="otpInput" placeholder="Enter Code" maxlength="6" style="text-align:center; letter-spacing:4px; font-weight:700;">
+          <button type="button" class="btn-secondary" id="confirmOtpBtn" style="border-color:var(--yellow); color:var(--yellow);">Confirm Verification</button>
+        </div>
+      </div>
+
       <div class="form-group">
         <label for="selectedPackage">Selected Package</label>
-        <input type="text" id="selectedPackage" readonly placeholder="Select a package button from above">
+        <input type="text" id="selectedPackage" readonly placeholder="Select a card from above">
       </div>
       <div class="form-group">
         <label for="totalAmount">Total Amount (GHC)</label>
         <input type="text" id="totalAmount" readonly placeholder="₵0.00">
       </div>
-
-      <div class="summary">
-        <h3>Live Summary Preview</h3>
-        <div class="summary-item"><span>Network:</span><span id="summaryNetwork">MTN</span></div>
-        <div class="summary-item"><span>Package:</span><span id="summaryPackage">-</span></div>
-        <div class="summary-item"><span>Amount:</span><span id="summaryAmount">-</span></div>
-        <div class="summary-item"><span>Phone:</span><span id="summaryPhone">-</span></div>
-      </div>
-
       <button class="btn" id="payButton">Pay Now with Paystack</button>
 
       <div class="divider"></div>
 
-      <button class="btn track-trigger-btn" id="openTrackBtn" onclick="toggleTrackingSearch(true)">Track My Order</button>
-      
-      <div class="search-bar-container" id="searchBarContainer">
-        <div class="form-group">
-          <label for="trackPhoneNumber">Enter Phone Number to Track Order</label>
-          <input type="tel" id="trackPhoneNumber" placeholder="e.g. 0599821047" maxlength="10">
-        </div>
-        <div class="search-actions">
-          <button class="btn-cancel" onclick="toggleTrackingSearch(false)">Cancel</button>
-          <button class="btn" id="trackButton" style="box-shadow: none; flex: 2;">Search</button>
-        </div>
+      <h3 style="text-align:center; margin-bottom:1.2rem; color:var(--yellow); font-family:'Orbitron', sans-serif;">Order Tracking</h3>
+      <div class="form-group">
+        <label for="trackPhoneNumber">Enter Phone Number to Track Order</label>
+        <input type="tel" id="trackPhoneNumber" placeholder="e.g. 0241234567">
       </div>
+      <button class="btn track-btn" id="trackButton">Track My Order</button>
+    </div>
+
+    <div class="summary">
+      <h3>Order Summary</h3>
+      <div class="summary-item"><span>Network:</span><span id="summaryNetwork">MTN</span></div>
+      <div class="summary-item"><span>Package:</span><span id="summaryPackage">-</span></div>
+      <div class="summary-item"><span>Amount:</span><span id="summaryAmount">-</span></div>
+      <div class="summary-item"><span>Phone:</span><span id="summaryPhone">-</span></div>
+    </div>
+  </div>
+
+  <!-- Thank You Welcome Note Modal -->
+  <div class="modal-overlay" id="welcomeModal">
+    <div class="modal-card">
+      <div class="hugging-emoji">🤗</div>
+      <h2>Thank You!</h2>
+      <p>Welcome to <strong>LEGACY DATA HUB</strong>! We truly appreciate your purchase and are excited to serve you with ultra-fast data.</p>
+      
+      <div class="modal-details">
+        <div style="margin-bottom: 0.4rem;"><strong>Transaction Ref:</strong> <span id="modalRef" style="color:var(--cyan);">-</span></div>
+        <div style="margin-bottom: 0.4rem;"><strong>Target Number:</strong> <span id="modalPhone">-</span></div>
+        <div><strong>Package:</strong> <span id="modalPackage" style="color:var(--yellow);">-</span></div>
+      </div>
+
+      <p style="font-size: 0.85rem; opacity: 0.8; margin-bottom: 1.2rem;">Your bundle is being processed and will arrive within 5 to 30 minutes!</p>
+
+      <button class="close-modal-btn" id="closeModalBtn">Done & Continue</button>
     </div>
   </div>
 
   <footer>
-    <p style="opacity: 0.5; font-size: 0.8rem;">&copy; 2026 LEGACY DATA HUB. All rights reserved.</p>
+    <p style="opacity: 0.5; font-size: 0.85rem;">&copy; 2026 LEGACY DATA HUB. All rights reserved.</p>
   </footer>
 
   <script>
+    // 3D Background Engine
     const scene = new THREE.Scene();
     const camera = new THREE.PerspectiveCamera(60, window.innerWidth / window.innerHeight, 0.1, 500);
     
@@ -504,7 +586,7 @@
     document.getElementById('scene-container').appendChild(renderer.domElement);
 
     const particlesGeometry = new THREE.BufferGeometry();
-    const particlesCount = window.innerWidth < 768 ? 250 : 600; 
+    const particlesCount = 600; 
     const posArray = new Float32Array(particlesCount * 3);
     for(let i = 0; i < particlesCount * 3; i++) {
       posArray[i] = (Math.random() - 0.5) * 120;
@@ -521,70 +603,18 @@
     const particlesMesh = new THREE.Points(particlesGeometry, particlesMaterial);
     scene.add(particlesMesh);
 
-    const torusGeometry = new THREE.TorusGeometry(6, 1.2, 10, 30);
+    const torusGeometry = new THREE.TorusGeometry(7, 1.5, 12, 40);
     const torusMaterial = new THREE.MeshBasicMaterial({ 
       color: 0xFFD700,
       wireframe: true,
       transparent: true,
-      opacity: 0.25
+      opacity: 0.35
     });
     const torus = new THREE.Mesh(torusGeometry, torusMaterial);
     torus.position.y = 2;
     scene.add(torus);
 
-    const baseSizes = ['1GB', '2GB', '3GB', '4GB', '5GB', '6GB', '8GB', '10GB', '15GB', '20GB', '30GB', '40GB'];
-    const totalLabelsCount = window.innerWidth < 768 ? 90 : 216; 
-    const dataMeshes = [];
-
-    const textureCache = {};
-    baseSizes.forEach(sz => {
-      const canvas = document.createElement('canvas');
-      canvas.width = 128;
-      canvas.height = 64;
-      const ctx = canvas.getContext('2d');
-      ctx.fillStyle = 'rgba(0,0,0,0)';
-      ctx.fillRect(0, 0, canvas.width, canvas.height);
-      ctx.font = 'bold 32px "Orbitron", sans-serif';
-      ctx.fillStyle = '#FFD700';
-      ctx.textAlign = 'center';
-      ctx.textBaseline = 'middle';
-      ctx.shadowColor = 'rgba(255, 215, 0, 0.6)';
-      ctx.shadowBlur = 6;
-      ctx.fillText(sz, canvas.width / 2, canvas.height / 2);
-      textureCache[sz] = new THREE.CanvasTexture(canvas);
-    });
-
-    for(let i = 0; i < totalLabelsCount; i++) {
-      const selectedSize = baseSizes[i % baseSizes.length];
-      const texture = textureCache[selectedSize];
-      
-      const spriteMaterial = new THREE.SpriteMaterial({ 
-        map: texture, 
-        transparent: true, 
-        opacity: Math.random() * 0.35 + 0.2 
-      });
-      const sprite = new THREE.Sprite(spriteMaterial);
-      
-      const randomScaleFactor = Math.random() * 1.5 + 2.0; 
-      sprite.scale.set(randomScaleFactor, randomScaleFactor * 0.5, 1);
-      
-      sprite.position.set(
-        (Math.random() - 0.5) * 60,
-        (Math.random() - 0.5) * 40,
-        (Math.random() - 0.5) * 35 - 10
-      );
-      
-      sprite.userData = {
-        vx: (Math.random() - 0.5) * 0.035, 
-        vy: (Math.random() - 0.5) * 0.035, 
-        timeOffset: Math.random() * 200
-      };
-      
-      scene.add(sprite);
-      dataMeshes.push(sprite);
-    }
-
-    camera.position.z = window.innerWidth < 768 ? 30 : 25;
+    camera.position.z = 25;
 
     window.addEventListener('resize', () => {
       camera.aspect = window.innerWidth / window.innerHeight;
@@ -594,38 +624,29 @@
 
     const animate = () => {
       requestAnimationFrame(animate);
-      particlesMesh.rotation.x += 0.0002;
-      particlesMesh.rotation.y += 0.0002;
-      torus.rotation.x += 0.002;
-      torus.rotation.y += 0.004;
-      
-      const time = Date.now() * 0.0015;
-      dataMeshes.forEach(sprite => {
-        sprite.position.x += sprite.userData.vx;
-        sprite.position.y += sprite.userData.vy;
-        sprite.position.y += Math.sin(time + sprite.userData.timeOffset) * 0.006;
-
-        if (Math.abs(sprite.position.x) > 35) sprite.userData.vx *= -1;
-        if (Math.abs(sprite.position.y) > 22) sprite.userData.vy *= -1;
-      });
-
+      particlesMesh.rotation.x += 0.0003;
+      particlesMesh.rotation.y += 0.0003;
+      torus.rotation.x += 0.003;
+      torus.rotation.y += 0.006;
       renderer.render(scene, camera);
     };
     animate();
 
+    // Data Engine Configurations
     const PAYSTACK_PUBLIC_KEY = 'pk_live_8b9d5c666a57f0c2c1a5cb908083e50972b1e2aa';
+    const ADMIN_NUMBER = '233599821047';
     
     const packages = {
       MTN: [
-        { size: '1GB', price: 4.80 }, { size: '2GB', price: 9.80 }, { size: '3GB', price: 14.30 },
+        { size: '1GB', price: 4.80}, { size: '2GB', price: 9.80 }, { size: '3GB', price: 14.30 },
         { size: '4GB', price: 22 }, { size: '5GB', price: 26 }, { size: '6GB', price: 29 },
         { size: '8GB', price: 37 }, { size: '10GB', price: 46 }, { size: '15GB', price: 64 },
         { size: '20GB', price: 84 }, { size: '25GB', price: 104 }, { size: '30GB', price: 126 },
         { size: '40GB', price: 163 }, { size: '50GB', price: 205 }
       ],
       TELECEL: [
-        { size: '10GB', price: 43 }, { size: '15GB', price: 58.85 }, { size: '20GB', price: 78.80 },
-        { size: '25GB', price: 95.75 }, { size: '40GB', price: 148.60 }, { size: '50GB', price: 184.50 }
+        { size: '10GB', price: 41 }, { size: '15GB', price: 57.85 }, { size: '20GB', price: 76.80 },
+        { size: '25GB', price: 93.75 }, { size: '40GB', price: 146.60 }, { size: '50GB', price: 181.50 }
       ],
       AIRTELTIGO: [
         { size: '1GB', price: 4.75 }, { size: '2GB', price: 9.25 }, { size: '3GB', price: 14.25 },
@@ -637,50 +658,79 @@
 
     let currentNetwork = 'MTN';
     let selectedPackage = null;
+    let generatedCode = null;
+    let isPhoneVerified = false;
 
     const forceNumeric = (e) => { e.target.value = e.target.value.replace(/[^0-9]/g, ''); };
     document.getElementById('phoneNumber').addEventListener('input', (e) => {
       forceNumeric(e);
       document.getElementById('summaryPhone').textContent = e.target.value || '-';
+      isPhoneVerified = false;
+      document.getElementById('verifiedBadge').style.display = 'none';
     });
     document.getElementById('trackPhoneNumber').addEventListener('input', forceNumeric);
 
-    function togglePackagesDrawer() {
-      const drawer = document.getElementById('packagesDrawer');
-      const btn = document.getElementById('toggleDrawerBtn');
-      
-      if (drawer.classList.contains('open')) {
-        drawer.classList.remove('open');
-        btn.textContent = 'View Available Packages';
+    const firstTimeCheckbox = document.getElementById('firstTimeCheckbox');
+    const verificationBox = document.getElementById('verificationBox');
+
+    firstTimeCheckbox.addEventListener('change', (e) => {
+      if (e.target.checked && !isPhoneVerified) {
+        verificationBox.style.display = 'block';
       } else {
-        drawer.classList.add('open');
-        btn.textContent = 'Hide Packages Grid';
+        verificationBox.style.display = 'none';
       }
-    }
+    });
+
+    // Verification Trigger
+    document.getElementById('sendOtpBtn').addEventListener('click', () => {
+      const phone = document.getElementById('phoneNumber').value;
+      if (!phone || phone.length < 10) {
+        alert('Please enter a complete 10-digit phone number first.');
+        return;
+      }
+
+      generatedCode = Math.floor(1000 + Math.random() * 9000).toString();
+      const messageText = `Hello, LEGACY DATA HUB. I am verifying my phone number for my first time purchase.\n\nPhone Number: ${phone}\nVerification Code: ${generatedCode}`;
+      
+      window.open(`https://wa.me/${ADMIN_NUMBER}?text=${encodeURIComponent(messageText)}`, '_blank');
+      document.getElementById('otpInputGroup').style.display = 'flex';
+      alert(`A message template has been opened to send to 0599821047.\n\nYour code is: ${generatedCode}`);
+    });
+
+    document.getElementById('confirmOtpBtn').addEventListener('click', () => {
+      const enteredCode = document.getElementById('otpInput').value;
+      if (enteredCode === generatedCode && generatedCode !== null) {
+        isPhoneVerified = true;
+        verificationBox.style.display = 'none';
+        document.getElementById('verifiedBadge').style.display = 'block';
+        alert('Phone number verified successfully! You can now proceed to payment.');
+      } else {
+        alert('Invalid code entered. Please check the code sent to 0599821047 and try again.');
+      }
+    });
 
     function renderPackages(network) {
       const container = document.getElementById('packagesContainer');
       container.innerHTML = '';
       
       packages[network].forEach(pkg => {
-        const button = document.createElement('button');
-        button.type = 'button';
-        button.className = 'package-btn';
-        button.innerHTML = `
+        const card = document.createElement('div');
+        card.className = 'package-card';
+        card.innerHTML = `
           <div class="package-size">${pkg.size}</div>
           <div class="package-price">₵${pkg.price.toFixed(2)}</div>
         `;
-        button.addEventListener('click', () => {
+        card.addEventListener('click', () => {
           selectedPackage = pkg;
           document.getElementById('selectedPackage').value = `${pkg.size} (${network})`;
           document.getElementById('totalAmount').value = `₵${pkg.price.toFixed(2)}`;
           document.getElementById('summaryPackage').textContent = `${pkg.size} (${network})`;
           document.getElementById('summaryAmount').textContent = `₵${pkg.price.toFixed(2)}`;
           
-          document.querySelectorAll('.package-btn').forEach(b => b.classList.remove('selected'));
-          button.classList.add('selected');
+          document.querySelectorAll('.package-card').forEach(c => c.style.border = '1px solid rgba(255, 215, 0, 0.2)');
+          card.style.border = '2px solid var(--yellow)';
         });
-        container.appendChild(button);
+        container.appendChild(card);
       });
     }
 
@@ -699,10 +749,32 @@
       });
     });
 
+    // Modal Trigger Function
+    function showWelcomeModal(reference, phone, pkgDetails) {
+      document.getElementById('modalRef').textContent = reference;
+      document.getElementById('modalPhone').textContent = phone;
+      document.getElementById('modalPackage').textContent = pkgDetails;
+      document.getElementById('welcomeModal').style.display = 'flex';
+
+      // Fire celebratory confetti burst
+      if (typeof confetti === 'function') {
+        confetti({
+          particleCount: 120,
+          spread: 70,
+          origin: { y: 0.6 },
+          colors: ['#FFD700', '#00E5FF', '#25D366', '#ffffff']
+        });
+      }
+    }
+
+    document.getElementById('closeModalBtn').addEventListener('click', () => {
+      document.getElementById('welcomeModal').style.display = 'none';
+    });
+
     document.getElementById('payButton').addEventListener('click', () => {
       const phone = document.getElementById('phoneNumber').value;
       if (!selectedPackage) {
-        alert('Please open the package drawer above and pick a bundle first.');
+        alert('Please choose a data bundle package card above first.');
         return;
       }
       if (!phone || phone.length < 10) {
@@ -710,6 +782,12 @@
         return;
       }
       
+      if (firstTimeCheckbox.checked && !isPhoneVerified) {
+        alert('Please complete phone verification before completing your first-time order.');
+        verificationBox.style.display = 'block';
+        return;
+      }
+
       const handler = PaystackPop.setup({
         key: PAYSTACK_PUBLIC_KEY,
         email: 'legacydatahub@gmail.com',
@@ -720,11 +798,13 @@
           custom_fields: [
             { display_name: "Network", variable_name: "network", value: currentNetwork },
             { display_name: "Package Size", variable_name: "package_size", value: selectedPackage.size },
-            { display_name: "Recipient Phone", variable_name: "recipient_phone", value: phone }
+            { display_name: "Recipient Phone", variable_name: "recipient_phone", value: phone },
+            { display_name: "First Time Buyer Verified", variable_name: "first_time_verified", value: firstTimeCheckbox.checked ? "Yes" : "No" }
           ]
         },
         callback: function(response) {
-          alert('Payment successful! Reference: ' + response.reference + '\nYour bundle will arrive within 5-30 minutes.');
+          // Show Thank You Welcome Modal upon successful purchase
+          showWelcomeModal(response.reference, phone, `${selectedPackage.size} (${currentNetwork})`);
         },
         onClose: function() {
           alert('Transaction window closed.');
@@ -733,21 +813,6 @@
       handler.openIframe();
     });
 
-    function toggleTrackingSearch(show) {
-      const searchContainer = document.getElementById('searchBarContainer');
-      const openBtn = document.getElementById('openTrackBtn');
-      
-      if (show) {
-        searchContainer.classList.add('open');
-        openBtn.style.display = 'none';
-        document.getElementById('trackPhoneNumber').focus();
-      } else {
-        searchContainer.classList.remove('open');
-        openBtn.style.display = 'block';
-        document.getElementById('trackPhoneNumber').value = '';
-      }
-    }
-
     document.getElementById('trackButton').addEventListener('click', () => {
       const trackPhone = document.getElementById('trackPhoneNumber').value;
       if (!trackPhone || trackPhone.length < 10) {
@@ -755,7 +820,7 @@
         return;
       }
       const message = encodeURIComponent(`order tracking ${trackPhone}`);
-      window.open(`https://wa.me/233599821047?text=${message}`, '_blank');
+      window.open(`https://wa.me/${ADMIN_NUMBER}?text=${message}`, '_blank');
     });
 
     renderPackages(currentNetwork);
