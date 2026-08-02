@@ -2,20 +2,20 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
   <title>LEGACY DATA HUB</title>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
   <script src="https://js.paystack.co/v1/inline.js"></script>
   <!-- Canvas Confetti Library for purchase celebration -->
   <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
-  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;700&family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;700;900&family=Inter:wght@300;400;600;800&display=swap" rel="stylesheet">
   <style>
     :root {
       --yellow: #FFD700;
       --black: #000000;
-      --dark-bg: #0a0a0a;
-      --card-bg: rgba(20, 20, 20, 0.85);
-      --glow-yellow: rgba(255, 215, 0, 0.2);
+      --dark-bg: #050508;
+      --card-bg: rgba(15, 15, 20, 0.85);
+      --glow-yellow: rgba(255, 215, 0, 0.25);
       --whatsapp-green: #25D366;
       --cyan: #00E5FF;
       --red: #ff4d4d;
@@ -24,128 +24,246 @@
       margin: 0;
       padding: 0;
       box-sizing: border-box;
+      -webkit-tap-highlight-color: transparent;
     }
-    body {
-      font-family: 'Inter', sans-serif;
+    html, body {
+      width: 100%;
+      min-height: 100vh;
+      min-height: 100dvh;
       background-color: var(--dark-bg);
       color: white;
       overflow-x: hidden;
+      font-family: 'Inter', sans-serif;
     }
+
+    /* Fullscreen Intro Animation Overlay */
+    #site-intro-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      height: 100dvh;
+      background: #000000;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      z-index: 99999;
+      animation: fadeOutSplash 1s ease-out 3.2s forwards;
+      pointer-events: none;
+      padding: 1.5rem;
+    }
+
+    .intro-title-container {
+      text-align: center;
+      position: relative;
+      width: 100%;
+    }
+
+    .intro-title {
+      font-family: 'Orbitron', sans-serif;
+      font-size: clamp(2rem, 7vw, 3.5rem);
+      font-weight: 900;
+      letter-spacing: 2px;
+      background: linear-gradient(135deg, var(--yellow), var(--cyan), #ffffff);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      opacity: 0;
+      transform: scale(0.5);
+      animation: zoomInPulse 1.8s cubic-bezier(0.175, 0.885, 0.32, 1.275) 0.3s forwards;
+      text-shadow: 0 0 30px rgba(255, 215, 0, 0.6);
+    }
+
+    .intro-sub {
+      font-family: 'Orbitron', sans-serif;
+      font-size: clamp(0.7rem, 2.5vw, 1rem);
+      color: var(--cyan);
+      letter-spacing: 3px;
+      margin-top: 1rem;
+      opacity: 0;
+      animation: fadeInUp 1s ease 1.2s forwards;
+    }
+
+    .intro-beam {
+      width: 0%;
+      height: 3px;
+      background: linear-gradient(90deg, transparent, var(--yellow), var(--cyan), transparent);
+      margin: 1.2rem auto 0;
+      animation: expandBeam 1.5s ease-in-out 0.8s forwards;
+    }
+
+    @keyframes zoomInPulse {
+      0% { opacity: 0; transform: scale(0.4) translateY(30px); }
+      50% { opacity: 1; transform: scale(1.1) translateY(0); }
+      100% { opacity: 1; transform: scale(1) translateY(0); }
+    }
+    @keyframes fadeInUp {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    @keyframes expandBeam {
+      from { width: 0%; }
+      to { width: 80%; }
+    }
+    @keyframes fadeOutSplash {
+      0% { opacity: 1; visibility: visible; }
+      100% { opacity: 0; visibility: hidden; }
+    }
+
     #scene-container {
       position: fixed;
       top: 0;
       left: 0;
       width: 100%;
       height: 100%;
-      z-index: -1;
+      z-index: 0;
       pointer-events: none;
     }
+
     header {
       background: rgba(0, 0, 0, 0.85);
       backdrop-filter: blur(10px);
-      padding: 1.2rem 2rem;
+      padding: 1rem 1.2rem;
       display: flex;
       align-items: center;
       justify-content: space-between;
       border-bottom: 1px solid var(--yellow);
       position: relative;
       z-index: 10;
+      flex-wrap: wrap;
+      gap: 0.8rem;
     }
-    .logo {
-      font-family: 'Orbitron', sans-serif;
-      font-size: 1.6rem;
-      font-weight: 700;
-      color: var(--yellow);
-      display: flex;
+    
+    /* Live Online Status Badge */
+    .system-status-badge {
+      display: inline-flex;
       align-items: center;
-      gap: 0.6rem;
-      text-shadow: 0 0 10px var(--glow-yellow);
+      gap: 6px;
+      background: rgba(37, 211, 102, 0.1);
+      border: 1px solid rgba(37, 211, 102, 0.4);
+      padding: 5px 12px;
+      border-radius: 20px;
+      font-family: 'Orbitron', sans-serif;
+      font-size: 0.75rem;
+      font-weight: 700;
+      color: var(--whatsapp-green);
+      letter-spacing: 1px;
+      box-shadow: 0 0 10px rgba(37, 211, 102, 0.2);
     }
+    .status-dot {
+      width: 7px;
+      height: 7px;
+      background-color: var(--whatsapp-green);
+      border-radius: 50%;
+      box-shadow: 0 0 8px var(--whatsapp-green);
+      animation: pulseGreen 1.5s infinite alternate;
+    }
+    @keyframes pulseGreen {
+      0% { transform: scale(0.8); opacity: 0.6; }
+      100% { transform: scale(1.3); opacity: 1; }
+    }
+
     .contact-info {
-      font-size: 0.95rem;
+      font-size: 0.85rem;
       display: flex;
-      gap: 1.5rem;
+      gap: 1rem;
+      align-items: center;
     }
     .container {
-      max-width: 1200px;
-      margin: 2.5rem auto;
-      padding: 0 1.5rem;
+      width: 100%;
+      max-width: 1100px;
+      margin: 1.5rem auto;
+      padding: 0 1rem;
       position: relative;
       z-index: 5;
     }
     .hero {
       text-align: center;
-      margin-bottom: 2.5rem;
+      margin-bottom: 1.8rem;
     }
     .hero h1 {
       font-family: 'Orbitron', sans-serif;
-      font-size: 2.6rem;
-      margin-bottom: 0.5rem;
+      font-size: clamp(1.8rem, 5vw, 2.6rem);
+      margin-bottom: 0.4rem;
       background: linear-gradient(to right, var(--yellow), #fff);
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
       text-shadow: 0 0 15px var(--glow-yellow);
     }
+    .hero p {
+      font-size: 0.95rem;
+      opacity: 0.9;
+    }
+
     .network-selector {
       display: flex;
-      gap: 1rem;
-      margin: 2rem 0;
+      gap: 0.6rem;
+      margin: 1.5rem 0;
       justify-content: center;
       flex-wrap: wrap;
     }
     .network-btn {
-      background: transparent;
+      flex: 1 1 30%;
+      min-width: 90px;
+      background: rgba(10, 10, 15, 0.8);
       color: white;
       border: 2px solid var(--yellow);
-      padding: 0.7rem 1.4rem;
-      font-size: 1.1rem;
-      font-weight: 600;
+      padding: 0.7rem 0.5rem;
+      font-size: 0.95rem;
+      font-weight: 700;
       cursor: pointer;
-      border-radius: 6px;
+      border-radius: 8px;
       transition: all 0.3s ease;
+      text-align: center;
+      backdrop-filter: blur(5px);
     }
     .network-btn.active {
       background: var(--yellow);
       color: var(--black);
       box-shadow: 0 0 15px var(--glow-yellow);
     }
+
     .packages-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
-      gap: 1.2rem;
-      margin-bottom: 2.5rem;
+      grid-template-columns: repeat(auto-fill, minmax(135px, 1fr));
+      gap: 0.8rem;
+      margin-bottom: 2rem;
     }
     .package-card {
       background: var(--card-bg);
+      backdrop-filter: blur(10px);
       border: 1px solid rgba(255, 215, 0, 0.2);
       border-radius: 12px;
-      padding: 1.4rem 1rem;
+      padding: 1.1rem 0.6rem;
       text-align: center;
       cursor: pointer;
       transition: transform 0.2s, box-shadow 0.2s;
     }
-    .package-card:hover {
-      transform: translateY(-4px);
+    .package-card:active, .package-card:hover {
+      transform: translateY(-3px);
       box-shadow: 0 6px 15px rgba(255, 215, 0, 0.3);
       border-color: var(--yellow);
     }
     .package-size {
       font-family: 'Orbitron', sans-serif;
-      font-size: 1.4rem;
-      font-weight: 600;
-      margin-bottom: 0.5rem;
+      font-size: 1.25rem;
+      font-weight: 700;
+      margin-bottom: 0.3rem;
       color: var(--yellow);
     }
     .package-price {
-      font-size: 1.2rem;
+      font-size: 1.05rem;
       font-weight: 700;
       color: white;
     }
+
     .order-form {
       background: var(--card-bg);
-      padding: 2rem;
+      backdrop-filter: blur(10px);
+      padding: 1.5rem 1.2rem;
       border-radius: 16px;
-      margin-bottom: 2.5rem;
+      margin-bottom: 2rem;
       border: 1px solid rgba(255, 215, 0, 0.2);
     }
     .form-group {
@@ -153,16 +271,16 @@
     }
     label {
       display: block;
-      margin-bottom: 0.6rem;
+      margin-bottom: 0.5rem;
       font-weight: 600;
-      font-size: 1.05rem;
+      font-size: 0.95rem;
     }
     input[type="tel"], input[type="text"] {
       width: 100%;
       padding: 0.85rem;
       border-radius: 8px;
       border: 1px solid rgba(255, 215, 0, 0.4);
-      background: rgba(10, 10, 10, 0.9);
+      background: rgba(10, 10, 15, 0.9);
       color: white;
       font-size: 1rem;
     }
@@ -177,10 +295,10 @@
       gap: 0.6rem;
       cursor: pointer;
       user-select: none;
-      font-size: 0.95rem;
+      font-size: 0.88rem;
       color: var(--red);
       font-weight: 600;
-      margin-top: 0.5rem;
+      margin-top: 0.6rem;
     }
     .checkbox-container input[type="checkbox"] {
       width: 18px;
@@ -193,25 +311,28 @@
       background: rgba(0, 229, 255, 0.05);
       border: 1px dashed var(--cyan);
       border-radius: 10px;
-      padding: 1.2rem;
+      padding: 1rem;
       margin-top: 1rem;
       margin-bottom: 1.2rem;
     }
     .otp-input-group {
       display: flex;
-      gap: 0.8rem;
+      gap: 0.6rem;
       margin-top: 0.6rem;
+      flex-wrap: wrap;
     }
     .btn-secondary {
       background: transparent;
       color: var(--cyan);
       border: 1px solid var(--cyan);
-      padding: 0.8rem 1rem;
+      padding: 0.75rem 1rem;
       font-weight: 600;
       border-radius: 8px;
       cursor: pointer;
-      white-space: nowrap;
+      width: 100%;
+      text-align: center;
       transition: all 0.2s ease;
+      font-size: 0.9rem;
     }
     .btn-secondary:hover {
       background: rgba(0, 229, 255, 0.15);
@@ -220,7 +341,7 @@
     .badge-verified {
       display: none;
       color: #25D366;
-      font-size: 0.9rem;
+      font-size: 0.85rem;
       font-weight: 600;
       margin-top: 0.5rem;
     }
@@ -229,8 +350,8 @@
       background: linear-gradient(to right, var(--yellow), #e6c200);
       color: var(--black);
       border: none;
-      padding: 1rem;
-      font-size: 1.1rem;
+      padding: 0.95rem;
+      font-size: 1rem;
       font-weight: 700;
       border-radius: 8px;
       cursor: pointer;
@@ -241,7 +362,7 @@
       text-transform: uppercase;
       box-shadow: 0 4px 15px rgba(255, 215, 0, 0.3);
     }
-    .btn:hover {
+    .btn:active, .btn:hover {
       transform: scale(1.01);
       box-shadow: 0 6px 20px rgba(255, 215, 0, 0.5);
     }
@@ -251,38 +372,40 @@
       color: white;
       box-shadow: 0 4px 15px rgba(37, 211, 102, 0.2);
     }
-    .track-btn:hover {
-      box-shadow: 0 6px 20px rgba(37, 211, 102, 0.4);
-    }
+
     .divider {
       height: 1px;
       background: rgba(255, 215, 0, 0.2);
-      margin: 2.5rem 0 1.5rem;
+      margin: 2rem 0 1.5rem;
     }
     .summary {
       background: var(--card-bg);
-      padding: 1.8rem;
+      backdrop-filter: blur(10px);
+      padding: 1.4rem 1.2rem;
       border-radius: 16px;
       border: 1px solid rgba(255, 215, 0, 0.15);
     }
     .summary h3 {
       font-family: 'Orbitron', sans-serif;
-      margin-bottom: 1.2rem;
+      margin-bottom: 1rem;
       color: var(--yellow);
       text-align: center;
+      font-size: 1.1rem;
     }
     .summary-item {
       display: flex;
       justify-content: space-between;
-      margin-bottom: 0.8rem;
-      font-size: 1.05rem;
+      margin-bottom: 0.7rem;
+      font-size: 0.95rem;
     }
     .notice {
-      background: rgba(15, 15, 15, 0.9);
-      padding: 1.4rem;
+      background: rgba(15, 15, 20, 0.9);
+      backdrop-filter: blur(5px);
+      padding: 1.1rem;
       border-radius: 12px;
-      margin-top: 2rem;
-      font-size: 0.95rem;
+      margin-top: 1.5rem;
+      font-size: 0.88rem;
+      line-height: 1.5;
       border-left: 3px solid var(--yellow);
     }
     .notice-highlight {
@@ -297,89 +420,71 @@
       left: 0;
       width: 100vw;
       height: 100vh;
+      height: 100dvh;
       background: rgba(0, 0, 0, 0.85);
       backdrop-filter: blur(8px);
       display: none;
       justify-content: center;
       align-items: center;
       z-index: 1000;
-      animation: fadeIn 0.3s ease-out;
+      padding: 1rem;
     }
     .modal-card {
       background: #111111;
       border: 2px solid var(--yellow);
       border-radius: 20px;
-      padding: 2.5rem 2rem;
-      max-width: 450px;
-      width: 90%;
+      padding: 1.8rem 1.4rem;
+      max-width: 420px;
+      width: 100%;
       text-align: center;
       box-shadow: 0 0 30px rgba(255, 215, 0, 0.3);
       position: relative;
-      animation: popIn 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
     }
     .hugging-emoji {
-      font-size: 4.5rem;
-      margin-bottom: 0.5rem;
+      font-size: 3.8rem;
+      margin-bottom: 0.3rem;
       display: inline-block;
       animation: bounce 1.2s infinite alternate ease-in-out;
     }
     .modal-card h2 {
       font-family: 'Orbitron', sans-serif;
       color: var(--yellow);
-      font-size: 2rem;
-      margin-bottom: 0.8rem;
+      font-size: 1.6rem;
+      margin-bottom: 0.6rem;
     }
     .modal-card p {
-      font-size: 1.05rem;
-      line-height: 1.6;
+      font-size: 0.95rem;
+      line-height: 1.5;
       color: #e0e0e0;
-      margin-bottom: 1.5rem;
+      margin-bottom: 1.2rem;
     }
     .modal-details {
       background: rgba(255, 215, 0, 0.08);
       border: 1px solid rgba(255, 215, 0, 0.2);
       border-radius: 10px;
-      padding: 1rem;
-      margin-bottom: 1.5rem;
+      padding: 0.9rem;
+      margin-bottom: 1.2rem;
       text-align: left;
-      font-size: 0.95rem;
+      font-size: 0.88rem;
     }
     .close-modal-btn {
       background: var(--yellow);
       color: var(--black);
       font-family: 'Orbitron', sans-serif;
       font-weight: 700;
-      padding: 0.85rem 2rem;
+      padding: 0.8rem 1.5rem;
       border: none;
       border-radius: 8px;
-      font-size: 1rem;
+      font-size: 0.95rem;
       cursor: pointer;
-      transition: all 0.2s ease;
       width: 100%;
-    }
-    .close-modal-btn:hover {
-      background: #e6c200;
-      transform: scale(1.02);
-    }
-
-    @keyframes fadeIn {
-      from { opacity: 0; }
-      to { opacity: 1; }
-    }
-    @keyframes popIn {
-      from { transform: scale(0.7); opacity: 0; }
-      to { transform: scale(1); opacity: 1; }
-    }
-    @keyframes bounce {
-      0% { transform: translateY(0) scale(1); }
-      100% { transform: translateY(-10px) scale(1.08); }
     }
 
     footer {
       text-align: center;
-      padding: 3rem 2rem 2rem;
+      padding: 2.5rem 1rem 1.8rem;
       background: rgba(5, 5, 5, 0.95);
-      margin-top: 4rem;
+      margin-top: 3rem;
       position: relative;
       z-index: 5;
       border-top: 1px solid rgba(255, 215, 0, 0.1);
@@ -388,52 +493,76 @@
       display: flex;
       flex-direction: row;
       justify-content: center;
-      gap: 1rem;
+      gap: 0.8rem;
       align-items: center;
-      margin: 1.5rem 0 2rem;
+      margin: 1.2rem 0 1.8rem;
       flex-wrap: wrap;
     }
     .whatsapp-link {
       color: var(--whatsapp-green);
       text-decoration: none;
       font-weight: 600;
-      font-size: 0.95rem;
+      font-size: 0.85rem;
       display: inline-flex;
       align-items: center;
-      gap: 0.6rem;
-      padding: 0.5rem 1rem;
+      justify-content: center;
+      gap: 0.5rem;
+      padding: 0.6rem 0.9rem;
       border-radius: 6px;
       background: rgba(37, 211, 102, 0.05);
       border: 1px solid rgba(37, 211, 102, 0.2);
-      transition: all 0.3s ease;
-    }
-    .whatsapp-link:hover {
-      background: rgba(37, 211, 102, 0.15);
-      border-color: var(--whatsapp-green);
-      box-shadow: 0 0 12px rgba(37, 211, 102, 0.3);
-      transform: translateY(-2px);
+      flex: 1 1 200px;
+      max-width: 300px;
     }
     .whatsapp-icon {
-      width: 22px;
-      height: 22px;
+      width: 18px;
+      height: 18px;
       fill: var(--whatsapp-green);
     }
-    @media (max-width: 768px) {
-      .hero h1 { font-size: 2rem; }
-      .network-selector { flex-direction: column; align-items: center; }
-      .packages-grid { grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); }
-      .contact-info { flex-direction: column; gap: 0.4rem; align-items: flex-end; }
-      .otp-input-group { flex-direction: column; }
-      .footer-links-container { flex-direction: column; }
+
+    @media (max-width: 600px) {
+      header {
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+      }
+      .contact-info {
+        flex-direction: column;
+        gap: 0.3rem;
+      }
+      .footer-links-container {
+        flex-direction: column;
+        width: 100%;
+      }
+      .whatsapp-link {
+        width: 100%;
+        max-width: none;
+      }
+      .otp-input-group {
+        flex-direction: column;
+      }
+      .btn-secondary {
+        width: 100%;
+      }
     }
   </style>
 </head>
 <body>
+
+  <!-- Animated Opening Splash Intro Screen -->
+  <div id="site-intro-overlay">
+    <div class="intro-title-container">
+      <div class="intro-title">LEGACY DATA HUB</div>
+      <div class="intro-beam"></div>
+      <div class="intro-sub">CONNECTING YOUR DIGITAL WORLD</div>
+    </div>
+  </div>
+
   <div id="scene-container"></div>
 
   <header>
-    <div class="logo-container" style="display: flex; align-items: center; gap: 12px;">
-      <svg width="45" height="45" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg" style="filter: drop-shadow(0px 0px 8px rgba(255, 215, 0, 0.4));">
+    <div class="logo-container" style="display: flex; align-items: center; gap: 10px;">
+      <svg width="38" height="38" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg" style="filter: drop-shadow(0px 0px 8px rgba(255, 215, 0, 0.4));">
         <defs>
           <linearGradient id="logo-grad" x1="0%" y1="100%" x2="100%" y2="0%">
             <stop offset="0%" stop-color="#FFD700" />
@@ -455,10 +584,17 @@
       </svg>
 
       <div style="display: flex; flex-direction: column;">
-        <span style="font-family: 'Orbitron', sans-serif; font-size: 1.4rem; font-weight: 700; color: #FFD700; letter-spacing: 1px; line-height: 1.1;">LEGACY</span>
-        <span style="font-family: 'Inter', sans-serif; font-size: 0.75rem; font-weight: 600; color: #00E5FF; letter-spacing: 3.5px; text-transform: uppercase;">Data Hub</span>
+        <span style="font-family: 'Orbitron', sans-serif; font-size: 1.2rem; font-weight: 700; color: #FFD700; letter-spacing: 1px; line-height: 1.1;">LEGACY</span>
+        <span style="font-family: 'Inter', sans-serif; font-size: 0.65rem; font-weight: 600; color: #00E5FF; letter-spacing: 3px; text-transform: uppercase;">Data Hub</span>
       </div>
     </div>
+
+    <!-- System Online Indicator -->
+    <div class="system-status-badge">
+      <span class="status-dot"></span>
+      SYSTEM ONLINE
+    </div>
+
     <div class="contact-info">
       <span>📞 0599821047</span>
       <span>✉️ legacydatahub@gmail.com</span>
@@ -470,12 +606,13 @@
       <h1>Your NO.1 data shop</h1>
       <p>Secure • Fast • Reliable</p>
     </div>
+    
     <div class="notice">
       <strong>Delivery Time:</strong> 5 to 30 minutes<br>
       <strong>Important:</strong> Enter a valid network number. Data sent to a wrong number cannot be refunded. <span class="notice-highlight">Verify your number for first time purchase.</span>
     </div>
 
-    <!-- WhatsApp Links placed directly under notice info -->
+    <!-- WhatsApp Links -->
     <div class="footer-links-container">
       <a href="https://wa.me/message/DF4CE2EQV33QP1" target="_blank" class="whatsapp-link">
         <svg class="whatsapp-icon" viewBox="0 0 24 24"><path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946C.06 5.348 5.397.01 12.008.01c3.202.001 6.212 1.246 8.477 3.514 2.266 2.268 3.507 5.28 3.505 8.484-.004 6.657-5.34 11.997-11.953 11.997-2.005-.001-3.973-.502-5.713-1.455L0 24zm6.59-3.847c1.62.963 3.424 1.47 5.267 1.471h.005c5.445 0 9.876-4.43 9.88-9.878.002-2.64-1.019-5.123-2.877-6.983-1.857-1.86-4.339-2.883-6.98-2.884-5.448 0-9.88 4.43-9.884 9.88-.001 1.83.479 3.619 1.392 5.216l-.961 3.513 3.6-.945zm11.233-7.561c-.3-.149-1.772-.875-2.046-.975-.274-.1-.474-.149-.674.15-.2.299-.773.975-.947 1.174-.174.199-.349.224-.648.075-.3-.15-1.265-.466-2.41-1.485-.89-.794-1.49-1.775-1.665-2.074-.174-.299-.019-.461.13-.609.135-.133.3-.299.449-.449.149-.15.199-.249.299-.498.1-.2.05-.374-.025-.524-.075-.15-.674-1.62-.923-2.219-.242-.582-.487-.504-.674-.513-.174-.009-.374-.009-.573-.009-.2 0-.523.075-.797.374-.274.299-1.047 1.022-1.047 2.494 0 1.471 1.071 2.892 1.221 3.092.149.199 2.107 3.216 5.106 4.512.714.309 1.271.494 1.708.633.717.228 1.37.195 1.887.118.575-.085 1.772-.723 2.021-1.396.249-.673.249-1.246.174-1.396-.075-.149-.274-.249-.574-.398z"/></svg>
@@ -497,11 +634,11 @@
     <div class="packages-grid" id="packagesContainer"></div>
 
     <div class="order-form">
-      <h3 style="text-align:center; margin-bottom:1.5rem; color:var(--yellow); font-family:'Orbitron', sans-serif;">Complete Your Order</h3>
+      <h3 style="text-align:center; margin-bottom:1.2rem; color:var(--yellow); font-family:'Orbitron', sans-serif; font-size: 1.15rem;">Complete Your Order</h3>
       
       <div class="form-group">
         <label for="phoneNumber">Phone Number (Enter valid network number)</label>
-        <input type="tel" id="phoneNumber" placeholder="e.g. 0599821047" max-length="10" required>
+        <input type="tel" id="phoneNumber" placeholder="e.g. 0241234567" maxlength="10" required>
         
         <label class="checkbox-container">
           <input type="checkbox" id="firstTimeCheckbox">
@@ -512,7 +649,7 @@
 
       <!-- Live Verification Block -->
       <div class="verification-box" id="verificationBox">
-        <p style="font-size:0.9rem; color:#fff; margin-bottom:0.8rem;">Click below to send an automatic verification message to admin (0599821047) on WhatsApp.</p>
+        <p style="font-size:0.85rem; color:#fff; margin-bottom:0.8rem;">Click below to send an automatic verification message to admin (0599821047) on WhatsApp.</p>
         <button type="button" class="btn-secondary" id="sendOtpBtn" style="border-color: var(--whatsapp-green); color: var(--whatsapp-green);">
           Send Verification Request via WhatsApp
         </button>
@@ -535,10 +672,10 @@
 
       <div class="divider"></div>
 
-      <h3 style="text-align:center; margin-bottom:1.2rem; color:var(--yellow); font-family:'Orbitron', sans-serif;">Order Tracking</h3>
+      <h3 style="text-align:center; margin-bottom:1rem; color:var(--yellow); font-family:'Orbitron', sans-serif; font-size: 1.15rem;">Order Tracking</h3>
       <div class="form-group">
         <label for="trackPhoneNumber">Enter Phone Number to Track Order</label>
-        <input type="tel" id="trackPhoneNumber" placeholder="e.g. 0241234567">
+        <input type="tel" id="trackPhoneNumber" placeholder="e.g. 0241234567" maxlength="10">
       </div>
       <button class="btn track-btn" id="trackButton">Track My Order</button>
     </div>
@@ -572,62 +709,286 @@
   </div>
 
   <footer>
-    <p style="opacity: 0.5; font-size: 0.85rem;">&copy; 2026 LEGACY DATA HUB. All rights reserved.</p>
+    <p style="opacity: 0.5; font-size: 0.8rem;">&copy; 2026 LEGACY DATA HUB. All rights reserved.</p>
   </footer>
 
   <script>
-    // 3D Background Engine
+    // --- Responsive 3D Engine Setup ---
     const scene = new THREE.Scene();
-    const camera = new THREE.PerspectiveCamera(60, window.innerWidth / window.innerHeight, 0.1, 500);
+    scene.fog = new THREE.FogExp2(0x050508, 0.018); // Smooth depth mist fade
+
+    const isMobileScreen = window.innerWidth <= 600;
     
-    const renderer = new THREE.WebGLRenderer({ antialias: false, alpha: true });
+    const camera = new THREE.PerspectiveCamera(60, window.innerWidth / window.innerHeight, 0.1, 500);
+    camera.position.set(0, 5, isMobileScreen ? 48 : 38);
+
+    const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
     renderer.setSize(window.innerWidth, window.innerHeight);
     renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2)); 
     document.getElementById('scene-container').appendChild(renderer.domElement);
 
-    const particlesGeometry = new THREE.BufferGeometry();
-    const particlesCount = 600; 
-    const posArray = new Float32Array(particlesCount * 3);
-    for(let i = 0; i < particlesCount * 3; i++) {
-      posArray[i] = (Math.random() - 0.5) * 120;
-    }
-    particlesGeometry.setAttribute('position', new THREE.BufferAttribute(posArray, 3));
-
-    const particlesMaterial = new THREE.PointsMaterial({
-      size: 0.9,
-      color: 0xFFD700,
-      transparent: true,
-      opacity: 0.5
-    });
-
-    const particlesMesh = new THREE.Points(particlesGeometry, particlesMaterial);
-    scene.add(particlesMesh);
-
-    const torusGeometry = new THREE.TorusGeometry(7, 1.5, 12, 40);
-    const torusMaterial = new THREE.MeshBasicMaterial({ 
-      color: 0xFFD700,
+    // --- Background Animation Layer 1: Animated Futuristic Grid Wave ---
+    const gridX = isMobileScreen ? 30 : 50;
+    const gridY = isMobileScreen ? 30 : 50;
+    const gridGeometry = new THREE.PlaneGeometry(160, 160, gridX, gridY);
+    const gridMaterial = new THREE.MeshBasicMaterial({
+      color: 0x00E5FF,
       wireframe: true,
       transparent: true,
-      opacity: 0.35
+      opacity: 0.15
     });
+    const gridMesh = new THREE.Mesh(gridGeometry, gridMaterial);
+    gridMesh.rotation.x = -Math.PI / 2.2;
+    gridMesh.position.y = -18;
+    scene.add(gridMesh);
+
+    // --- Background Animation Layer 2: Glowing Constellation Particles ---
+    const particleCount = isMobileScreen ? 120 : 250;
+    const particleGeometry = new THREE.BufferGeometry();
+    const particlePositions = new Float32Array(particleCount * 3);
+    const particleSpeeds = [];
+
+    for (let i = 0; i < particleCount; i++) {
+      particlePositions[i * 3] = (Math.random() - 0.5) * 120;
+      particlePositions[i * 3 + 1] = (Math.random() - 0.5) * 100;
+      particlePositions[i * 3 + 2] = (Math.random() - 0.5) * 80;
+
+      particleSpeeds.push({
+        x: (Math.random() - 0.5) * 0.04,
+        y: Math.random() * 0.05 + 0.02,
+        z: (Math.random() - 0.5) * 0.04
+      });
+    }
+
+    particleGeometry.setAttribute('position', new THREE.BufferAttribute(particlePositions, 3));
+    
+    // Canvas texture for circular glowing particles
+    const createParticleTexture = () => {
+      const pCanvas = document.createElement('canvas');
+      pCanvas.width = 64;
+      pCanvas.height = 64;
+      const ctx = pCanvas.getContext('2d');
+      const grad = ctx.createRadialGradient(32, 32, 0, 32, 32, 32);
+      grad.addColorStop(0, 'rgba(255, 215, 0, 1)');
+      grad.addColorStop(0.4, 'rgba(0, 229, 255, 0.6)');
+      grad.addColorStop(1, 'rgba(0,0,0,0)');
+      ctx.fillStyle = grad;
+      ctx.beginPath();
+      ctx.arc(32, 32, 32, 0, Math.PI * 2);
+      ctx.fill();
+      return new THREE.CanvasTexture(pCanvas);
+    };
+
+    const particleMaterial = new THREE.PointsMaterial({
+      size: isMobileScreen ? 1.6 : 2.2,
+      map: createParticleTexture(),
+      transparent: true,
+      opacity: 0.8,
+      blending: THREE.AdditiveBlending,
+      depthWrite: false
+    });
+
+    const particleSystem = new THREE.Points(particleGeometry, particleMaterial);
+    scene.add(particleSystem);
+
+    // Helper: Create Text Canvas Texture for Floating Data Tags
+    function createTextTexture(text) {
+      const canvas = document.createElement('canvas');
+      canvas.width = 256;
+      canvas.height = 128;
+      const ctx = canvas.getContext('2d');
+
+      ctx.fillStyle = "rgba(10, 10, 15, 0.85)";
+      ctx.strokeStyle = "#FFD700";
+      ctx.lineWidth = 6;
+      ctx.beginPath();
+      ctx.roundRect(10, 10, 236, 108, 20);
+      ctx.fill();
+      ctx.stroke();
+
+      ctx.fillStyle = "#FFD700";
+      ctx.font = "bold 52px Orbitron, sans-serif";
+      ctx.textAlign = "center";
+      ctx.textBaseline = "middle";
+      ctx.fillText(text, 128, 64);
+
+      const texture = new THREE.CanvasTexture(canvas);
+      return texture;
+    }
+
+    // --- Floating Data Tags ---
+    const bundleSizes = ['1GB', '2GB', '3GB', '5GB', '6GB', '10GB', '20GB', '30GB'];
+    const dataBubbles = [];
+    const totalBubbles = isMobileScreen ? 35 : 70;
+
+    for (let i = 0; i < totalBubbles; i++) {
+      const label = bundleSizes[Math.floor(Math.random() * bundleSizes.length)];
+      const map = createTextTexture(label);
+      const material = new THREE.SpriteMaterial({ map: map, transparent: true, opacity: 0.85 });
+      const sprite = new THREE.Sprite(material);
+
+      sprite.position.x = (Math.random() - 0.5) * (isMobileScreen ? 70 : 110);
+      sprite.position.y = (Math.random() - 0.5) * (isMobileScreen ? 70 : 110);
+      sprite.position.z = (Math.random() - 0.5) * 60;
+
+      const scale = 2.0 + Math.random() * 2.0;
+      sprite.scale.set(scale * 2, scale, 1);
+
+      sprite.userData = {
+        vx: (Math.random() - 0.5) * 0.35,
+        vy: (Math.random() - 0.5) * 0.35,
+        vz: (Math.random() - 0.5) * 0.18
+      };
+
+      scene.add(sprite);
+      dataBubbles.push(sprite);
+    }
+
+    // --- Interactive Toy Character Avatars ---
+    function createToyCharacter(colorHex, isSender) {
+      const group = new THREE.Group();
+
+      const headGeo = new THREE.SphereGeometry(1.4, 20, 20);
+      const headMat = new THREE.MeshBasicMaterial({ color: colorHex, wireframe: true });
+      const head = new THREE.Mesh(headGeo, headMat);
+      head.position.y = 2.2;
+      group.add(head);
+
+      const bodyGeo = new THREE.CylinderGeometry(1.2, 1.6, 3, 14);
+      const bodyMat = new THREE.MeshBasicMaterial({ color: 0x222222, wireframe: true });
+      const body = new THREE.Mesh(bodyGeo, bodyMat);
+      group.add(body);
+
+      const phoneGeo = new THREE.BoxGeometry(0.8, 1.5, 0.2);
+      const phoneMat = new THREE.MeshBasicMaterial({ color: isSender ? 0x00E5FF : 0xFFD700 });
+      const phone = new THREE.Mesh(phoneGeo, phoneMat);
+      phone.position.set(1.2, 0.8, 0.8);
+      phone.rotation.y = -0.4;
+      group.add(phone);
+
+      return group;
+    }
+
+    const toySpacing = isMobileScreen ? 12 : 16;
+    const buyerToy = createToyCharacter(0x00E5FF, true);
+    buyerToy.position.set(-toySpacing, -6, 5);
+    scene.add(buyerToy);
+
+    const receiverToy = createToyCharacter(0xFFD700, false);
+    receiverToy.position.set(toySpacing, -6, 5);
+    scene.add(receiverToy);
+
+    // Laser Beam Effect
+    const beamGeometry = new THREE.BufferGeometry();
+    const beamCount = 25;
+    const beamPositions = new Float32Array(beamCount * 3);
+    beamGeometry.setAttribute('position', new THREE.BufferAttribute(beamPositions, 3));
+    const beamMaterial = new THREE.PointsMaterial({ color: 0x00E5FF, size: 0.6, transparent: true });
+    const beamParticles = new THREE.Points(beamGeometry, beamMaterial);
+    scene.add(beamParticles);
+
+    let beamProgress = 0;
+
+    const torusGeometry = new THREE.TorusGeometry(12, 0.8, 16, 40);
+    const torusMaterial = new THREE.MeshBasicMaterial({ color: 0xFFD700, wireframe: true, transparent: true, opacity: 0.12 });
     const torus = new THREE.Mesh(torusGeometry, torusMaterial);
-    torus.position.y = 2;
     scene.add(torus);
 
-    camera.position.z = 25;
+    // Dynamic Touch & Mouse Interactive Parallax Tracking
+    let mouseX = 0, mouseY = 0;
+    const handleMove = (x, y) => {
+      mouseX = (x / window.innerWidth) * 2 - 1;
+      mouseY = -(y / window.innerHeight) * 2 + 1;
+    };
+    window.addEventListener('mousemove', (e) => handleMove(e.clientX, e.clientY));
+    window.addEventListener('touchmove', (e) => {
+      if (e.touches.length > 0) handleMove(e.touches[0].clientX, e.touches[0].clientY);
+    }, { passive: true });
 
     window.addEventListener('resize', () => {
+      const isMobileNow = window.innerWidth <= 600;
       camera.aspect = window.innerWidth / window.innerHeight;
+      camera.position.z = isMobileNow ? 48 : 38;
       camera.updateProjectionMatrix();
       renderer.setSize(window.innerWidth, window.innerHeight);
     });
 
+    let isIntroActive = true;
+    setTimeout(() => {
+      isIntroActive = false;
+    }, 3500);
+
+    // --- Main Animation Render Loop ---
+    let clock = new THREE.Clock();
+
     const animate = () => {
       requestAnimationFrame(animate);
-      particlesMesh.rotation.x += 0.0003;
-      particlesMesh.rotation.y += 0.0003;
-      torus.rotation.x += 0.003;
-      torus.rotation.y += 0.006;
+
+      const elapsedTime = clock.getElapsedTime();
+      const speedMultiplier = isIntroActive ? 1.0 : 0.65;
+
+      // 1. Grid Wave Animation
+      const posArr = gridGeometry.attributes.position.array;
+      for (let i = 0; i < posArr.length; i += 3) {
+        const x = posArr[i];
+        const y = posArr[i + 1];
+        posArr[i + 2] = Math.sin(x * 0.1 + elapsedTime * 1.5) * 1.8 + Math.cos(y * 0.1 + elapsedTime * 1.5) * 1.8;
+      }
+      gridGeometry.attributes.position.needsUpdate = true;
+
+      // 2. Rising Constellation Particles
+      const pPositions = particleSystem.geometry.attributes.position.array;
+      for (let i = 0; i < particleCount; i++) {
+        pPositions[i * 3 + 1] += particleSpeeds[i].y * speedMultiplier;
+        pPositions[i * 3] += particleSpeeds[i].x * speedMultiplier;
+        
+        // Loop particles when floating too high
+        if (pPositions[i * 3 + 1] > 50) {
+          pPositions[i * 3 + 1] = -50;
+          pPositions[i * 3] = (Math.random() - 0.5) * 120;
+        }
+      }
+      particleSystem.geometry.attributes.position.needsUpdate = true;
+
+      // 3. Floating Data Tags Movement
+      dataBubbles.forEach(b => {
+        b.position.x += b.userData.vx * speedMultiplier;
+        b.position.y += b.userData.vy * speedMultiplier;
+        b.position.z += b.userData.vz * speedMultiplier;
+
+        const limit = isMobileScreen ? 35 : 55;
+        if (Math.abs(b.position.x) > limit) b.userData.vx *= -1;
+        if (Math.abs(b.position.y) > limit) b.userData.vy *= -1;
+        if (Math.abs(b.position.z) > 30) b.userData.vz *= -1;
+      });
+
+      // 4. Toy Animations & Beam Progress
+      buyerToy.position.y = -6 + Math.sin(elapsedTime * 2) * 0.8;
+      buyerToy.rotation.y = Math.sin(elapsedTime) * 0.2 + 0.5;
+
+      receiverToy.position.y = -6 + Math.cos(elapsedTime * 2) * 0.8;
+      receiverToy.rotation.y = Math.cos(elapsedTime) * 0.2 - 0.5;
+
+      beamProgress += 0.02 * speedMultiplier;
+      if (beamProgress > 1) beamProgress = 0;
+
+      const pos = beamParticles.geometry.attributes.position.array;
+      for (let i = 0; i < beamCount; i++) {
+        const t = (beamProgress + i / beamCount) % 1;
+        pos[i * 3] = -toySpacing + ((toySpacing * 2) * t);
+        pos[i * 3 + 1] = -5 + Math.sin(t * Math.PI) * 4;
+        pos[i * 3 + 2] = 5;
+      }
+      beamParticles.geometry.attributes.position.needsUpdate = true;
+
+      torus.rotation.x += 0.0015;
+      torus.rotation.y += 0.002;
+
+      // Subtle Camera Touch Tilt Interaction
+      camera.position.x += (mouseX * 3 - camera.position.x) * 0.03;
+      camera.position.y += (-mouseY * 3 + 5 - camera.position.y) * 0.03;
+      camera.lookAt(0, 0, 0);
+
       renderer.render(scene, camera);
     };
     animate();
@@ -638,7 +999,7 @@
     
     const packages = {
       MTN: [
-        { size: '1GB', price: 4.80}, { size: '2GB', price: 9.80 }, { size: '3GB', price: 14.30 },
+        { size: '1GB', price: 4.80 }, { size: '2GB', price: 9.80 }, { size: '3GB', price: 14.30 },
         { size: '4GB', price: 22 }, { size: '5GB', price: 26 }, { size: '6GB', price: 29 },
         { size: '8GB', price: 37 }, { size: '10GB', price: 46 }, { size: '15GB', price: 64 },
         { size: '20GB', price: 84 }, { size: '25GB', price: 104 }, { size: '30GB', price: 126 },
@@ -681,7 +1042,6 @@
       }
     });
 
-    // Verification Trigger
     document.getElementById('sendOtpBtn').addEventListener('click', () => {
       const phone = document.getElementById('phoneNumber').value;
       if (!phone || phone.length < 10) {
@@ -749,18 +1109,16 @@
       });
     });
 
-    // Modal Trigger Function
     function showWelcomeModal(reference, phone, pkgDetails) {
       document.getElementById('modalRef').textContent = reference;
       document.getElementById('modalPhone').textContent = phone;
       document.getElementById('modalPackage').textContent = pkgDetails;
       document.getElementById('welcomeModal').style.display = 'flex';
 
-      // Fire celebratory confetti burst
       if (typeof confetti === 'function') {
         confetti({
-          particleCount: 120,
-          spread: 70,
+          particleCount: 100,
+          spread: 60,
           origin: { y: 0.6 },
           colors: ['#FFD700', '#00E5FF', '#25D366', '#ffffff']
         });
@@ -803,7 +1161,6 @@
           ]
         },
         callback: function(response) {
-          // Show Thank You Welcome Modal upon successful purchase
           showWelcomeModal(response.reference, phone, `${selectedPackage.size} (${currentNetwork})`);
         },
         onClose: function() {
