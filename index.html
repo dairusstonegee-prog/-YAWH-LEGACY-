@@ -226,15 +226,15 @@
 
     .quick-actions-grid {
       display: grid;
-      grid-template-columns: repeat(5, 1fr);
+      grid-template-columns: repeat(4, 1fr);
       gap: 0.75rem;
       margin-bottom: 1.5rem;
     }
 
     @media (max-width: 600px) {
       .quick-actions-grid {
-        grid-template-columns: repeat(5, 1fr);
-        gap: 0.4rem;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 0.5rem;
       }
     }
 
@@ -243,7 +243,7 @@
       backdrop-filter: blur(10px);
       border: 1px solid var(--card-border);
       border-radius: 12px;
-      padding: 0.9rem 0.2rem;
+      padding: 0.9rem 0.4rem;
       display: flex;
       flex-direction: column;
       align-items: center;
@@ -273,7 +273,7 @@
     }
 
     .action-label {
-      font-size: 0.7rem;
+      font-size: 0.75rem;
       font-weight: 600;
       text-align: center;
     }
@@ -342,30 +342,6 @@
       color: white;
     }
 
-    .spin-promo-banner {
-      background: linear-gradient(135deg, rgba(0, 229, 255, 0.15), rgba(255, 184, 0, 0.15));
-      border: 1px solid var(--accent-cyan);
-      border-radius: 14px;
-      padding: 1rem 1.2rem;
-      margin-bottom: 1.5rem;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 1rem;
-    }
-
-    .spin-banner-text h3 {
-      font-family: 'Orbitron', sans-serif;
-      font-size: 1rem;
-      color: var(--accent-cyan);
-      margin-bottom: 0.2rem;
-    }
-
-    .spin-banner-text p {
-      font-size: 0.8rem;
-      color: var(--text-muted);
-    }
-
     .info-pills {
       display: flex;
       gap: 0.6rem;
@@ -392,8 +368,73 @@
       color: var(--primary-yellow);
     }
 
-    .place-order-section {
-      margin-bottom: 1.8rem;
+    /* --- MULTI-STEP PROCESS STYLING --- */
+    .step-container {
+      transition: all 0.3s ease-in-out;
+    }
+
+    .step-hidden {
+      display: none !important;
+    }
+
+    .step-indicator {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 12px;
+      margin-bottom: 1.2rem;
+      font-family: 'Orbitron', sans-serif;
+      font-size: 0.85rem;
+    }
+
+    .step-badge {
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, 0.1);
+      border: 1px solid var(--card-border);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--text-muted);
+      font-weight: 700;
+    }
+
+    .step-badge.active {
+      background: var(--primary-yellow);
+      color: #000;
+      border-color: var(--primary-yellow);
+      box-shadow: 0 0 10px rgba(255, 184, 0, 0.5);
+    }
+
+    .step-line {
+      height: 2px;
+      width: 40px;
+      background: rgba(255, 255, 255, 0.15);
+    }
+
+    .step-line.active {
+      background: var(--primary-yellow);
+    }
+
+    .back-btn {
+      background: rgba(255, 255, 255, 0.08);
+      border: 1px solid var(--card-border);
+      color: var(--primary-yellow);
+      padding: 0.5rem 1rem;
+      border-radius: 8px;
+      cursor: pointer;
+      font-weight: 600;
+      font-size: 0.85rem;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      margin-bottom: 1rem;
+      transition: all 0.2s;
+    }
+
+    .back-btn:hover {
+      background: rgba(255, 184, 0, 0.15);
     }
 
     .network-grid {
@@ -765,12 +806,12 @@
       width: 100%;
     }
 
-    /* --- Spin Wheel Modal CSS --- */
-    .wheel-wrapper {
+    /* --- SPIN GAME STYLING --- */
+    .wheel-container {
       position: relative;
       width: 260px;
       height: 260px;
-      margin: 1.2rem auto;
+      margin: 1rem auto;
     }
 
     .wheel-pointer {
@@ -782,26 +823,61 @@
       height: 0;
       border-left: 14px solid transparent;
       border-right: 14px solid transparent;
-      border-top: 24px solid var(--primary-yellow);
+      border-top: 24px solid var(--red);
       z-index: 10;
       filter: drop-shadow(0 2px 4px rgba(0,0,0,0.5));
     }
 
-    #wheelCanvas {
+    .wheel-canvas {
       width: 100%;
       height: 100%;
       border-radius: 50%;
-      box-shadow: 0 0 20px rgba(0, 229, 255, 0.4);
-      transition: transform 4s cubic-bezier(0.15, 0.85, 0.15, 1);
+      border: 4px solid var(--primary-yellow);
+      box-shadow: 0 0 20px rgba(255, 184, 0, 0.4);
+      transition: transform 4s cubic-bezier(0.15, 0.9, 0.2, 1);
     }
 
-    .spin-result-msg {
+    .spin-btn {
+      background: linear-gradient(135deg, var(--primary-yellow), #ff9900);
+      color: #000;
       font-family: 'Orbitron', sans-serif;
-      font-size: 1.1rem;
-      font-weight: 700;
-      color: var(--accent-cyan);
-      min-height: 1.5rem;
-      margin: 0.8rem 0;
+      font-weight: 900;
+      padding: 0.85rem 1.5rem;
+      border: none;
+      border-radius: 30px;
+      font-size: 1rem;
+      cursor: pointer;
+      width: 100%;
+      margin-top: 0.8rem;
+      box-shadow: 0 4px 15px rgba(255, 184, 0, 0.4);
+      transition: all 0.2s;
+    }
+
+    .spin-btn:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+    }
+
+    .spin-msg {
+      font-size: 0.85rem;
+      margin-top: 0.8rem;
+      font-weight: 600;
+      min-height: 1.2rem;
+    }
+
+    .close-x-btn {
+      position: absolute;
+      top: 12px;
+      right: 16px;
+      background: transparent;
+      border: none;
+      color: var(--text-muted);
+      font-size: 1.2rem;
+      cursor: pointer;
+    }
+
+    .close-x-btn:hover {
+      color: #fff;
     }
   </style>
 </head>
@@ -818,7 +894,7 @@
   <div id="scene-container"></div>
 
   <nav class="navbar">
-    <a href="#" class="brand-logo">
+    <a href="#" class="brand-logo" onclick="goToStep(1)">
       <svg width="32" height="32" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
         <defs>
           <linearGradient id="logo-grad" x1="0%" y1="100%" x2="100%" y2="0%">
@@ -839,7 +915,6 @@
     </a>
 
     <div class="nav-actions">
-      <button class="nav-icon-btn" id="navSpinBtn" title="Spin to Win"><i class="fa-solid fa-dharmachakra"></i></button>
       <button class="nav-icon-btn" title="Notifications"><i class="fa-regular fa-bell"></i></button>
       <a href="https://wa.me/message/DF4CE2EQV33QP1" target="_blank" class="nav-icon-btn" title="Contact Admin"><i class="fa-brands fa-whatsapp"></i></a>
     </div>
@@ -856,35 +931,22 @@
       <span>Quick Actions</span>
     </div>
     <div class="quick-actions-grid">
-      <a href="#place-order" class="quick-action-card">
+      <div class="quick-action-card" onclick="goToStep(1)">
         <div class="action-icon-box"><i class="fa-solid fa-box-archive"></i></div>
         <span class="action-label">Order</span>
-      </a>
-      <a href="#place-order" class="quick-action-card">
+      </div>
+      <div class="quick-action-card" onclick="goToStep(1)">
         <div class="action-icon-box"><i class="fa-solid fa-wifi"></i></div>
         <span class="action-label">Data</span>
-      </a>
-      <div class="quick-action-card" id="quickSpinBtn">
-        <div class="action-icon-box" style="background: var(--accent-cyan);"><i class="fa-solid fa-dharmachakra"></i></div>
+      </div>
+      <div class="quick-action-card" id="openSpinModalBtn">
+        <div class="action-icon-box" style="background:var(--accent-cyan); color:#000;"><i class="fa-solid fa-dharmachakra"></i></div>
         <span class="action-label">Spin & Win</span>
       </div>
-      <a href="https://wa.me/message/DF4CE2EQV33QP1" target="_blank" class="quick-action-card">
-        <div class="action-icon-box"><i class="fa-solid fa-headset"></i></div>
-        <span class="action-label">Support</span>
-      </a>
       <a href="#tracking-section" class="quick-action-card">
         <div class="action-icon-box"><i class="fa-solid fa-shield-halved"></i></div>
         <span class="action-label">Track</span>
       </a>
-    </div>
-
-    <!-- Spin Banner Promo -->
-    <div class="spin-promo-banner">
-      <div class="spin-banner-text">
-        <h3>Gifted Data Bundle Spin Game 🎁</h3>
-        <p>Buy more to win free data!</p>
-      </div>
-      <button class="g-btn" id="openSpinModalBtn"><i class="fa-solid fa-dharmachakra"></i> Spin Now</button>
     </div>
 
     <div class="greeting-card">
@@ -892,8 +954,8 @@
       <div class="greeting-title">Welcome to Datahub!</div>
       <div class="greeting-subtitle">Your No.1 Fast, Secure & Reliable Data Shop in Ghana</div>
       <div class="greeting-actions">
-        <a href="#place-order" class="g-btn"><i class="fa-solid fa-cart-shopping"></i> Buy Data Now</a>
-        <a href="https://whatsapp.com/channel/0029VaCiikI23n3Wt1d5z402" target="_blank" class="g-btn g-btn-outline"><i class="fa-brands fa-whatsapp"></i> Join Channel</a>
+        <button class="g-btn" onclick="goToStep(1)"><i class="fa-solid fa-cart-shopping"></i> Buy Data Now</button>
+        <button type="button" class="g-btn g-btn-outline" id="bannerSpinBtn" style="border-color:var(--accent-cyan); color:var(--accent-cyan);"><i class="fa-solid fa-gift"></i> Spin & Win Free Data</button>
       </div>
     </div>
 
@@ -903,68 +965,90 @@
       <div class="pill"><i class="fa-solid fa-clock"></i> 24/7 Service</div>
     </div>
 
-    <div class="place-order-section" id="place-order">
-      <div class="section-title">
-        <span>Place New Order</span>
-      </div>
-
-      <div class="network-grid">
-        <div class="network-card active" data-network="MTN">
-          <div class="network-icon-box net-mtn">M</div>
-          <span class="network-name">MTN</span>
-        </div>
-        <div class="network-card" data-network="TELECEL">
-          <div class="network-icon-box net-telecel">T</div>
-          <span class="network-name">Telecel</span>
-        </div>
-        <div class="network-card" data-network="AIRTELTIGO">
-          <div class="network-icon-box net-airteltigo">A</div>
-          <span class="network-name">AirtelTigo</span>
-        </div>
-      </div>
-
-      <div class="packages-grid" id="packagesContainer"></div>
+    <!-- MULTI-STEP INDICATOR BAR -->
+    <div class="step-indicator">
+      <div class="step-badge active" id="indicatorStep1">1</div>
+      <span>Select Package</span>
+      <div class="step-line" id="indicatorLine"></div>
+      <div class="step-badge" id="indicatorStep2">2</div>
+      <span>Enter Details</span>
     </div>
 
-    <div class="form-card">
-      <div class="section-title" style="color: var(--primary-yellow); margin-bottom: 1rem;">
-        <span>Complete Your Order</span>
+    <!-- ORDER SECTION CONTAINER -->
+    <div class="place-order-section" id="place-order">
+      
+      <!-- STEP 1: PACKAGE SELECTION PAGE -->
+      <div id="step-1-container" class="step-container">
+        <div class="section-title">
+          <span>Step 1: Choose Network & Package</span>
+        </div>
+
+        <div class="network-grid">
+          <div class="network-card active" data-network="MTN">
+            <div class="network-icon-box net-mtn">M</div>
+            <span class="network-name">MTN</span>
+          </div>
+          <div class="network-card" data-network="TELECEL">
+            <div class="network-icon-box net-telecel">T</div>
+            <span class="network-name">Telecel</span>
+          </div>
+          <div class="network-card" data-network="AIRTELTIGO">
+            <div class="network-icon-box net-airteltigo">A</div>
+            <span class="network-name">AirtelTigo</span>
+          </div>
+        </div>
+
+        <div class="packages-grid" id="packagesContainer"></div>
       </div>
 
-      <div class="form-group">
-        <label for="phoneNumber">Recipient Phone Number</label>
-        <input type="tel" id="phoneNumber" class="form-control" placeholder="e.g. 0241234567" maxlength="10" required>
-        
-        <label class="checkbox-container">
-          <input type="checkbox" id="firstTimeCheckbox">
-          Verify your number for first time purchase
-        </label>
-        <div id="verifiedBadge" class="badge-verified">✓ Phone Number Verified</div>
-      </div>
-
-      <div class="verification-box" id="verificationBox">
-        <p style="font-size:0.8rem; color:#fff; margin-bottom:0.6rem;">Click below to send verification request to admin (0599821047) via WhatsApp.</p>
-        <button type="button" class="btn-secondary" id="sendOtpBtn" style="border-color: var(--whatsapp-green); color: var(--whatsapp-green);">
-          Send Verification via WhatsApp
+      <!-- STEP 2: PHONE NUMBER & CHECKOUT PAGE -->
+      <div id="step-2-container" class="step-container step-hidden">
+        <button class="back-btn" onclick="goToStep(1)">
+          <i class="fa-solid fa-arrow-left"></i> Change Package / Network
         </button>
-        
-        <div class="otp-input-group" id="otpInputGroup" style="display:none; margin-top:0.8rem; flex-direction:column; gap:0.5rem;">
-          <input type="text" id="otpInput" class="form-control" placeholder="Enter Verification Code" maxlength="6" style="text-align:center; font-weight:700;">
-          <button type="button" class="btn-secondary" id="confirmOtpBtn" style="border-color:var(--primary-yellow); color:var(--primary-yellow);">Confirm Code</button>
+
+        <div class="form-card">
+          <div class="section-title" style="color: var(--primary-yellow); margin-bottom: 1rem;">
+            <span>Step 2: Recipient Details & Payment</span>
+          </div>
+
+          <div class="form-group">
+            <label>Selected Package</label>
+            <input type="text" id="selectedPackage" class="form-control" readonly placeholder="Select a package above">
+          </div>
+
+          <div class="form-group">
+            <label>Total Amount (GHS)</label>
+            <input type="text" id="totalAmount" class="form-control" readonly placeholder="GH₵0.00">
+          </div>
+
+          <div class="form-group">
+            <label for="phoneNumber">Recipient Phone Number</label>
+            <input type="tel" id="phoneNumber" class="form-control" placeholder="e.g. 0241234567" maxlength="10" required>
+            
+            <label class="checkbox-container">
+              <input type="checkbox" id="firstTimeCheckbox">
+              Verify your number for first time purchase
+            </label>
+            <div id="verifiedBadge" class="badge-verified">✓ Phone Number Verified</div>
+          </div>
+
+          <div class="verification-box" id="verificationBox">
+            <p style="font-size:0.8rem; color:#fff; margin-bottom:0.6rem;">Click below to send verification request to admin (0599821047) via WhatsApp.</p>
+            <button type="button" class="btn-secondary" id="sendOtpBtn" style="border-color: var(--whatsapp-green); color: var(--whatsapp-green);">
+              Send Verification via WhatsApp
+            </button>
+            
+            <div class="otp-input-group" id="otpInputGroup" style="display:none; margin-top:0.8rem; flex-direction:column; gap:0.5rem;">
+              <input type="text" id="otpInput" class="form-control" placeholder="Enter Verification Code" maxlength="6" style="text-align:center; font-weight:700;">
+              <button type="button" class="btn-secondary" id="confirmOtpBtn" style="border-color:var(--primary-yellow); color:var(--primary-yellow);">Confirm Code</button>
+            </div>
+          </div>
+
+          <button class="btn-submit" id="payButton">Pay Now via Paystack</button>
         </div>
       </div>
 
-      <div class="form-group">
-        <label>Selected Package</label>
-        <input type="text" id="selectedPackage" class="form-control" readonly placeholder="Select a package above">
-      </div>
-
-      <div class="form-group">
-        <label>Total Amount (GHS)</label>
-        <input type="text" id="totalAmount" class="form-control" readonly placeholder="GH₵0.00">
-      </div>
-
-      <button class="btn-submit" id="payButton">Pay Now via Paystack</button>
     </div>
 
     <div class="metrics-grid">
@@ -1013,7 +1097,7 @@
       <div class="footer-col">
         <h4>Quick Links</h4>
         <ul class="footer-links">
-          <li><a href="#place-order">Home</a></li>
+          <li><a href="#place-order" onclick="goToStep(1)">Home</a></li>
           <li><a href="#tracking-section">Order Tracking</a></li>
           <li><a href="https://wa.me/message/DF4CE2EQV33QP1" target="_blank">WhatsApp Support</a></li>
         </ul>
@@ -1031,20 +1115,20 @@
 
   </div>
 
-  <!-- Spin Wheel Modal -->
+  <!-- Spin & Win Modal -->
   <div class="modal-overlay" id="spinModal">
     <div class="modal-card">
-      <button id="closeSpinModalBtn" style="position: absolute; top: 12px; right: 16px; background: none; border: none; color: white; font-size: 1.2rem; cursor: pointer;">✕</button>
-      <h2>Spin & Win Data!</h2>
-      <p style="font-size: 0.85rem; color: var(--accent-cyan); margin-top: 0.2rem;">Buy more to win free data</p>
+      <button class="close-x-btn" id="closeSpinModalBtn"><i class="fa-solid fa-xmark"></i></button>
+      <h2>SPIN & WIN</h2>
+      <p style="font-size: 0.85rem; color: var(--accent-cyan); font-weight: 700; margin-top: 0.2rem;">BUY MORE TO WIN FREE DATA!</p>
       
-      <div class="wheel-wrapper">
+      <div class="wheel-container">
         <div class="wheel-pointer"></div>
-        <canvas id="wheelCanvas" width="300" height="300"></canvas>
+        <canvas id="wheelCanvas" width="300" height="300" class="wheel-canvas"></canvas>
       </div>
 
-      <div class="spin-result-msg" id="spinResultMsg">Spin to try your luck!</div>
-      <button class="btn-submit" id="spinWheelBtn">SPIN WHEEL</button>
+      <div id="spinMsg" class="spin-msg">Spin the wheel to get gifted data!</div>
+      <button class="spin-btn" id="triggerSpinBtn">SPIN NOW</button>
     </div>
   </div>
 
@@ -1374,6 +1458,39 @@
       );
     }
 
+    /* --- STEP NAVIGATION CONTROLLER --- */
+    function goToStep(stepNumber) {
+      const step1 = document.getElementById('step-1-container');
+      const step2 = document.getElementById('step-2-container');
+      const indStep1 = document.getElementById('indicatorStep1');
+      const indStep2 = document.getElementById('indicatorStep2');
+      const indLine = document.getElementById('indicatorLine');
+
+      if (stepNumber === 1) {
+        step1.classList.remove('step-hidden');
+        step2.classList.add('step-hidden');
+
+        indStep1.classList.add('active');
+        indStep2.classList.remove('active');
+        indLine.classList.remove('active');
+      } else if (stepNumber === 2) {
+        step1.classList.add('step-hidden');
+        step2.classList.remove('step-hidden');
+
+        indStep1.classList.add('active');
+        indStep2.classList.add('active');
+        indLine.classList.add('active');
+
+        // Focus phone input field for smooth user transition
+        setTimeout(() => {
+          document.getElementById('phoneNumber').focus();
+        }, 100);
+      }
+
+      const orderContainer = document.getElementById('place-order');
+      orderContainer.scrollIntoView({ behavior: 'smooth' });
+    }
+
     const forceNumeric = (e) => { e.target.value = e.target.value.replace(/[^0-9]/g, ''); };
     document.getElementById('phoneNumber').addEventListener('input', (e) => {
       forceNumeric(e);
@@ -1432,6 +1549,8 @@
           <div class="package-size">${pkg.size}</div>
           <div class="package-price">GH₵${pkg.price.toFixed(2)}</div>
         `;
+        
+        // CLICK PACKAGE -> SELECT & MOVE TO STEP 2
         card.addEventListener('click', () => {
           selectedPackage = pkg;
           document.getElementById('selectedPackage').value = `${pkg.size} (${network})`;
@@ -1441,6 +1560,9 @@
           
           document.querySelectorAll('.package-card').forEach(c => c.classList.remove('selected'));
           card.classList.add('selected');
+
+          // Switch automatically to Step 2
+          goToStep(2);
         });
         container.appendChild(card);
       });
@@ -1481,12 +1603,14 @@
 
     document.getElementById('closeModalBtn').addEventListener('click', () => {
       document.getElementById('welcomeModal').style.display = 'none';
+      goToStep(1);
     });
 
     document.getElementById('payButton').addEventListener('click', () => {
       const phone = document.getElementById('phoneNumber').value;
       if (!selectedPackage) {
-        alert('Please choose a data bundle package card above first.');
+        alert('Please select a data bundle package card first.');
+        goToStep(1);
         return;
       }
       if (!phone || phone.length < 10) {
@@ -1541,69 +1665,87 @@
 
     renderPackages(currentNetwork);
 
-    /* --- Spin Game Logic --- */
-    const spinModal = document.getElementById('spinModal');
-    const openSpinBtns = [document.getElementById('navSpinBtn'), document.getElementById('quickSpinBtn'), document.getElementById('openSpinModalBtn')];
-    const closeSpinModalBtn = document.getElementById('closeSpinModalBtn');
+    /* --- SPIN GAME SYSTEM --- */
     const wheelCanvas = document.getElementById('wheelCanvas');
-    const spinWheelBtn = document.getElementById('spinWheelBtn');
-    const spinResultMsg = document.getElementById('spinResultMsg');
-    const ctx = wheelCanvas.getContext('2d');
+    const wCtx = wheelCanvas.getContext('2d');
+    const wheelSegments = [
+      { text: 'Try Again', bg: '#ff4d4d', color: '#ffffff' },
+      { text: '1GB DATA', bg: '#FFB800', color: '#000000' },
+      { text: 'Try Again', bg: '#222233', color: '#ffffff' },
+      { text: '2GB DATA', bg: '#00E5FF', color: '#000000' },
+      { text: 'Try Again', bg: '#ff4d4d', color: '#ffffff' },
+      { text: '5GB DATA', bg: '#25D366', color: '#000000' }
+    ];
 
-    const segments = ['1GB Free', 'Try Again', '500MB', 'Try Again', '2GB Free', 'Try Again', '100MB', 'Try Again'];
-    const colors = ['#FFB800', '#1a1a24', '#00E5FF', '#1a1a24', '#FFB800', '#1a1a24', '#00E5FF', '#1a1a24'];
-    const numSegments = segments.length;
-    const arcSize = (Math.PI * 2) / numSegments;
+    function drawWheel() {
+      const numSegments = wheelSegments.length;
+      const arcSize = (2 * Math.PI) / numSegments;
+      const centerX = 150;
+      const centerY = 150;
+      const radius = 140;
+
+      for (let i = 0; i < numSegments; i++) {
+        const angle = i * arcSize;
+        wCtx.beginPath();
+        wCtx.fillStyle = wheelSegments[i].bg;
+        wCtx.moveTo(centerX, centerY);
+        wCtx.arc(centerX, centerY, radius, angle, angle + arcSize);
+        wCtx.lineTo(centerX, centerY);
+        wCtx.fill();
+        wCtx.strokeStyle = '#111118';
+        wCtx.lineWidth = 2;
+        wCtx.stroke();
+
+        wCtx.save();
+        wCtx.translate(centerX, centerY);
+        wCtx.rotate(angle + arcSize / 2);
+        wCtx.textAlign = 'right';
+        wCtx.fillStyle = wheelSegments[i].color;
+        wCtx.font = 'bold 15px Orbitron, sans-serif';
+        wCtx.fillText(wheelSegments[i].text, radius - 15, 5);
+        wCtx.restore();
+      }
+    }
+    drawWheel();
+
+    const spinModal = document.getElementById('spinModal');
+    const openSpinModalBtn = document.getElementById('openSpinModalBtn');
+    const bannerSpinBtn = document.getElementById('bannerSpinBtn');
+    const closeSpinModalBtn = document.getElementById('closeSpinModalBtn');
+    const triggerSpinBtn = document.getElementById('triggerSpinBtn');
+    const spinMsg = document.getElementById('spinMsg');
+
+    const openModal = () => { spinModal.style.display = 'flex'; };
+    openSpinModalBtn.addEventListener('click', openModal);
+    bannerSpinBtn.addEventListener('click', openModal);
+
+    closeSpinModalBtn.addEventListener('click', () => {
+      spinModal.style.display = 'none';
+    });
+
     let currentRotation = 0;
     let isSpinning = false;
 
-    function drawWheel() {
-      ctx.clearRect(0, 0, 300, 300);
-      for (let i = 0; i < numSegments; i++) {
-        const angle = i * arcSize;
-        ctx.beginPath();
-        ctx.fillStyle = colors[i];
-        ctx.moveTo(150, 150);
-        ctx.arc(150, 150, 140, angle, angle + arcSize);
-        ctx.lineTo(150, 150);
-        ctx.fill();
-
-        ctx.save();
-        ctx.translate(150, 150);
-        ctx.rotate(angle + arcSize / 2);
-        ctx.textAlign = "right";
-        ctx.fillStyle = colors[i] === '#1a1a24' ? '#ffffff' : '#000000';
-        ctx.font = "bold 13px Orbitron, sans-serif";
-        ctx.fillText(segments[i], 125, 5);
-        ctx.restore();
-      }
-    }
-
-    drawWheel();
-
-    openSpinBtns.forEach(btn => {
-      if(btn) btn.addEventListener('click', () => { spinModal.style.display = 'flex'; });
-    });
-
-    closeSpinModalBtn.addEventListener('click', () => { spinModal.style.display = 'none'; });
-
-    spinWheelBtn.addEventListener('click', () => {
+    triggerSpinBtn.addEventListener('click', () => {
       if (isSpinning) return;
       isSpinning = true;
-      spinResultMsg.textContent = "Spinning...";
-      
-      // Forces landing strictly on a "Try Again" slice (Index 1: angle range centered at segment 1)
-      const tryAgainIndex = 1; 
-      const targetSegmentAngle = (numSegments - tryAgainIndex) * (360 / numSegments) - (360 / (numSegments * 2));
-      const extraSpins = 5 * 360; 
-      const finalDegree = extraSpins + targetSegmentAngle - 90; // Adjusting for top pointer
+      triggerSpinBtn.disabled = true;
+      spinMsg.textContent = 'Spinning... Good luck!';
+      spinMsg.style.color = 'var(--accent-cyan)';
 
-      currentRotation += finalDegree;
+      const extraRounds = 5 * 360; 
+      const targetSegmentIndex = 0;
+      const segmentAngle = 360 / wheelSegments.length;
+      const targetAngle = 270 - (targetSegmentIndex * segmentAngle + segmentAngle / 2);
+      
+      currentRotation += extraRounds + (targetAngle - (currentRotation % 360));
       wheelCanvas.style.transform = `rotate(${currentRotation}deg)`;
 
       setTimeout(() => {
         isSpinning = false;
-        spinResultMsg.textContent = "❌ Try Again! Buy more to win free data.";
+        triggerSpinBtn.disabled = false;
+        spinMsg.textContent = '❌ Try Again! Buy more data packages to increase your chances of winning free data!';
+        spinMsg.style.color = 'var(--red)';
       }, 4000);
     });
   </script>
