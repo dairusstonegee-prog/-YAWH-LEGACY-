@@ -264,15 +264,18 @@
 
     .quick-actions-grid {
       display: grid;
-      grid-template-columns: repeat(4, 1fr);
+      grid-template-columns: repeat(5, 1fr);
       gap: 0.75rem;
       margin-bottom: 1.5rem;
     }
 
     @media (max-width: 600px) {
       .quick-actions-grid {
-        grid-template-columns: repeat(4, 1fr);
-        gap: 0.5rem;
+        grid-template-columns: repeat(5, 1fr);
+        gap: 0.35rem;
+      }
+      .action-label {
+        font-size: 0.65rem !important;
       }
     }
 
@@ -915,6 +918,23 @@
     .close-x-btn:hover {
       color: #fff;
     }
+
+    /* Result Checker Styling */
+    .result-checker-card {
+      border: 2px solid var(--accent-cyan) !important;
+      background: rgba(0, 229, 255, 0.08) !important;
+    }
+    .result-checker-card:hover {
+      border-color: #ffffff !important;
+      box-shadow: 0 0 20px rgba(0, 229, 255, 0.4) !important;
+    }
+    .waec-subtext {
+      font-size: 0.72rem;
+      color: var(--accent-cyan);
+      text-transform: lowercase;
+      margin-top: 2px;
+      font-weight: 500;
+    }
   </style>
 </head>
 <body>
@@ -976,8 +996,12 @@
         <div class="action-icon-box"><i class="fa-solid fa-wifi"></i></div>
         <span class="action-label">Data</span>
       </div>
+      <div class="quick-action-card" onclick="scrollToResultChecker()">
+        <div class="action-icon-box" style="background:var(--accent-cyan); color:#000;"><i class="fa-solid fa-graduation-cap"></i></div>
+        <span class="action-label">Result Checker</span>
+      </div>
       <div class="quick-action-card" id="openSpinModalBtn">
-        <div class="action-icon-box" style="background:var(--accent-cyan); color:#000;"><i class="fa-solid fa-dharmachakra"></i></div>
+        <div class="action-icon-box" style="background:var(--primary-yellow); color:#000;"><i class="fa-solid fa-dharmachakra"></i></div>
         <span class="action-label">Spin & Win</span>
       </div>
       <a href="#tracking-section" class="quick-action-card">
@@ -1000,6 +1024,45 @@
       <div class="pill"><i class="fa-solid fa-bolt"></i> Instant Delivery</div>
       <div class="pill"><i class="fa-solid fa-lock"></i> Secure Payment</div>
       <div class="pill"><i class="fa-solid fa-clock"></i> 24/7 Service</div>
+    </div>
+
+    <!-- RESULT CHECKER SECTION -->
+    <div class="form-card" id="result-checker-section" style="border-color: var(--accent-cyan);">
+      <div class="section-title" style="color: var(--accent-cyan); margin-bottom: 1rem;">
+        <span><i class="fa-solid fa-graduation-cap"></i> WAEC Result Checker</span>
+      </div>
+
+      <div class="packages-grid" style="grid-template-columns: 1fr; margin-bottom: 1.2rem;">
+        <div class="package-card result-checker-card">
+          <div class="package-size" style="color: #ffffff; font-size: 1.4rem;">WAEC</div>
+          <div class="waec-subtext">wassce results checker online</div>
+          <div class="package-price" style="color: var(--primary-yellow); font-size: 1.2rem; margin-top: 6px;">GH₵19.00</div>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label for="checkerPhone">Recipient Phone Number to Receive PIN</label>
+        <input type="tel" id="checkerPhone" class="form-control" placeholder="enter number e.g 0599821047" maxlength="10">
+      </div>
+
+      <div class="form-group">
+        <label class="checkbox-container" style="color: var(--accent-cyan); margin-bottom: 0.6rem;">
+          <input type="checkbox" id="bulkOrderCheckbox">
+          Buy more than 10 PINs (Bulk Discount/Order)
+        </label>
+      </div>
+
+      <div class="form-group">
+        <label for="checkerQuantity">Quantity (Number of PINs)</label>
+        <input type="number" id="checkerQuantity" class="form-control" value="1" min="1" max="500">
+      </div>
+
+      <div class="form-group">
+        <label>Total Price (GHS)</label>
+        <input type="text" id="checkerTotalPrice" class="form-control" value="GH₵19.00" readonly style="color: var(--primary-yellow); font-weight: 800;">
+      </div>
+
+      <button class="btn-submit" id="payCheckerButton" style="background: var(--accent-cyan); color: #000;">Buy Result Checker PIN</button>
     </div>
 
     <div class="step-indicator">
@@ -1131,6 +1194,7 @@
         <h4>Quick Links</h4>
         <ul class="footer-links">
           <li><a href="#place-order" onclick="goToStep(1)">Home</a></li>
+          <li><a href="#result-checker-section">WAEC Result Checker</a></li>
           <li><a href="#tracking-section">Order Tracking</a></li>
           <li><a href="https://wa.me/message/DF4CE2EQV33QP1" target="_blank">WhatsApp Support</a></li>
         </ul>
@@ -1178,7 +1242,7 @@
         <div style="margin-bottom: 0.4rem;"><strong>Location:</strong> <span id="modalLocation" style="color:#ffffff;">-</span></div>
       </div>
 
-      <p style="font-size: 0.8rem; opacity: 0.8; margin-bottom: 1.2rem;">Your bundle is being processed and will arrive within 5 to 30 minutes!</p>
+      <p style="font-size: 0.8rem; opacity: 0.8; margin-bottom: 1.2rem;">Your bundle/PIN is being processed and will arrive within 5 to 30 minutes!</p>
       <button class="close-modal-btn" id="closeModalBtn">Done & Continue</button>
     </div>
   </div>
@@ -1489,6 +1553,11 @@
       );
     }
 
+    function scrollToResultChecker() {
+      const section = document.getElementById('result-checker-section');
+      section.scrollIntoView({ behavior: 'smooth' });
+    }
+
     function goToStep(stepNumber) {
       const step1 = document.getElementById('step-1-container');
       const step2 = document.getElementById('step-2-container');
@@ -1528,6 +1597,76 @@
       document.getElementById('verifiedBadge').style.display = 'none';
     });
     document.getElementById('trackPhoneNumber').addEventListener('input', forceNumeric);
+    document.getElementById('checkerPhone').addEventListener('input', forceNumeric);
+
+    /* WAEC Result Checker Logic */
+    const checkerQuantity = document.getElementById('checkerQuantity');
+    const checkerTotalPrice = document.getElementById('checkerTotalPrice');
+    const bulkOrderCheckbox = document.getElementById('bulkOrderCheckbox');
+
+    function calculateCheckerPrice() {
+      let qty = parseInt(checkerQuantity.value) || 1;
+      if (qty < 1) qty = 1;
+      const total = qty * 19;
+      checkerTotalPrice.value = `GH₵${total.toFixed(2)}`;
+    }
+
+    bulkOrderCheckbox.addEventListener('change', (e) => {
+      if (e.target.checked) {
+        checkerQuantity.value = 11;
+      } else {
+        checkerQuantity.value = 1;
+      }
+      calculateCheckerPrice();
+    });
+
+    checkerQuantity.addEventListener('input', () => {
+      let qty = parseInt(checkerQuantity.value) || 1;
+      if (qty > 10) {
+        bulkOrderCheckbox.checked = true;
+      } else {
+        bulkOrderCheckbox.checked = false;
+      }
+      calculateCheckerPrice();
+    });
+
+    document.getElementById('payCheckerButton').addEventListener('click', () => {
+      const phone = document.getElementById('checkerPhone').value;
+      const qty = parseInt(checkerQuantity.value) || 1;
+      const totalAmount = qty * 19;
+
+      if (!phone || phone.length < 10) {
+        alert('Please enter a valid 10-digit phone number to receive your WAEC Result Checker PIN.');
+        return;
+      }
+
+      const orderDate = new Date();
+      const orderFormattedDateTime = orderDate.toLocaleDateString() + ' ' + orderDate.toLocaleTimeString();
+
+      const handler = PaystackPop.setup({
+        key: PAYSTACK_PUBLIC_KEY,
+        email: 'legacydatahub@gmail.com',
+        amount: Math.round(totalAmount * 100),
+        currency: 'GHS',
+        ref: 'WAEC-' + Date.now() + '-' + Math.floor((Math.random() * 100000) + 1),
+        metadata: {
+          custom_fields: [
+            { display_name: "Service Type", variable_name: "service_type", value: "WAEC Result Checker" },
+            { display_name: "Quantity", variable_name: "quantity", value: qty },
+            { display_name: "Recipient Phone", variable_name: "recipient_phone", value: phone },
+            { display_name: "Order Date Time", variable_name: "order_date_time", value: orderFormattedDateTime },
+            { display_name: "Order Location", variable_name: "order_location", value: userLocation }
+          ]
+        },
+        callback: function(response) {
+          showWelcomeModal(response.reference, phone, `WAEC Result Checker (${qty} PINs)`, orderFormattedDateTime, userLocation);
+        },
+        onClose: function() {
+          alert('Transaction window closed.');
+        }
+      });
+      handler.openIframe();
+    });
 
     const firstTimeCheckbox = document.getElementById('firstTimeCheckbox');
     const verificationBox = document.getElementById('verificationBox');
